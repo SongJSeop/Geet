@@ -4,7 +4,7 @@ fun processGeet(parseData: Map<String, String>): Unit {
     when (parseData["command"]) {
         "init" -> println("init")
         null -> guideGeet()
-        else -> println("geet ${parseData["command"]} is not a valid command. Try init instead.")
+        else -> println("'geet ${parseData["command"]}'은 지원하는 명령어가 아닙니다.")
     }
 }
 
