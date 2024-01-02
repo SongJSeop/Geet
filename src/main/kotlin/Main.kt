@@ -1,8 +1,6 @@
-import parser.CommandLineParser
-
-val commandLineParser = CommandLineParser()
+import parser.parseCommandLine
 
 fun main(args: Array<String>) {
-    val parseData = commandLineParser.parse(args)
+    val parseData = parseCommandLine(args)
     println(parseData)
 }
