@@ -1,8 +1,10 @@
 package geet
 
+import geet.commands.*
+
 fun processGeet(parseData: Map<String, String>): Unit {
     when (parseData["command"]) {
-        "init" -> println("init")
+        "init" -> geetInit()
         null -> guideGeet()
         else -> println("'geet ${parseData["command"]}'은 지원하는 명령어가 아닙니다.")
     }
