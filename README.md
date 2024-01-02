@@ -14,4 +14,4 @@
 <br>
 
 ---
-학습 및 개발 기록은 [노션]()에 잘 정리되어 있습니다.
+학습 및 개발 기록은 [노션](https://abyssinian-cherry-9fc.notion.site/Geet-Git-2442af8184ee48c6ae8eb5990ff7652d?pvs=4)에 잘 정리되어 있습니다.
