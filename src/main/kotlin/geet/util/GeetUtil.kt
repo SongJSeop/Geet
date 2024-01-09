@@ -1,6 +1,6 @@
 package geet.util
 
-fun isObjectType(type: String): Boolean {
+fun isGeetObjectType(type: String): Boolean {
     val typeLowerCase = type.lowercase()
     return typeLowerCase == "blob" ||
         typeLowerCase == "tree" ||
