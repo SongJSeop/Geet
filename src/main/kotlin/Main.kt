@@ -1,5 +1,5 @@
 import geet.processGeet
 
-fun main(args: Array<String>) {
-    processGeet(args)
+fun main(commandLines: Array<String>) {
+    processGeet(commandLines)
 }
