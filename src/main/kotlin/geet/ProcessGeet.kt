@@ -1,10 +1,12 @@
 package geet
 
-import geet.commands.porcelain.geetInit
+import geet.commands.porcelain.*
+import geet.commands.plumbing.*
 
 fun processGeet(parseData: Map<String, String>): Unit {
     when (parseData["command"]) {
         "init" -> geetInit()
+        "hash-object" -> geetHashObject(parseData)
         null -> guideGeet()
         else -> println("'geet ${parseData["command"]}'은 지원하는 명령어가 아닙니다.")
     }
