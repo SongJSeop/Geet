@@ -23,6 +23,7 @@ fun guideGeet(): Unit {
 
     println("| 현재 사용 가능한 명령어 목록 |")
     println("|  init  |  현재 디렉토리에 새로운 Geet 저장소를 초기화합니다.  |")
+    println("|  hash-object  |  파일을 해시하여 Geet 저장소에 저장합니다.  |")
     println()
 
     println("----------------------------------------")
