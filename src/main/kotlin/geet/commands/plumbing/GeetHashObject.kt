@@ -1,6 +1,6 @@
 package geet.commands.plumbing
 
-fun geetHashObject(parseData: Map<String, String>) {
+fun geetHashObject(commandLines: Array<String>) {
     println("hash-object")
-    println(parseData)
+    commandLines.forEach { println(it) }
 }

@@ -3,12 +3,16 @@ package geet
 import geet.commands.porcelain.*
 import geet.commands.plumbing.*
 
-fun processGeet(parseData: Map<String, String>): Unit {
-    when (parseData["command"]) {
+fun processGeet(commandLines: Array<String>): Unit {
+    if (commandLines.isEmpty()) {
+        guideGeet()
+        return
+    }
+
+    when (commandLines[0]) {
         "init" -> geetInit()
-        "hash-object" -> geetHashObject(parseData)
-        null -> guideGeet()
-        else -> println("'geet ${parseData["command"]}'은 지원하는 명령어가 아닙니다.")
+        "hash-object" -> geetHashObject(commandLines)
+        else -> println("'geet ${commandLines[0]}'은 지원하는 명령어가 아닙니다.")
     }
 }
 
