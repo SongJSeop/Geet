@@ -1,5 +1,7 @@
 package geet.commands.plumbing
 
+import geet.util.isObjectType
+
 data class GeetHashObjectOptions(
     var type: String = "blob",
     var write: Boolean = false,
@@ -18,10 +20,7 @@ fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
     while (index < commandLines.size) {
         when (commandLines[index]) {
             "-t" -> {
-                if (!(commandLines[index + 1] == "blob" ||
-                    commandLines[index + 1] == "tree" ||
-                    commandLines[index + 1] == "commit" ||
-                    commandLines[index + 1] == "tag")) {
+                if (!isObjectType(commandLines[index + 1])) {
                     println("'-t' 옵션에 대하여 올바른 개체 타입이 지정되지 않았습니다.: ${commandLines[index + 1]}")
                     // TODO: 에러 처리
                 }
