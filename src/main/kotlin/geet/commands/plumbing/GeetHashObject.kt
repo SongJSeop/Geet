@@ -16,7 +16,7 @@ fun geetHashObject(commandLines: Array<String>) {
 fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
     val options = GeetHashObjectOptions()
 
-    var index: Int = 0
+    var index: Int = 1
     while (index < commandLines.size) {
         when (commandLines[index]) {
             "-t" -> {
