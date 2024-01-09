@@ -1,6 +1,6 @@
 package geet
 
-import geet.commands.*
+import geet.commands.porcelain.geetInit
 
 fun processGeet(parseData: Map<String, String>): Unit {
     when (parseData["command"]) {
