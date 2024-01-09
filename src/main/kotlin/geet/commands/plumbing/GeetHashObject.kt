@@ -23,13 +23,25 @@ fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
                     commandLines[index + 1] == "commit" ||
                     commandLines[index + 1] == "tag")) {
                     println("'-t' 옵션에 대하여 올바른 개체 타입이 지정되지 않았습니다.: ${commandLines[index + 1]}")
+                    // TODO: 에러 처리
                 }
 
                 options.type = commandLines[index + 1]
                 index += 2
             }
-            "-w" -> {}
-            else -> {}
+            "-w" -> {
+                options.write = true
+                index += 1
+            }
+            else -> {
+                if (options.path != null) {
+                    println("지정할 수 없는 옵션입니다.: ${commandLines[index]}")
+                    // TODO: 에러 처리
+                }
+
+                options.path = commandLines[index]
+                index += 1
+            }
         }
     }
 
