@@ -1,5 +1,6 @@
 package geet.commands.plumbing
 
+import geet.util.createHashObject
 import geet.util.isGeetObjectType
 import java.io.File
 import java.security.MessageDigest
@@ -54,21 +55,4 @@ fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
     }
 
     return options
-}
-
-fun createHashObject(options: GeetHashObjectOptions) {
-    val file = File(options.path)
-    if (!file.exists()) {
-        println("파일이 존재하지 않습니다.: ${options.path}")
-    }
-
-    val content = file.readText()
-    val header = "${options.type} ${content.length}\u0000"
-    val store = header + content
-
-    val hash = messageDigest.digest(store.toByteArray())
-    val hashString = hash.joinToString("") {
-        String.format("%02x", it)
-    }
-    println(hashString)
 }
