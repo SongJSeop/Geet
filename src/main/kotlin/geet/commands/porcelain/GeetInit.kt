@@ -1,4 +1,4 @@
-package geet.commands
+package geet.commands.porcelain
 
 import java.io.File
 
