@@ -3,9 +3,6 @@ package geet.commands.plumbing
 import geet.util.createHashObject
 import geet.util.isGeetObjectType
 import java.io.File
-import java.security.MessageDigest
-
-val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-1")
 
 data class GeetHashObjectOptions(
     var type: String = "blob",

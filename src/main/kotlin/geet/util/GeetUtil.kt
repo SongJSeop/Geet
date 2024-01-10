@@ -1,7 +1,6 @@
 package geet.util
 
 import geet.commands.plumbing.GeetHashObjectOptions
-import geet.commands.plumbing.messageDigest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -10,6 +9,9 @@ import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
+import java.security.MessageDigest
+
+val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-1")
 
 fun isGeetObjectType(type: String): Boolean {
     val typeLowerCase = type.lowercase()
@@ -20,15 +22,25 @@ fun isGeetObjectType(type: String): Boolean {
 }
 
 fun createHashObject(options: GeetHashObjectOptions) {
-    val hashString = hashObject(options)
-}
-
-fun hashObject(options: GeetHashObjectOptions): String {
     val file = File(options.path)
     if (!file.exists()) {
         println("파일이 존재하지 않습니다.: ${options.path}")
+        // TODO: 에러 처리
     }
 
+    val hashString = getHashString(options, file)
+    val directoryName = hashString.substring(0, 2)
+    val fileName = hashString.substring(2)
+    val compressedContents = compressToZlib(file.readText())
+
+    File(".geet/objects/$directoryName").mkdirs()
+    File(".geet/objects/$directoryName/$fileName").writeText(compressedContents)
+
+    println(hashString)
+    println("개체가 저장되었습니다. : .geet/objects/$directoryName/$fileName")
+}
+
+fun getHashString(options: GeetHashObjectOptions, file: File): String {
     val content = file.readText()
     val header = "${options.type} ${content.length}\u0000"
     val store = header + content
