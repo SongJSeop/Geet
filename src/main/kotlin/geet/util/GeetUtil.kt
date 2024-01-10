@@ -13,6 +13,10 @@ fun isGeetObjectType(type: String): Boolean {
 }
 
 fun createHashObject(options: GeetHashObjectOptions) {
+    val hashString = hashObject(options)
+}
+
+fun hashObject(options: GeetHashObjectOptions): String {
     val file = File(options.path)
     if (!file.exists()) {
         println("파일이 존재하지 않습니다.: ${options.path}")
@@ -23,8 +27,7 @@ fun createHashObject(options: GeetHashObjectOptions) {
     val store = header + content
 
     val hash = messageDigest.digest(store.toByteArray())
-    val hashString = hash.joinToString("") {
+    return hash.joinToString("") {
         String.format("%02x", it)
     }
-    println(hashString)
 }
