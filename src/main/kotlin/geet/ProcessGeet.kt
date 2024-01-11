@@ -17,8 +17,7 @@ fun processGeet(commandLines: Array<String>): Unit {
     }
 
     if (!File(".geet").exists()) {
-        println("Geet 저장소가 존재하지 않습니다.")
-        return
+        throw BadRequestException("Geet 저장소가 초기화되지 않았습니다.\nGeet 저장소를 초기화하려면 'init'을 입력하세요.")
     }
 
     when (commandLines[0]) {

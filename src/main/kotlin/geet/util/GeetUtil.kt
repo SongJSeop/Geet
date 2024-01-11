@@ -1,6 +1,7 @@
 package geet.util
 
 import geet.commands.plumbing.GeetHashObjectOptions
+import geet.exception.NotFoundException
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -24,8 +25,7 @@ fun isGeetObjectType(type: String): Boolean {
 fun createHashObject(options: GeetHashObjectOptions) {
     val file = File(options.path)
     if (!file.exists()) {
-        println("파일이 존재하지 않습니다.: ${options.path}")
-        // TODO: 에러 처리
+        throw NotFoundException("파일을 찾을 수 없습니다. : ${options.path}")
     }
 
     val hashString = getHashString(options, file)

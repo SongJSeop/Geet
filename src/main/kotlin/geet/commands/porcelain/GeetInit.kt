@@ -1,11 +1,11 @@
 package geet.commands.porcelain
 
+import geet.exception.BadRequestException
 import java.io.File
 
 fun geetInit(): Unit {
     if (File(".geet").exists()) {
-        println("이미 Geet 저장소가 초기화되어 있습니다.")
-        return
+        throw BadRequestException("현재 디렉토리는 이미 Geet 저장소로 초기화되었습니다.")
     }
 
     File(".geet").mkdir()
