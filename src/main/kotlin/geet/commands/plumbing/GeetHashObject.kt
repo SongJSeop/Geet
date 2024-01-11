@@ -1,5 +1,6 @@
 package geet.commands.plumbing
 
+import geet.exception.BadRequestException
 import geet.util.createHashObject
 import geet.util.isGeetObjectType
 import java.io.File
@@ -23,8 +24,7 @@ fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
         when (commandLines[index]) {
             "-t" -> {
                 if (!isGeetObjectType(commandLines[index + 1])) {
-                    println("'-t' 옵션에 대하여 올바른 개체 타입이 지정되지 않았습니다.: ${commandLines[index + 1]}")
-                    // TODO: 에러 처리
+                    throw BadRequestException("'-t' 옵션에 대하여 올바른 개체 타입이 지정되지 않았습니다. : ${commandLines[index + 1]}")
                 }
 
                 options.type = commandLines[index + 1]
@@ -36,8 +36,7 @@ fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
             }
             else -> {
                 if (options.path != "") {
-                    println("지정할 수 없는 옵션입니다.: ${commandLines[index]}")
-                    // TODO: 에러 처리
+                    throw BadRequestException("지원하지 않는 옵션이거나 중복된 파일 경로입니다. : ${commandLines[index]}")
                 }
 
                 options.path = commandLines[index]
@@ -47,8 +46,7 @@ fun getHashObjectOptions(commandLines: Array<String>): GeetHashObjectOptions {
     }
 
     if (options.path == "") {
-        println("파일 경로가 지정되지 않았습니다.")
-        // TODO: 에러 처리
+        throw BadRequestException("파일 경로가 지정되지 않았습니다.")
     }
 
     return options

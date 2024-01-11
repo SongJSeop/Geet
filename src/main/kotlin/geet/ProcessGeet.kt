@@ -2,6 +2,7 @@ package geet
 
 import geet.commands.porcelain.*
 import geet.commands.plumbing.*
+import geet.exception.BadRequestException
 import java.io.File
 
 fun processGeet(commandLines: Array<String>): Unit {
@@ -16,13 +17,12 @@ fun processGeet(commandLines: Array<String>): Unit {
     }
 
     if (!File(".geet").exists()) {
-        println("Geet 저장소가 존재하지 않습니다.")
-        return
+        throw BadRequestException("Geet 저장소가 초기화되지 않았습니다.\nGeet 저장소를 초기화하려면 'init'을 입력하세요.")
     }
 
     when (commandLines[0]) {
         "hash-object" -> geetHashObject(commandLines)
-        else -> println("'geet ${commandLines[0]}'은 지원하는 명령어가 아닙니다.")
+        else -> throw BadRequestException("지원하지 않는 명령어입니다.: ${commandLines[0]}\nGeet 명령어 목록을 확인하려면 'help'를 입력하세요.")
     }
 }
 

@@ -1,5 +1,9 @@
 import geet.processGeet
 
 fun main(commandLines: Array<String>) {
-    processGeet(commandLines)
+    try {
+        processGeet(commandLines)
+    } catch (exception: Exception) {
+        println(exception.message)
+    }
 }
