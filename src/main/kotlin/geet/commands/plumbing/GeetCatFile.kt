@@ -1,6 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exception.BadRequestException
+import geet.util.catGeetObject
 
 data class GeetCatFileOptions(
     var pretty: Boolean = false,
@@ -11,7 +12,7 @@ data class GeetCatFileOptions(
 
 fun geetCatFile(commandLines: Array<String>): Unit {
     val options: GeetCatFileOptions = getCatFileOptions(commandLines)
-    println(options)
+    catGeetObject(options)
 }
 
 fun getCatFileOptions(commandLines: Array<String>): GeetCatFileOptions {
@@ -48,7 +49,7 @@ fun getCatFileOptions(commandLines: Array<String>): GeetCatFileOptions {
         throw BadRequestException("객체 SHA-1 값이 지정되지 않았습니다.")
     }
 
-    if (!(options.pretty && options.printType && options.printSize)) {
+    if (!options.pretty && !options.printType && !options.printSize) {
         throw BadRequestException("'-p', '-t', '-s' 옵션 중 하나 이상이 지정되지 않았습니다.")
     }
 
