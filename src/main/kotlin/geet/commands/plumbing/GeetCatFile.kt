@@ -10,7 +10,7 @@ data class GeetCatFileOptions(
 )
 
 fun geetCatFile(commandLines: Array<String>): Unit {
-    val options = getCatFileOptions(commandLines)
+    val options: GeetCatFileOptions = getCatFileOptions(commandLines)
     println(options)
 }
 
@@ -42,6 +42,18 @@ fun getCatFileOptions(commandLines: Array<String>): GeetCatFileOptions {
                 index += 1
             }
         }
+    }
+
+    if (options.objectPath == "") {
+        throw BadRequestException("객체 SHA-1 값이 지정되지 않았습니다.")
+    }
+
+    if (!(options.pretty && options.printType && options.printSize)) {
+        throw BadRequestException("'-p', '-t', '-s' 옵션 중 하나 이상이 지정되지 않았습니다.")
+    }
+
+    if ((options.pretty && options.printSize) || (options.pretty && options.printType) || (options.printType && options.printSize)) {
+        throw BadRequestException("'-p', '-t', '-s' 옵션 중 하나만 지정되어야 합니다.")
     }
 
     return options
