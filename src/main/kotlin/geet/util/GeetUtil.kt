@@ -1,10 +1,13 @@
 package geet.util
 
+import geet.commands.plumbing.GeetCatFileOptions
 import geet.commands.plumbing.GeetHashObjectOptions
+import geet.exception.BadRequestException
 import geet.exception.NotFoundException
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.util.Base64
 import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
@@ -77,4 +80,22 @@ fun decompressFromZlib(zlibContents: String): String {
     }
 
     return outputStream.toString()
+}
+
+fun catGeetObject(catFileOptions: GeetCatFileOptions) {
+    if (catFileOptions.objectPath == "") {
+        throw BadRequestException("개체 경로가 지정되지 않았습니다.")
+    }
+
+    val dirPath = ".geet/objects/${catFileOptions.objectPath.substring(0, 2)}"
+    val fileName = catFileOptions.objectPath.substring(2)
+
+    val file = File("$dirPath/$fileName")
+    if (!file.exists()) {
+        throw NotFoundException("개체를 찾을 수 없습니다. : ${catFileOptions.objectPath}")
+    }
+
+    if (catFileOptions.pretty) {
+        print(decompressFromZlib(file.readText()))
+    }
 }
