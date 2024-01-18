@@ -20,7 +20,7 @@ fun getUpdateIndexOptions(commandLines: Array<String>): GeetUpdateIndexOptions {
         when (commandLines[index]) {
             "--add", "--remove", "--refresh" -> {
                 if (options.option != "") {
-                    throw BadRequestException("이미 '${options.option}' 옵션이 지정되었습니다. : ${commandLines[index]}")
+                    throw BadRequestException("이미 '${options.option}' 옵션이 지정되었습니다. 지정 오류 : ${commandLines[index]}")
                 }
 
                 options.option = commandLines[index]

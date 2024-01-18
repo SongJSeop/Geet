@@ -95,7 +95,7 @@ fun catGeetObject(catFileOptions: GeetCatFileOptions) {
         throw NotFoundException("개체를 찾을 수 없습니다. : ${catFileOptions.objectPath}")
     }
 
-    if (catFileOptions.pretty) {
+    if (catFileOptions.option == "-p") {
         print(decompressFromZlib(file.readText()))
     }
 }
