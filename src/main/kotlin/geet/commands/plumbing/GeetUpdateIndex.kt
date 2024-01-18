@@ -1,6 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exception.BadRequestException
+import geet.util.updateIndex
 
 data class GeetUpdateIndexOptions(
     var option: String = "",
@@ -9,7 +10,7 @@ data class GeetUpdateIndexOptions(
 
 fun geetUpdateIndex(commandLines: Array<String>) {
     val options = getUpdateIndexOptions(commandLines)
-    println(options)
+    updateIndex(options)
 }
 
 fun getUpdateIndexOptions(commandLines: Array<String>): GeetUpdateIndexOptions {
@@ -34,6 +35,14 @@ fun getUpdateIndexOptions(commandLines: Array<String>): GeetUpdateIndexOptions {
             }
         }
         index += 1
+    }
+
+    if (options.option == "") {
+        throw BadRequestException("옵션이 지정되지 않았습니다.")
+    }
+
+    if (options.path == "") {
+        throw BadRequestException("파일 경로가 지정되지 않았습니다.")
     }
 
     return options

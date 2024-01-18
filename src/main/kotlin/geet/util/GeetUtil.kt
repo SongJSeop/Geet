@@ -2,6 +2,7 @@ package geet.util
 
 import geet.commands.plumbing.GeetCatFileOptions
 import geet.commands.plumbing.GeetHashObjectOptions
+import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exception.BadRequestException
 import geet.exception.NotFoundException
 import java.io.ByteArrayInputStream
@@ -83,10 +84,6 @@ fun decompressFromZlib(zlibContents: String): String {
 }
 
 fun catGeetObject(catFileOptions: GeetCatFileOptions) {
-    if (catFileOptions.objectPath == "") {
-        throw BadRequestException("개체 경로가 지정되지 않았습니다.")
-    }
-
     val dirPath = ".geet/objects/${catFileOptions.objectPath.substring(0, 2)}"
     val fileName = catFileOptions.objectPath.substring(2)
 
@@ -97,5 +94,21 @@ fun catGeetObject(catFileOptions: GeetCatFileOptions) {
 
     if (catFileOptions.option == "-p") {
         print(decompressFromZlib(file.readText()))
+    }
+}
+
+fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
+    val file = File(updateIndexOptions.path)
+    if (!file.exists()) {
+        throw NotFoundException("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
+    }
+
+    val hashString = getHashString(GeetHashObjectOptions(path = updateIndexOptions.path), file)
+
+    val indexFile = File(".geet/index")
+    if (!indexFile.exists()) {
+        indexFile.createNewFile()
+        indexFile.writeText("${file.name} ${hashString}\n")
+        return
     }
 }
