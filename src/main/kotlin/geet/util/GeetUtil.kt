@@ -108,7 +108,14 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     val indexFile = File(".geet/index")
     if (!indexFile.exists()) {
         indexFile.createNewFile()
+        indexFile.writeText("[STAGE]\n")
         indexFile.writeText("${file.name} ${hashString}\n")
+        indexFile.writeText("\n")
+        indexFile.writeText("[ADDED]\n")
+        indexFile.writeText("${file.name} ${hashString}\n")
+        indexFile.writeText("[MODIFIED]\n")
+        indexFile.writeText("\n")
+        indexFile.writeText("[DELETED]\n")
         return
     }
 }
