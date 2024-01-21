@@ -1,13 +1,13 @@
-package geet.`object`
+package geet.objects
 
 import geet.util.messageDigest
 
-class GeetObject(
+open class GeetObject(
     val type: String,
     var content: String,
 ) {
 
-    val hashString: String
+    open val hashString: String
         get() {
             val header = "${type} ${content.length}\u0000"
             val store = header + content
