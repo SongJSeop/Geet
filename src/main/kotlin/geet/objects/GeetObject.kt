@@ -4,6 +4,7 @@ import geet.util.messageDigest
 
 open class GeetObject(
     val type: String,
+    val name: String,
     var content: String,
 ) {
 

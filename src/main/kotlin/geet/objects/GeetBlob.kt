@@ -2,5 +2,6 @@ package geet.objects
 
 class GeetBlob(
     type: String = "blob",
+    name: String,
     content: String,
-): GeetObject(type, content) { }
+): GeetObject(type, name, content) { }
