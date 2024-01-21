@@ -48,20 +48,6 @@ fun decompressFromZlib(zlibContents: String): String {
     return outputStream.toString()
 }
 
-fun catGeetObject(catFileOptions: GeetCatFileOptions) {
-    val dirPath = ".geet/objects/${catFileOptions.objectPath.substring(0, 2)}"
-    val fileName = catFileOptions.objectPath.substring(2)
-
-    val file = File("$dirPath/$fileName")
-    if (!file.exists()) {
-        throw NotFoundException("개체를 찾을 수 없습니다. : ${catFileOptions.objectPath}")
-    }
-
-    if (catFileOptions.option == "-p") {
-        print(decompressFromZlib(file.readText()))
-    }
-}
-
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 //    val file = File(updateIndexOptions.path)
 //    if (!file.exists()) {
