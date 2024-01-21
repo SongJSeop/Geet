@@ -3,7 +3,6 @@ package geet.commands.plumbing
 import geet.exception.BadRequestException
 import geet.util.createHashObject
 import geet.util.isGeetObjectType
-import java.io.File
 
 data class GeetHashObjectOptions(
     var type: String = "blob",
