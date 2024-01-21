@@ -3,20 +3,15 @@ package geet.util
 import geet.commands.plumbing.GeetCatFileOptions
 import geet.commands.plumbing.GeetHashObjectOptions
 import geet.commands.plumbing.GeetUpdateIndexOptions
-import geet.exception.BadRequestException
 import geet.exception.NotFoundException
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
 import java.util.Base64
 import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
-import java.security.MessageDigest
-
-val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-1")
 
 fun isGeetObjectType(type: String): Boolean {
     val typeLowerCase = type.lowercase()
