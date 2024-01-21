@@ -12,15 +12,15 @@ fun createHashObject(options: GeetHashObjectOptions) {
     }
 
     when (options.type) {
-        "blob" -> createBlobObject(options, file)
+        "blob" -> createBlobObject(options.write, file)
     }
 }
 
-fun createBlobObject(options: GeetHashObjectOptions, file: File) {
+fun createBlobObject(write: Boolean, file: File) {
     val blobObject = GeetBlob(name = file.name, content = file.readText())
     println(blobObject.hashString)
 
-    if (options.write) {
+    if (write) {
         val dirName = blobObject.hashString.substring(0, 2)
         val fileName = blobObject.hashString.substring(2)
         val compressedContents = compressToZlib(blobObject.content)
