@@ -1,4 +1,4 @@
-package geet.util
+package geet.util.commandutil
 
 import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exception.NotFoundException

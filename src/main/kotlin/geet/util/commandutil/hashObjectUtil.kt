@@ -1,8 +1,9 @@
-package geet.util
+package geet.util.commandutil
 
 import geet.commands.plumbing.GeetHashObjectOptions
 import geet.exception.NotFoundException
 import geet.objects.GeetBlob
+import geet.util.compressToZlib
 import java.io.File
 
 fun createHashObject(options: GeetHashObjectOptions) {

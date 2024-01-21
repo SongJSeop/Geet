@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exception.BadRequestException
-import geet.util.createHashObject
+import geet.util.commandutil.createHashObject
 import geet.util.isGeetObjectType
 
 data class GeetHashObjectOptions(
