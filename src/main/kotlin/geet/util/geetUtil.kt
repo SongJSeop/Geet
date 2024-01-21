@@ -1,11 +1,7 @@
 package geet.util
 
-import geet.commands.plumbing.GeetCatFileOptions
-import geet.commands.plumbing.GeetUpdateIndexOptions
-import geet.exception.NotFoundException
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.Base64
 import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
@@ -46,31 +42,4 @@ fun decompressFromZlib(zlibContents: String): String {
     }
 
     return outputStream.toString()
-}
-
-fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
-//    val file = File(updateIndexOptions.path)
-//    if (!file.exists()) {
-//        throw NotFoundException("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
-//    }
-//
-//    val hashString = getHashString(GeetHashObjectOptions(path = updateIndexOptions.path), file)
-//
-//    val indexFile = File(".geet/index")
-//    if (!indexFile.exists()) {
-//        writeNewIndexFile(indexFile, file, hashString)
-//        return
-//    }
-}
-
-fun writeNewIndexFile(indexFile: File, file: File, hashString: String) {
-    indexFile.createNewFile()
-    indexFile.writeText("[STAGE]\n")
-    indexFile.writeText("${file.name} ${hashString}\n")
-    indexFile.writeText("\n")
-    indexFile.writeText("[ADDED]\n")
-    indexFile.writeText("${file.name} ${hashString}\n")
-    indexFile.writeText("[MODIFIED]\n")
-    indexFile.writeText("\n")
-    indexFile.writeText("[DELETED]\n")
 }
