@@ -1,7 +1,6 @@
 package geet.util
 
 import geet.commands.plumbing.GeetCatFileOptions
-import geet.commands.plumbing.GeetHashObjectOptions
 import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exception.NotFoundException
 import java.io.ByteArrayInputStream
@@ -19,35 +18,6 @@ fun isGeetObjectType(type: String): Boolean {
         typeLowerCase == "tree" ||
         typeLowerCase == "commit" ||
         typeLowerCase == "tag"
-}
-
-fun createHashObject(options: GeetHashObjectOptions) {
-    val file = File(options.path)
-    if (!file.exists()) {
-        throw NotFoundException("파일을 찾을 수 없습니다. : ${options.path}")
-    }
-
-    val hashString = getHashString(options, file)
-    val directoryName = hashString.substring(0, 2)
-    val fileName = hashString.substring(2)
-    val compressedContents = compressToZlib(file.readText())
-
-    File(".geet/objects/$directoryName").mkdirs()
-    File(".geet/objects/$directoryName/$fileName").writeText(compressedContents)
-
-    println(hashString)
-    println("개체가 저장되었습니다. : .geet/objects/$directoryName/$fileName")
-}
-
-fun getHashString(options: GeetHashObjectOptions, file: File): String {
-    val content = file.readText()
-    val header = "${options.type} ${content.length}\u0000"
-    val store = header + content
-
-    val hash = messageDigest.digest(store.toByteArray())
-    return hash.joinToString("") {
-        String.format("%02x", it)
-    }
 }
 
 fun compressToZlib(contents: String): String {
@@ -93,18 +63,18 @@ fun catGeetObject(catFileOptions: GeetCatFileOptions) {
 }
 
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
-    val file = File(updateIndexOptions.path)
-    if (!file.exists()) {
-        throw NotFoundException("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
-    }
-
-    val hashString = getHashString(GeetHashObjectOptions(path = updateIndexOptions.path), file)
-
-    val indexFile = File(".geet/index")
-    if (!indexFile.exists()) {
-        writeNewIndexFile(indexFile, file, hashString)
-        return
-    }
+//    val file = File(updateIndexOptions.path)
+//    if (!file.exists()) {
+//        throw NotFoundException("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
+//    }
+//
+//    val hashString = getHashString(GeetHashObjectOptions(path = updateIndexOptions.path), file)
+//
+//    val indexFile = File(".geet/index")
+//    if (!indexFile.exists()) {
+//        writeNewIndexFile(indexFile, file, hashString)
+//        return
+//    }
 }
 
 fun writeNewIndexFile(indexFile: File, file: File, hashString: String) {
