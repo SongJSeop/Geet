@@ -10,17 +10,21 @@ import java.io.File
 
 @Serializable
 data class IndexFileData(
-    val stagingArea: List<GeetObject>,
-    val lastCommitObjects: List<GeetObject>,
-    val modifiedObjects: List<GeetObject>,
-    val addedObjects: List<GeetObject>,
-    val removedObjects: List<GeetObject>,
+    val stagingArea: MutableList<GeetObject>,
+    val lastCommitObjects: MutableList<GeetObject>,
+    val modifiedObjects: MutableList<GeetObject>,
+    val addedObjects: MutableList<GeetObject>,
+    val removedObjects: MutableList<GeetObject>,
 )
 
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     val file = File(updateIndexOptions.path)
     if (!file.exists()) {
         throw NotFoundException("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
+    }
+
+    if (file.isDirectory) {
+        throw NotFoundException("update-index 명령어는 디렉토리를 지원하지 않습니다. : ${updateIndexOptions.path}")
     }
 
     val indexFile = File(".geet/index")
@@ -39,20 +43,18 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 }
 
 fun createNewIndexFile(indexFile: File, file: File) {
-    if (file.isFile) {
-        val blobObject = GeetBlob(name = file.name, content = file.readText())
-        saveObjectInGeet(blobObject)
-        val indexFileData = IndexFileData(
-            stagingArea = listOf(blobObject),
-            lastCommitObjects = listOf(),
-            modifiedObjects = listOf(),
-            addedObjects = listOf(blobObject),
-            removedObjects = listOf(),
-        )
-        indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
-        println("새로운 인덱스 파일을 생성했습니다.")
-        return
-    }
+    val blobObject = GeetBlob(name = file.name, content = file.readText())
+    saveObjectInGeet(blobObject)
+    val indexFileData = IndexFileData(
+        stagingArea = mutableListOf(blobObject),
+        lastCommitObjects = mutableListOf(),
+        modifiedObjects = mutableListOf(),
+        addedObjects = mutableListOf(blobObject),
+        removedObjects = mutableListOf(),
+    )
+    indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+    println("새로운 인덱스 파일을 생성했습니다.")
+    return
 }
 
 fun addObjectToIndex(file: File) {}
