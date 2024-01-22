@@ -2,8 +2,20 @@ package geet.util.commandutil
 
 import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exception.NotFoundException
+import geet.objects.GeetBlob
+import geet.objects.GeetObject
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import java.io.File
 
+@Serializable
+data class IndexFileData(
+    val stagingArea: List<GeetObject>,
+    val lastCommitObjects: List<GeetObject>,
+    val modifiedObjects: List<GeetObject>,
+    val addedObjects: List<GeetObject>,
+    val removedObjects: List<GeetObject>,
+)
 
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     val file = File(updateIndexOptions.path)
@@ -13,13 +25,29 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 
     val indexFile = File(".geet/index")
     if (!indexFile.exists()) {
-        indexFile.createNewFile()
+        createNewIndexFile(indexFile, file)
     }
 
     when (updateIndexOptions.option) {
         "--add" -> addObjectToIndex(file)
         "--remove" -> removeObjectFromIndex(file)
         "--refresh" -> refreshIndex()
+    }
+}
+
+fun createNewIndexFile(indexFile: File, file: File) {
+    if (file.isFile) {
+        val blobObject = GeetBlob(name = file.name, content = file.readText())
+        createBlobObject(write = true, blobObject)
+        val indexFileData = IndexFileData(
+            stagingArea = listOf(blobObject),
+            lastCommitObjects = listOf(),
+            modifiedObjects = listOf(),
+            addedObjects = listOf(blobObject),
+            removedObjects = listOf(),
+        )
+        indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+        return
     }
 }
 

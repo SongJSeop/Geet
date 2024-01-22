@@ -1,7 +1,9 @@
 package geet.objects
 
 import geet.util.messageDigest
+import kotlinx.serialization.Serializable
 
+@Serializable
 open class GeetObject(
     val type: String,
     val name: String,

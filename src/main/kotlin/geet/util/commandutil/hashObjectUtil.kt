@@ -13,12 +13,14 @@ fun createHashObject(options: GeetHashObjectOptions) {
     }
 
     when (options.type) {
-        "blob" -> createBlobObject(options.write, file)
+        "blob" -> {
+            val blobObject = GeetBlob(name = file.name, content = file.readText())
+            createBlobObject(options.write, blobObject)
+        }
     }
 }
 
-fun createBlobObject(write: Boolean, file: File) {
-    val blobObject = GeetBlob(name = file.name, content = file.readText())
+fun createBlobObject(write: Boolean, blobObject: GeetBlob) {
     println(blobObject.hashString)
 
     if (write) {
