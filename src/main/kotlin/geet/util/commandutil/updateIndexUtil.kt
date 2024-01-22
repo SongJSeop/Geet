@@ -30,11 +30,12 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     val indexFile = File(".geet/index")
     if (!indexFile.exists()) {
         createNewIndexFile(indexFile, file)
+        return
     }
 
     when (updateIndexOptions.option) {
         "--add" -> {
-            addObjectToIndex(file)
+            addObjectToIndex(indexFile, file)
             println("개체를 Staging Area에 추가했습니다.")
         }
         "--remove" -> removeObjectFromIndex(file)
@@ -57,7 +58,29 @@ fun createNewIndexFile(indexFile: File, file: File) {
     return
 }
 
-fun addObjectToIndex(file: File) {}
+fun addObjectToIndex(indexFile: File, file: File) {
+    val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
+    val blobObject = GeetBlob(name = file.name, content = file.readText())
+    saveObjectInGeet(blobObject)
+    val sameNameObject = indexFileData.stagingArea.find { it.name == blobObject.name }
+
+    if (sameNameObject != null) {
+        if (sameNameObject.hashString == blobObject.hashString) {
+            println("같은 내용의 개체가 이미 Staging Area에 존재합니다.")
+            return
+        }
+
+        indexFileData.stagingArea.remove(sameNameObject)
+        indexFileData.modifiedObjects.add(sameNameObject)
+    }
+
+    if (sameNameObject == null) {
+        indexFileData.addedObjects.add(blobObject)
+    }
+
+    indexFileData.stagingArea.add(blobObject)
+    indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+}
 
 fun removeObjectFromIndex(file: File) {}
 
