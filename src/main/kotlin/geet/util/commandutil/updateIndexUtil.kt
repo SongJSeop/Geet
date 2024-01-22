@@ -12,9 +12,9 @@ import java.io.File
 data class IndexFileData(
     val stagingArea: MutableList<GeetObject>,
     val lastCommitObjects: MutableList<GeetObject>,
-    val modifiedObjects: MutableList<GeetObject>,
-    val addedObjects: MutableList<GeetObject>,
-    val removedObjects: MutableList<GeetObject>,
+    val modifiedObjects: MutableList<String>,
+    val addedObjects: MutableList<String>,
+    val removedObjects: MutableList<String>,
 )
 
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
@@ -50,7 +50,7 @@ fun createNewIndexFile(indexFile: File, file: File) {
         stagingArea = mutableListOf(blobObject),
         lastCommitObjects = mutableListOf(),
         modifiedObjects = mutableListOf(),
-        addedObjects = mutableListOf(blobObject),
+        addedObjects = mutableListOf(blobObject.name),
         removedObjects = mutableListOf(),
     )
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
@@ -61,23 +61,31 @@ fun createNewIndexFile(indexFile: File, file: File) {
 fun addObjectToIndex(indexFile: File, file: File) {
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
     val blobObject = GeetBlob(name = file.name, content = file.readText())
-    saveObjectInGeet(blobObject)
-    val sameNameObject = indexFileData.stagingArea.find { it.name == blobObject.name }
 
-    if (sameNameObject != null) {
-        if (sameNameObject.hashString == blobObject.hashString) {
-            println("같은 내용의 개체가 이미 Staging Area에 존재합니다.")
+    val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == blobObject.name }
+    val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == blobObject.name }
+
+    if (sameNameObjectInStagingArea != null) {
+        if (sameNameObjectInStagingArea.hashString == blobObject.hashString) {
             return
         }
 
-        indexFileData.stagingArea.remove(sameNameObject)
-        indexFileData.modifiedObjects.add(sameNameObject)
+        indexFileData.stagingArea.remove(sameNameObjectInStagingArea)
     }
 
-    if (sameNameObject == null) {
-        indexFileData.addedObjects.add(blobObject)
+    if (sameNameObjectInLastCommit != null) {
+        if (sameNameObjectInLastCommit.hashString == blobObject.hashString) {
+            return
+        }
+
+        indexFileData.modifiedObjects.add(blobObject.name)
     }
 
+    if (sameNameObjectInLastCommit == null) {
+        indexFileData.addedObjects.add(blobObject.name)
+    }
+
+    saveObjectInGeet(blobObject)
     indexFileData.stagingArea.add(blobObject)
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
 }
