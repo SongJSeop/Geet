@@ -3,6 +3,7 @@ package geet.util.commandutil
 import geet.commands.plumbing.GeetHashObjectOptions
 import geet.exception.NotFoundException
 import geet.objects.GeetBlob
+import geet.objects.GeetObject
 import geet.util.compressToZlib
 import java.io.File
 
@@ -15,22 +16,20 @@ fun createHashObject(options: GeetHashObjectOptions) {
     when (options.type) {
         "blob" -> {
             val blobObject = GeetBlob(name = file.name, content = file.readText())
-            createBlobObject(options.write, blobObject)
             println(blobObject.hashString)
             if (options.write) {
+                saveObjectInGeet(blobObject)
                 println("개체가 저장되었습니다.")
             }
         }
     }
 }
 
-fun createBlobObject(write: Boolean, blobObject: GeetBlob) {
-    if (write) {
-        val dirName = blobObject.hashString.substring(0, 2)
-        val fileName = blobObject.hashString.substring(2)
-        val compressedContents = compressToZlib(blobObject.content)
+fun saveObjectInGeet(geetObject: GeetObject) {
+    val dirName = geetObject.hashString.substring(0, 2)
+    val fileName = geetObject.hashString.substring(2)
+    val compressedContents = compressToZlib(geetObject.content)
 
-        File(".geet/objects/$dirName").mkdirs()
-        File(".geet/objects/$dirName/$fileName").writeText(compressedContents)
-    }
+    File(".geet/objects/$dirName").mkdirs()
+    File(".geet/objects/$dirName/$fileName").writeText(compressedContents)
 }

@@ -41,7 +41,7 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 fun createNewIndexFile(indexFile: File, file: File) {
     if (file.isFile) {
         val blobObject = GeetBlob(name = file.name, content = file.readText())
-        createBlobObject(write = true, blobObject)
+        saveObjectInGeet(blobObject)
         val indexFileData = IndexFileData(
             stagingArea = listOf(blobObject),
             lastCommitObjects = listOf(),
