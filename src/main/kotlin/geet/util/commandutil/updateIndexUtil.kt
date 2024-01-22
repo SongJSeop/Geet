@@ -29,7 +29,10 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     }
 
     when (updateIndexOptions.option) {
-        "--add" -> addObjectToIndex(file)
+        "--add" -> {
+            addObjectToIndex(file)
+            println("개체를 Staging Area에 추가했습니다.")
+        }
         "--remove" -> removeObjectFromIndex(file)
         "--refresh" -> refreshIndex()
     }
@@ -47,6 +50,7 @@ fun createNewIndexFile(indexFile: File, file: File) {
             removedObjects = listOf(),
         )
         indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+        println("새로운 인덱스 파일을 생성했습니다.")
         return
     }
 }

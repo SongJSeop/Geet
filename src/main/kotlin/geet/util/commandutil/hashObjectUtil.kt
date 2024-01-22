@@ -16,13 +16,15 @@ fun createHashObject(options: GeetHashObjectOptions) {
         "blob" -> {
             val blobObject = GeetBlob(name = file.name, content = file.readText())
             createBlobObject(options.write, blobObject)
+            println(blobObject.hashString)
+            if (options.write) {
+                println("개체가 저장되었습니다.")
+            }
         }
     }
 }
 
 fun createBlobObject(write: Boolean, blobObject: GeetBlob) {
-    println(blobObject.hashString)
-
     if (write) {
         val dirName = blobObject.hashString.substring(0, 2)
         val fileName = blobObject.hashString.substring(2)
@@ -30,6 +32,5 @@ fun createBlobObject(write: Boolean, blobObject: GeetBlob) {
 
         File(".geet/objects/$dirName").mkdirs()
         File(".geet/objects/$dirName/$fileName").writeText(compressedContents)
-        println("개체가 저장되었습니다.")
     }
 }
