@@ -28,12 +28,6 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     }
     val blobObject = GeetBlob(name = file.name, content = file.readText())
 
-    val indexFile = File(".geet/index")
-    if (!indexFile.exists()) {
-        createNewIndexFile(blobObject)
-        return
-    }
-
     when (updateIndexOptions.option) {
         "--add" -> {
             addObjectToIndex(blobObject)
@@ -65,6 +59,11 @@ fun createNewIndexFile(blobObject: GeetObject) {
 
 fun addObjectToIndex(blobObject: GeetObject) {
     val indexFile = File(".geet/index")
+    if (!indexFile.exists()) {
+        createNewIndexFile(blobObject)
+        return
+    }
+
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
 
     val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == blobObject.name }
@@ -97,6 +96,10 @@ fun addObjectToIndex(blobObject: GeetObject) {
 
 fun removeObjectFromIndex(blobObject: GeetObject) {
     val indexFile = File(".geet/index")
+    if (!indexFile.exists()) {
+        throw NotFoundException("인덱스 파일을 찾을 수 없습니다.\nupdate-index --add 명령어로 우선 개체를 Staging Area에 올려주세요. : ${indexFile.absolutePath}")
+    }
+
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
 
     if (indexFileData.stagingArea.find { it.name == blobObject.name } == null) {
