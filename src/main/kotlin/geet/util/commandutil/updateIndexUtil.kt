@@ -79,6 +79,9 @@ fun addObjectToIndex(blobObject: GeetObject) {
 
     if (sameNameObjectInLastCommit != null) {
         if (sameNameObjectInLastCommit.hashString == blobObject.hashString) {
+            indexFileData.modifiedObjects.removeIf { it == blobObject.name }
+            indexFileData.removedObjects.removeIf { it == blobObject.name }
+            indexFileData.addedObjects.removeIf { it == blobObject.name }
             return
         }
 
@@ -109,6 +112,7 @@ fun removeObjectFromIndex(blobObject: GeetObject) {
     indexFileData.stagingArea.removeIf { it.name == blobObject.name }
     indexFileData.modifiedObjects.removeIf { it == blobObject.name }
     indexFileData.addedObjects.removeIf { it == blobObject.name }
+    indexFileData.removedObjects.removeIf { it == blobObject.name }
 
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
 }
