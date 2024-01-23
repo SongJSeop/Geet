@@ -23,6 +23,7 @@ fun processGeet(commandLines: Array<String>): Unit {
     when (commandLines[0]) {
         "hash-object" -> geetHashObject(commandLines)
         "cat-file" -> geetCatFile(commandLines)
+        "update-index" -> geetUpdateIndex(commandLines)
         else -> throw BadRequestException("지원하지 않는 명령어입니다.: ${commandLines[0]}\nGeet 명령어 목록을 확인하려면 'help'를 입력하세요.")
     }
 }
@@ -37,6 +38,7 @@ fun guideGeet(): Unit {
     println("|  init  |  현재 디렉토리에 새로운 Geet 저장소를 초기화합니다.  |")
     println("|  hash-object  |  파일을 해시하여 Geet 저장소에 저장합니다.  |")
     println("|  cat-file  |  Geet 저장소에 저장된 파일을 출력합니다.  |")
+    println("|  update-index  |  Staging Area에 파일을 추가합니다.  |")
     println()
 
     println("----------------------------------------")
