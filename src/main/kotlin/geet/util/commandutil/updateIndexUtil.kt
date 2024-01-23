@@ -26,29 +26,31 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     if (file.isDirectory) {
         throw NotFoundException("update-index 명령어는 디렉토리를 지원하지 않습니다. : ${updateIndexOptions.path}")
     }
+    val blobObject = GeetBlob(name = file.name, content = file.readText())
 
     val indexFile = File(".geet/index")
     if (!indexFile.exists()) {
-        createNewIndexFile(indexFile, file)
+        createNewIndexFile(blobObject)
         return
     }
 
     when (updateIndexOptions.option) {
         "--add" -> {
-            addObjectToIndex(indexFile, file)
+            addObjectToIndex(blobObject)
             println("개체를 Staging Area에 추가했습니다.")
         }
         "--remove" -> {
-            removeObjectFromIndex(indexFile, file)
+            removeObjectFromIndex(blobObject)
             println("개체를 Staging Area에서 제거했습니다.")
         }
         "--refresh" -> refreshIndex()
     }
 }
 
-fun createNewIndexFile(indexFile: File, file: File) {
-    val blobObject = GeetBlob(name = file.name, content = file.readText())
+fun createNewIndexFile(blobObject: GeetObject) {
     saveObjectInGeet(blobObject)
+
+    val indexFile = File(".geet/index")
     val indexFileData = IndexFileData(
         stagingArea = mutableListOf(blobObject),
         lastCommitObjects = mutableListOf(),
@@ -61,9 +63,9 @@ fun createNewIndexFile(indexFile: File, file: File) {
     return
 }
 
-fun addObjectToIndex(indexFile: File, file: File) {
+fun addObjectToIndex(blobObject: GeetObject) {
+    val indexFile = File(".geet/index")
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
-    val blobObject = GeetBlob(name = file.name, content = file.readText())
 
     val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == blobObject.name }
     val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == blobObject.name }
@@ -93,9 +95,9 @@ fun addObjectToIndex(indexFile: File, file: File) {
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
 }
 
-fun removeObjectFromIndex(indexFile: File, file: File) {
+fun removeObjectFromIndex(blobObject: GeetObject) {
+    val indexFile = File(".geet/index")
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
-    val blobObject = GeetBlob(name = file.name, content = file.readText())
 
     if (indexFileData.stagingArea.find { it.name == blobObject.name } == null) {
         throw NotFoundException("Staging Area에 존재하지 않는 개체입니다. : ${blobObject.name}")
