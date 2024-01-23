@@ -110,4 +110,7 @@ fun removeObjectFromIndex(blobObject: GeetObject) {
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
 }
 
-fun refreshIndex() {}
+// TODO: refreshIndex 구현
+fun refreshIndex() {
+    println("개발 중인 기능입니다.")
+}
