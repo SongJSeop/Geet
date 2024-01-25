@@ -2,7 +2,7 @@ package geet
 
 import geet.commands.porcelain.*
 import geet.commands.plumbing.*
-import geet.exception.BadRequestException
+import geet.exception.BadRequest
 import java.io.File
 
 fun processGeet(commandLines: Array<String>): Unit {
@@ -17,7 +17,7 @@ fun processGeet(commandLines: Array<String>): Unit {
     }
 
     if (!File(".geet").exists()) {
-        throw BadRequestException("Geet 저장소가 초기화되지 않았습니다.\nGeet 저장소를 초기화하려면 'init'을 입력하세요.")
+        throw BadRequest("Geet 저장소가 초기화되지 않았습니다.\nGeet 저장소를 초기화하려면 'init'을 입력하세요.")
     }
 
     when (commandLines[0]) {
@@ -25,7 +25,7 @@ fun processGeet(commandLines: Array<String>): Unit {
         "cat-file" -> geetCatFile(commandLines)
         "update-index" -> geetUpdateIndex(commandLines)
         "write-tree" -> geetWriteTree(commandLines)
-        else -> throw BadRequestException("지원하지 않는 명령어입니다.: ${commandLines[0]}\nGeet 명령어 목록을 확인하려면 'help'를 입력하세요.")
+        else -> throw BadRequest("지원하지 않는 명령어입니다.: ${commandLines[0]}\nGeet 명령어 목록을 확인하려면 'help'를 입력하세요.")
     }
 }
 

@@ -1,7 +1,8 @@
 package geet.util.commandutil
 
 import geet.commands.plumbing.GeetUpdateIndexOptions
-import geet.exception.NotFoundException
+import geet.exception.NotFound
+import geet.exception.NotModifiedObject
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import kotlinx.serialization.Serializable
@@ -20,11 +21,11 @@ data class IndexFileData(
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     val file = File(updateIndexOptions.path)
     if (!file.exists()) {
-        throw NotFoundException("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
+        throw NotFound("파일을 찾을 수 없습니다. : ${updateIndexOptions.path}")
     }
 
     if (file.isDirectory) {
-        throw NotFoundException("update-index 명령어는 디렉토리를 지원하지 않습니다. : ${updateIndexOptions.path}")
+        throw NotFound("update-index 명령어는 디렉토리를 지원하지 않습니다. : ${updateIndexOptions.path}")
     }
     val blobObject = GeetBlob(name = file.name, content = file.readText())
 
@@ -71,7 +72,7 @@ fun addObjectToIndex(blobObject: GeetObject) {
 
     if (sameNameObjectInStagingArea != null) {
         if (sameNameObjectInStagingArea.hashString == blobObject.hashString) {
-            return
+            throw NotModifiedObject("Staging Area에 이미 동일한 개체가 존재하여 추가되지 않았습니다.")
         }
 
         indexFileData.stagingArea.remove(sameNameObjectInStagingArea)
@@ -82,7 +83,8 @@ fun addObjectToIndex(blobObject: GeetObject) {
             indexFileData.modifiedObjects.minus(blobObject.name)
             indexFileData.removedObjects.minus(blobObject.name)
             indexFileData.addedObjects.minus(blobObject.name)
-            return
+            indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+            throw NotModifiedObject("최신 커밋과 동일한 상태로 Staging Area에 추가되지 않았습니다.")
         }
 
         indexFileData.modifiedObjects.plus(blobObject.name)
@@ -100,13 +102,13 @@ fun addObjectToIndex(blobObject: GeetObject) {
 fun removeObjectFromIndex(blobObject: GeetObject) {
     val indexFile = File(".geet/index")
     if (!indexFile.exists()) {
-        throw NotFoundException("인덱스 파일을 찾을 수 없습니다.\nupdate-index --add 명령어로 우선 개체를 Staging Area에 올려주세요. : ${indexFile.absolutePath}")
+        throw NotFound("인덱스 파일을 찾을 수 없습니다.\nupdate-index --add 명령어로 우선 개체를 Staging Area에 올려주세요. : ${indexFile.absolutePath}")
     }
 
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
 
     if (indexFileData.stagingArea.find { it.name == blobObject.name } == null) {
-        throw NotFoundException("Staging Area에 존재하지 않는 개체입니다. : ${blobObject.name}")
+        throw NotFound("Staging Area에 존재하지 않는 개체입니다. : ${blobObject.name}")
     }
 
     indexFileData.stagingArea.removeIf { it.name == blobObject.name }
