@@ -1,7 +1,7 @@
 package geet.util.commandutil
 
 import geet.commands.plumbing.GeetHashObjectOptions
-import geet.exception.NotFoundException
+import geet.exception.NotFound
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.util.compressToZlib
@@ -10,7 +10,7 @@ import java.io.File
 fun createHashObject(options: GeetHashObjectOptions) {
     val file = File(options.path)
     if (!file.exists()) {
-        throw NotFoundException("파일을 찾을 수 없습니다. : ${options.path}")
+        throw NotFound("파일을 찾을 수 없습니다. : ${options.path}")
     }
 
     when (options.type) {
