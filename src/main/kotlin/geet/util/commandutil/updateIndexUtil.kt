@@ -12,9 +12,9 @@ import java.io.File
 data class IndexFileData(
     val stagingArea: MutableList<GeetObject>,
     val lastCommitObjects: MutableList<GeetObject>,
-    val modifiedObjects: MutableList<String>,
-    val addedObjects: MutableList<String>,
-    val removedObjects: MutableList<String>,
+    val modifiedObjects: Set<String>,
+    val addedObjects: Set<String>,
+    val removedObjects: Set<String>,
 )
 
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
@@ -48,9 +48,9 @@ fun createNewIndexFile(blobObject: GeetObject) {
     val indexFileData = IndexFileData(
         stagingArea = mutableListOf(blobObject),
         lastCommitObjects = mutableListOf(),
-        modifiedObjects = mutableListOf(),
-        addedObjects = mutableListOf(blobObject.name),
-        removedObjects = mutableListOf(),
+        modifiedObjects = setOf(),
+        addedObjects = setOf(blobObject.name),
+        removedObjects = setOf(),
     )
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
     println("새로운 인덱스 파일을 생성했습니다.")
@@ -79,17 +79,17 @@ fun addObjectToIndex(blobObject: GeetObject) {
 
     if (sameNameObjectInLastCommit != null) {
         if (sameNameObjectInLastCommit.hashString == blobObject.hashString) {
-            indexFileData.modifiedObjects.removeIf { it == blobObject.name }
-            indexFileData.removedObjects.removeIf { it == blobObject.name }
-            indexFileData.addedObjects.removeIf { it == blobObject.name }
+            indexFileData.modifiedObjects.minus(blobObject.name)
+            indexFileData.removedObjects.minus(blobObject.name)
+            indexFileData.addedObjects.minus(blobObject.name)
             return
         }
 
-        indexFileData.modifiedObjects.add(blobObject.name)
+        indexFileData.modifiedObjects.plus(blobObject.name)
     }
 
     if (sameNameObjectInLastCommit == null) {
-        indexFileData.addedObjects.add(blobObject.name)
+        indexFileData.addedObjects.plus(blobObject.name)
     }
 
     saveObjectInGeet(blobObject)
@@ -110,9 +110,9 @@ fun removeObjectFromIndex(blobObject: GeetObject) {
     }
 
     indexFileData.stagingArea.removeIf { it.name == blobObject.name }
-    indexFileData.modifiedObjects.removeIf { it == blobObject.name }
-    indexFileData.addedObjects.removeIf { it == blobObject.name }
-    indexFileData.removedObjects.removeIf { it == blobObject.name }
+    indexFileData.modifiedObjects.minus(blobObject.name)
+    indexFileData.addedObjects.minus(blobObject.name)
+    indexFileData.removedObjects.minus(blobObject.name)
 
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
 }
