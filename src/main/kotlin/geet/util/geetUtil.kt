@@ -2,6 +2,7 @@ package geet.util
 
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.Base64
 import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
@@ -42,4 +43,19 @@ fun decompressFromZlib(zlibContents: String): String {
     }
 
     return outputStream.toString()
+}
+
+fun isCommitObject(sha1: String): Boolean {
+    val dirName = sha1.substring(0, 2)
+    val fileName = sha1.substring(2)
+    val file = File(".geet/objects/$dirName/$fileName")
+    if (!file.exists()) {
+        return false
+    }
+
+    val decompressedContents = decompressFromZlib(file.readText())
+    val header = "commit ${decompressedContents.length}\u0000"
+    val store = header + decompressedContents
+    val hash = messageDigest.digest(store.toByteArray()).joinToString { String.format("%02x", it) }
+    return hash == sha1
 }

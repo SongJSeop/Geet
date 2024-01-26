@@ -1,6 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exception.BadRequest
+import geet.util.isCommitObject
 
 data class GeetCommitTreeOptions(
     var tree: String = "",
@@ -54,9 +55,8 @@ fun getCommitTreeOptions(commandLines: Array<String>): GeetCommitTreeOptions {
         throw BadRequest("커밋 메시지가 지정되지 않았습니다.")
     }
 
-    // TODO: 부모 커밋이 존재하지 않는 경우 예외 처리
-//    if (options.parent != "" && !isCommitObject(options.parent)) {
-//        throw BadRequest("부모 커밋이 존재하지 않습니다. : ${options.parent}")
-//    }
+    if (options.parent != "" && !isCommitObject(options.parent)) {
+        throw BadRequest("부모 커밋이 존재하지 않습니다. : ${options.parent}")
+    }
     return options
 }
