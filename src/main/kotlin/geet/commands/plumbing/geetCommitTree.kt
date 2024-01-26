@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exception.BadRequest
-import geet.util.isCommitObject
+import geet.util.findObject
 
 data class GeetCommitTreeOptions(
     var tree: String = "",
@@ -47,15 +47,19 @@ fun getCommitTreeOptions(commandLines: Array<String>): GeetCommitTreeOptions {
         }
     }
 
-    if (options.tree == "") {
-        throw BadRequest("Tree 객체 SHA-1 값이 지정되지 않았습니다.")
-    }
-
     if (options.message == "") {
         throw BadRequest("커밋 메시지가 지정되지 않았습니다.")
     }
 
-    if (options.parent != "" && !isCommitObject(options.parent)) {
+    if (options.tree == "") {
+        throw BadRequest("Tree 객체 SHA-1 값이 지정되지 않았습니다.")
+    }
+
+    if (!findObject(type = "tree", sha1 = options.tree)) {
+        throw BadRequest("Tree 객체가 존재하지 않습니다. : ${options.tree}")
+    }
+
+    if (options.parent != "" && !findObject(type = "commit", sha1 = options.parent)) {
         throw BadRequest("부모 커밋이 존재하지 않습니다. : ${options.parent}")
     }
     return options
