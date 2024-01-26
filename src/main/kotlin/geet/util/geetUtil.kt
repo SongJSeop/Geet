@@ -56,6 +56,6 @@ fun findObject(type: String, sha1: String): Boolean {
     val decompressedContents = decompressFromZlib(file.readText())
     val header = "${type} ${decompressedContents.length}\u0000"
     val store = header + decompressedContents
-    val hash = messageDigest.digest(store.toByteArray()).joinToString { String.format("%02x", it) }
+    val hash = messageDigest.digest(store.toByteArray()).joinToString("") { String.format("%02x", it) }
     return hash == sha1
 }

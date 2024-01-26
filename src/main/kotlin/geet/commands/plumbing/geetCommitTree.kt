@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exception.BadRequest
-import geet.util.findObject
+import geet.util.commandutil.commitTree
 
 data class GeetCommitTreeOptions(
     var tree: String = "",
@@ -11,7 +11,7 @@ data class GeetCommitTreeOptions(
 
 fun geetCommitTree(commandLines: Array<String>): Unit {
     val options = getCommitTreeOptions(commandLines)
-    println(options)
+    commitTree(options)
 }
 
 fun getCommitTreeOptions(commandLines: Array<String>): GeetCommitTreeOptions {
@@ -55,12 +55,5 @@ fun getCommitTreeOptions(commandLines: Array<String>): GeetCommitTreeOptions {
         throw BadRequest("Tree 객체 SHA-1 값이 지정되지 않았습니다.")
     }
 
-    if (!findObject(type = "tree", sha1 = options.tree)) {
-        throw BadRequest("Tree 객체가 존재하지 않습니다. : ${options.tree}")
-    }
-
-    if (options.parent != "" && !findObject(type = "commit", sha1 = options.parent)) {
-        throw BadRequest("부모 커밋이 존재하지 않습니다. : ${options.parent}")
-    }
     return options
 }

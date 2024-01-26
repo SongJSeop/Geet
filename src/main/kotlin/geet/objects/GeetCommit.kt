@@ -13,6 +13,6 @@ class GeetCommit(
                 content += "parent $parent\n"
             }
 
-            content += "\n$message"
+            content += "\n$message\n"
         }
 }
