@@ -58,20 +58,20 @@ fun createNewIndexFile(blobObject: GeetObject) {
     return
 }
 
-fun addObjectToIndex(blobObject: GeetObject) {
+fun addObjectToIndex(geetObject: GeetObject) {
     val indexFile = File(".geet/index")
     if (!indexFile.exists()) {
-        createNewIndexFile(blobObject)
+        createNewIndexFile(geetObject)
         return
     }
 
     val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
 
-    val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == blobObject.name }
-    val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == blobObject.name }
+    val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == geetObject.name }
+    val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == geetObject.name }
 
     if (sameNameObjectInStagingArea != null) {
-        if (sameNameObjectInStagingArea.hashString == blobObject.hashString) {
+        if (sameNameObjectInStagingArea.hashString == geetObject.hashString) {
             throw NotModifiedObject("Staging Area에 이미 동일한 개체가 존재하여 추가되지 않았습니다.")
         }
 
@@ -79,23 +79,23 @@ fun addObjectToIndex(blobObject: GeetObject) {
     }
 
     if (sameNameObjectInLastCommit != null) {
-        if (sameNameObjectInLastCommit.hashString == blobObject.hashString) {
-            indexFileData.modifiedObjects.minus(blobObject.name)
-            indexFileData.removedObjects.minus(blobObject.name)
-            indexFileData.addedObjects.minus(blobObject.name)
+        if (sameNameObjectInLastCommit.hashString == geetObject.hashString) {
+            indexFileData.modifiedObjects.minus(geetObject.name)
+            indexFileData.removedObjects.minus(geetObject.name)
+            indexFileData.addedObjects.minus(geetObject.name)
             indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
             throw NotModifiedObject("최신 커밋과 동일한 상태로 Staging Area에 추가되지 않았습니다.")
         }
 
-        indexFileData.modifiedObjects.plus(blobObject.name)
+        indexFileData.modifiedObjects.plus(geetObject.name)
     }
 
     if (sameNameObjectInLastCommit == null) {
-        indexFileData.addedObjects.plus(blobObject.name)
+        indexFileData.addedObjects.plus(geetObject.name)
     }
 
-    saveObjectInGeet(blobObject)
-    indexFileData.stagingArea.add(blobObject)
+    saveObjectInGeet(geetObject)
+    indexFileData.stagingArea.add(geetObject)
     indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
 }
 
