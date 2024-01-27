@@ -1,5 +1,9 @@
 package geet.util
 
+import geet.objects.GeetBlob
+import geet.objects.GeetObject
+import geet.objects.GeetTree
+import geet.util.commandutil.saveObjectInGeet
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -58,4 +62,23 @@ fun findObject(type: String, sha1: String): Boolean {
     val store = header + decompressedContents
     val hash = messageDigest.digest(store.toByteArray()).joinToString("") { String.format("%02x", it) }
     return hash == sha1
+}
+
+fun createGeetObject(file: File): GeetObject {
+    if (file.isFile) {
+        val blobObject = GeetBlob(name = file.name, content = file.readText())
+        saveObjectInGeet(blobObject)
+        return blobObject
+    }
+
+    val objects = mutableListOf<GeetObject>()
+
+    val files = file.listFiles()
+    files?.forEach {
+        objects.add(createGeetObject(it))
+    }
+
+    val treeObject = GeetTree(name = file.name, objects = objects)
+    saveObjectInGeet(treeObject)
+    return treeObject
 }

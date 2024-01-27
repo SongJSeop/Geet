@@ -2,7 +2,7 @@ package geet.objects
 
 class GeetTree(
     name: String = "bak",
-    val objects: List<GeetObject>,
+    val objects: MutableList<GeetObject>,
 ): GeetObject(type = "tree", name, content = "") {
 
     init {
