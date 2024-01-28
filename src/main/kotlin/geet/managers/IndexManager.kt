@@ -43,7 +43,7 @@ class IndexManager {
 
         if (sameFileInStagingArea != null) {
             if (sameFileInStagingArea.hashString == blobObject.hashString) {
-                throw NotModifiedObject("Staging Area에 이미 동일한 개체가 존재하여 추가되지 않았습니다.")
+                return
             }
 
             indexData.stagingArea.remove(sameFileInStagingArea)
@@ -55,7 +55,7 @@ class IndexManager {
             if (sameFileInLastCommit.hashString == blobObject.hashString) {
                 removeObjectFromStagingArea(blobObject)
                 writeIndexFile()
-                throw NotModifiedObject("최신 커밋과 동일한 상태로 Staging Area에 추가되지 않았습니다.")
+                return
             }
 
             indexData.modifiedObjects.add(blobObject.name)
