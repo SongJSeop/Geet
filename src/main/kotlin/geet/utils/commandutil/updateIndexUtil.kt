@@ -6,6 +6,7 @@ import geet.exceptions.NotModifiedObject
 import geet.managers.IndexFileData
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
+import geet.utils.indexFileManager
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -38,15 +39,8 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 fun createNewIndexFile(blobObject: GeetObject) {
     saveObjectInGeet(blobObject)
 
-    val indexFile = File(".geet/index")
-    val indexFileData = IndexFileData(
-        stagingArea = mutableListOf(blobObject),
-        lastCommitObjects = mutableListOf(),
-        modifiedObjects = setOf(),
-        addedObjects = setOf(blobObject.name),
-        removedObjects = setOf(),
-    )
-    indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+    indexFileManager.addObjectInStagingArea(blobObject)
+    indexFileManager.writeIndexFile()
     println("새로운 인덱스 파일을 생성했습니다.")
     return
 }

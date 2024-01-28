@@ -16,8 +16,8 @@ data class IndexFileData(
 
 class IndexFileManager {
 
-    val indexFile: File = File(".geet/index")
-    val indexFileData: IndexFileData by lazy {
+    private val indexFile: File = File(".geet/index")
+    private val indexFileData: IndexFileData by lazy {
         if (!indexFile.exists()) {
             indexFile.createNewFile()
         }
@@ -28,5 +28,24 @@ class IndexFileManager {
         } else {
             Json.decodeFromString(IndexFileData.serializer(), indexFileContents)
         }
+    }
+
+    fun getIndexFileData(): IndexFileData {
+        return indexFileData
+    }
+
+    fun addObjectInStagingArea(geetObject: GeetObject) {
+        indexFileData.stagingArea.add(geetObject)
+
+        val sameFileInLastCommit = indexFileData.lastCommitObjects.find { it.name == geetObject.name }
+        if (sameFileInLastCommit == null) {
+            indexFileData.addedObjects.plus(geetObject.name)
+        } else {
+            indexFileData.modifiedObjects.plus(geetObject.name)
+        }
+    }
+
+    fun writeIndexFile() {
+        indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
     }
 }
