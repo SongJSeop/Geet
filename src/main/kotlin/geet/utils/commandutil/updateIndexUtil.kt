@@ -3,12 +3,8 @@ package geet.utils.commandutil
 import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exceptions.NotFound
 import geet.exceptions.NotModifiedObject
-import geet.managers.IndexFileData
 import geet.objects.GeetBlob
-import geet.objects.GeetObject
-import geet.utils.indexFileManager
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import geet.utils.indexManager
 import java.io.File
 
 
@@ -29,36 +25,20 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
             println("개체를 Staging Area에 추가했습니다.")
         }
         "--remove" -> {
-            removeObjectFromIndex(blobObject)
+            indexManager.removeObjectFromStagingArea(blobObject)
+            indexManager.writeIndexFile()
             println("개체를 Staging Area에서 제거했습니다.")
         }
         "--refresh" -> refreshIndex()
     }
 }
-
-fun createNewIndexFile(blobObject: GeetObject) {
-    saveObjectInGeet(blobObject)
-
-    indexFileManager.addObjectInStagingArea(blobObject)
-    indexFileManager.writeIndexFile()
-    println("새로운 인덱스 파일을 생성했습니다.")
-    return
-}
-
-fun addObjectToIndex(geetObject: GeetObject) {
-    val indexFile = File(".geet/index")
-    if (!indexFile.exists()) {
-        createNewIndexFile(geetObject)
-        return
-    }
-
-    val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
-
-    val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == geetObject.name }
-    val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == geetObject.name }
+fun addObjectToIndex(geetBlob: GeetBlob) {
+    val indexFileData = indexManager.getIndexData()
+    val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == geetBlob.name }
+    val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == geetBlob.name }
 
     if (sameNameObjectInStagingArea != null) {
-        if (sameNameObjectInStagingArea.hashString == geetObject.hashString) {
+        if (sameNameObjectInStagingArea.hashString == geetBlob.hashString) {
             throw NotModifiedObject("Staging Area에 이미 동일한 개체가 존재하여 추가되지 않았습니다.")
         }
 
@@ -66,44 +46,24 @@ fun addObjectToIndex(geetObject: GeetObject) {
     }
 
     if (sameNameObjectInLastCommit != null) {
-        if (sameNameObjectInLastCommit.hashString == geetObject.hashString) {
-            indexFileData.modifiedObjects.minus(geetObject.name)
-            indexFileData.removedObjects.minus(geetObject.name)
-            indexFileData.addedObjects.minus(geetObject.name)
-            indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+        if (sameNameObjectInLastCommit.hashString == geetBlob.hashString) {
+            indexFileData.modifiedObjects.minus(geetBlob.name)
+            indexFileData.removedObjects.minus(geetBlob.name)
+            indexFileData.addedObjects.minus(geetBlob.name)
+            indexManager.writeIndexFile()
             throw NotModifiedObject("최신 커밋과 동일한 상태로 Staging Area에 추가되지 않았습니다.")
         }
 
-        indexFileData.modifiedObjects.plus(geetObject.name)
+        indexFileData.modifiedObjects.plus(geetBlob.name)
     }
 
     if (sameNameObjectInLastCommit == null) {
-        indexFileData.addedObjects.plus(geetObject.name)
+        indexFileData.addedObjects.plus(geetBlob.name)
     }
 
-    saveObjectInGeet(geetObject)
-    indexFileData.stagingArea.add(geetObject)
-    indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
-}
-
-fun removeObjectFromIndex(blobObject: GeetObject) {
-    val indexFile = File(".geet/index")
-    if (!indexFile.exists()) {
-        throw NotFound("인덱스 파일을 찾을 수 없습니다.\nupdate-index --add 명령어로 우선 개체를 Staging Area에 올려주세요. : ${indexFile.absolutePath}")
-    }
-
-    val indexFileData = Json.decodeFromString(IndexFileData.serializer(), indexFile.readText())
-
-    if (indexFileData.stagingArea.find { it.name == blobObject.name } == null) {
-        throw NotFound("Staging Area에 존재하지 않는 개체입니다. : ${blobObject.name}")
-    }
-
-    indexFileData.stagingArea.removeIf { it.name == blobObject.name }
-    indexFileData.modifiedObjects.minus(blobObject.name)
-    indexFileData.addedObjects.minus(blobObject.name)
-    indexFileData.removedObjects.minus(blobObject.name)
-
-    indexFile.writeText(Json.encodeToString(IndexFileData.serializer(), indexFileData))
+    saveObjectInGeet(geetBlob)
+    indexFileData.stagingArea.add(geetBlob)
+    indexManager.writeIndexFile()
 }
 
 // TODO: refreshIndex 구현
