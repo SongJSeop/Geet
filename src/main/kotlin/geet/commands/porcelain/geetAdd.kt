@@ -1,6 +1,7 @@
 package geet.commands.porcelain
 
 import geet.exception.BadRequest
+import geet.util.createGeetObjectWithFile
 import java.io.File
 
 fun geetAdd(commandLines: Array<String>): Unit {
@@ -14,6 +15,16 @@ fun geetAdd(commandLines: Array<String>): Unit {
 
     val file = File(commandLines[1])
     if (!file.exists()) {
-        throw BadRequest("파일을 찾을 수 없습니다. : ${commandLines[1]}")
+        throw BadRequest("존재하지 않는 파일입니다. : ${commandLines[1]}")
+    }
+
+    val geetObject = createGeetObjectWithFile(file)
+    when (geetObject.type) {
+        "blob" -> {
+            println("blob ${geetObject.hashString} ${geetObject.name}")
+        }
+        "tree" -> {
+            println("tree ${geetObject.hashString} ${geetObject.name}")
+        }
     }
 }
