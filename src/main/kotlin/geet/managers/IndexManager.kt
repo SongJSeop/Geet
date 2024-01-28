@@ -1,7 +1,9 @@
 package geet.managers
 
-import geet.exceptions.NotFound
+import geet.exceptions.NotModifiedObject
+import geet.objects.GeetBlob
 import geet.objects.GeetObject
+import geet.utils.commandutil.saveObjectInGeet
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -10,9 +12,9 @@ import java.io.File
 data class IndexData(
     val stagingArea: MutableList<GeetObject> = mutableListOf(),
     val lastCommitObjects: MutableList<GeetObject> = mutableListOf(),
-    val modifiedObjects: Set<String> = setOf(),
-    val addedObjects: Set<String> = setOf(),
-    val removedObjects: Set<String> = setOf(),
+    val modifiedObjects: MutableSet<String> = mutableSetOf(),
+    val addedObjects: MutableSet<String> = mutableSetOf(),
+    val removedObjects: MutableSet<String> = mutableSetOf(),
 )
 
 class IndexManager {
@@ -31,30 +33,43 @@ class IndexManager {
         }
     }
 
-    fun getIndexData(): IndexData {
+    fun getIndexFileData(): IndexData {
         return indexData
     }
 
-    fun addObjectInStagingArea(geetObject: GeetObject) {
-        indexData.stagingArea.add(geetObject)
+    fun addObjectInStagingArea(blobObject: GeetBlob) {
+        val sameFileInStagingArea = indexData.stagingArea.find { it.name == blobObject.name }
+        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.name == blobObject.name }
 
-        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.name == geetObject.name }
-        if (sameFileInLastCommit == null) {
-            indexData.addedObjects.plus(geetObject.name)
-        } else {
-            indexData.modifiedObjects.plus(geetObject.name)
+        if (sameFileInStagingArea != null) {
+            if (sameFileInStagingArea.hashString == blobObject.hashString) {
+                throw NotModifiedObject("Staging Area에 이미 동일한 개체가 존재하여 추가되지 않았습니다.")
+            }
+
+            indexData.stagingArea.remove(sameFileInStagingArea)
         }
+
+        if (sameFileInLastCommit == null) {
+            indexData.addedObjects.add(blobObject.name)
+        } else {
+            if (sameFileInLastCommit.hashString == blobObject.hashString) {
+                removeObjectFromStagingArea(blobObject)
+                writeIndexFile()
+                throw NotModifiedObject("최신 커밋과 동일한 상태로 Staging Area에 추가되지 않았습니다.")
+            }
+
+            indexData.modifiedObjects.add(blobObject.name)
+        }
+
+        saveObjectInGeet(blobObject)
+        indexData.stagingArea.add(blobObject)
     }
 
-    fun removeObjectFromStagingArea(geetObject: GeetObject) {
-        if (!indexData.stagingArea.contains(geetObject)) {
-            throw NotFound("Staging Area에 존재하지 않는 개체입니다. : ${geetObject.name}")
-        }
-
-        indexData.stagingArea.removeIf { it.name == geetObject.name }
-        indexData.modifiedObjects.minus(geetObject.name)
-        indexData.addedObjects.minus(geetObject.name)
-        indexData.removedObjects.minus(geetObject.name)
+    fun removeObjectFromStagingArea(blobObject: GeetBlob) {
+        indexData.stagingArea.removeIf { it.name == blobObject.name }
+        indexData.modifiedObjects.remove(blobObject.name)
+        indexData.addedObjects.remove(blobObject.name)
+        indexData.removedObjects.remove(blobObject.name)
     }
 
     fun writeIndexFile() {

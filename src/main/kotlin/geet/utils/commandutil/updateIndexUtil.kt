@@ -2,7 +2,6 @@ package geet.utils.commandutil
 
 import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exceptions.NotFound
-import geet.exceptions.NotModifiedObject
 import geet.objects.GeetBlob
 import geet.utils.indexManager
 import java.io.File
@@ -21,7 +20,8 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 
     when (updateIndexOptions.option) {
         "--add" -> {
-            addObjectToIndex(blobObject)
+            indexManager.addObjectInStagingArea(blobObject)
+            indexManager.writeIndexFile()
             println("개체를 Staging Area에 추가했습니다.")
         }
         "--remove" -> {
@@ -31,39 +31,6 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
         }
         "--refresh" -> refreshIndex()
     }
-}
-fun addObjectToIndex(geetBlob: GeetBlob) {
-    val indexFileData = indexManager.getIndexData()
-    val sameNameObjectInStagingArea = indexFileData.stagingArea.find { it.name == geetBlob.name }
-    val sameNameObjectInLastCommit = indexFileData.lastCommitObjects.find { it.name == geetBlob.name }
-
-    if (sameNameObjectInStagingArea != null) {
-        if (sameNameObjectInStagingArea.hashString == geetBlob.hashString) {
-            throw NotModifiedObject("Staging Area에 이미 동일한 개체가 존재하여 추가되지 않았습니다.")
-        }
-
-        indexFileData.stagingArea.remove(sameNameObjectInStagingArea)
-    }
-
-    if (sameNameObjectInLastCommit != null) {
-        if (sameNameObjectInLastCommit.hashString == geetBlob.hashString) {
-            indexFileData.modifiedObjects.minus(geetBlob.name)
-            indexFileData.removedObjects.minus(geetBlob.name)
-            indexFileData.addedObjects.minus(geetBlob.name)
-            indexManager.writeIndexFile()
-            throw NotModifiedObject("최신 커밋과 동일한 상태로 Staging Area에 추가되지 않았습니다.")
-        }
-
-        indexFileData.modifiedObjects.plus(geetBlob.name)
-    }
-
-    if (sameNameObjectInLastCommit == null) {
-        indexFileData.addedObjects.plus(geetBlob.name)
-    }
-
-    saveObjectInGeet(geetBlob)
-    indexFileData.stagingArea.add(geetBlob)
-    indexManager.writeIndexFile()
 }
 
 // TODO: refreshIndex 구현
