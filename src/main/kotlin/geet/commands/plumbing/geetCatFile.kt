@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
-import geet.exception.BadRequest
-import geet.util.commandutil.catGeetObject
+import geet.exceptions.BadRequest
+import geet.utils.commandutil.catGeetObject
 
 data class GeetCatFileOptions(
     var option: String = "",

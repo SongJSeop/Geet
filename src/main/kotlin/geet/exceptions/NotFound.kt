@@ -1,4 +1,4 @@
-package geet.exception
+package geet.exceptions
 
 import java.lang.Exception
 

@@ -1,6 +1,6 @@
 package geet.commands.porcelain
 
-import geet.exception.BadRequest
+import geet.exceptions.BadRequest
 import java.io.File
 
 fun geetInit(): Unit {

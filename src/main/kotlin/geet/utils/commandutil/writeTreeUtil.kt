@@ -1,5 +1,6 @@
-package geet.util.commandutil
+package geet.utils.commandutil
 
+import geet.managers.IndexFileData
 import geet.objects.GeetTree
 import kotlinx.serialization.json.Json
 import java.io.File

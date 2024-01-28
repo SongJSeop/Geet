@@ -2,7 +2,7 @@ package geet
 
 import geet.commands.porcelain.*
 import geet.commands.plumbing.*
-import geet.exception.BadRequest
+import geet.exceptions.BadRequest
 import java.io.File
 
 fun processGeet(commandLines: Array<String>): Unit {

@@ -1,22 +1,15 @@
-package geet.util.commandutil
+package geet.utils.commandutil
 
 import geet.commands.plumbing.GeetUpdateIndexOptions
-import geet.exception.NotFound
-import geet.exception.NotModifiedObject
+import geet.exceptions.NotFound
+import geet.exceptions.NotModifiedObject
+import geet.managers.IndexFileData
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 
-@Serializable
-data class IndexFileData(
-    val stagingArea: MutableList<GeetObject>,
-    val lastCommitObjects: MutableList<GeetObject>,
-    val modifiedObjects: Set<String>,
-    val addedObjects: Set<String>,
-    val removedObjects: Set<String>,
-)
 
 fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     val file = File(updateIndexOptions.path)

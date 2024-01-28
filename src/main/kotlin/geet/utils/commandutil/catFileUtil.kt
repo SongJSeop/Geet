@@ -1,8 +1,8 @@
-package geet.util.commandutil
+package geet.utils.commandutil
 
 import geet.commands.plumbing.GeetCatFileOptions
-import geet.exception.NotFound
-import geet.util.decompressFromZlib
+import geet.exceptions.NotFound
+import geet.utils.decompressFromZlib
 import java.io.File
 
 fun catGeetObject(catFileOptions: GeetCatFileOptions) {

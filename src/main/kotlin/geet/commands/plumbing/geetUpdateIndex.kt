@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
-import geet.exception.BadRequest
-import geet.util.commandutil.updateIndex
+import geet.exceptions.BadRequest
+import geet.utils.commandutil.updateIndex
 
 data class GeetUpdateIndexOptions(
     var option: String = "",

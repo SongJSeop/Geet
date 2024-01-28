@@ -1,9 +1,9 @@
-package geet.util
+package geet.utils
 
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
-import geet.util.commandutil.saveObjectInGeet
+import geet.utils.commandutil.saveObjectInGeet
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File

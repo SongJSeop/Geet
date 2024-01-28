@@ -1,6 +1,6 @@
 package geet.objects
 
-import geet.util.messageDigest
+import geet.utils.messageDigest
 import kotlinx.serialization.Serializable
 
 @Serializable
