@@ -5,6 +5,7 @@ import geet.exceptions.NotFound
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.utils.compressToZlib
+import geet.utils.getIgnoreFiles
 import java.io.File
 
 fun createHashObject(options: GeetHashObjectOptions) {
@@ -26,6 +27,10 @@ fun createHashObject(options: GeetHashObjectOptions) {
 }
 
 fun saveObjectInGeet(geetObject: GeetObject) {
+    if (geetObject.path in getIgnoreFiles()) {
+        return
+    }
+
     val dirName = geetObject.hashString.substring(0, 2)
     val fileName = geetObject.hashString.substring(2)
     val compressedContents = compressToZlib(geetObject.content)

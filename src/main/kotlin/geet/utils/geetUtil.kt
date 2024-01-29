@@ -75,10 +75,24 @@ fun createGeetObjectWithFile(file: File): GeetObject {
 
     val files = file.listFiles()
     files?.forEach {
+        if (it.path in getIgnoreFiles()) {
+            return@forEach
+        }
+
         objects.add(createGeetObjectWithFile(it))
     }
 
     val treeObject = GeetTree(name = file.path, objects = objects)
     saveObjectInGeet(treeObject)
     return treeObject
+}
+
+fun getIgnoreFiles(): List<String> {
+    val ignoreFile = File(".geetignore")
+    if (!ignoreFile.exists()) {
+        return listOf("./.geet")
+    }
+
+    val ignoreFiles = ignoreFile.readText().split("\n").map { "./${it}" }
+    return ignoreFiles + listOf("./.geet")
 }
