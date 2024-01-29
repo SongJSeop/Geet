@@ -4,7 +4,6 @@ import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
 import geet.utils.commandutil.saveObjectInGeet
-import geet.utils.indexManager
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -39,8 +38,8 @@ class IndexManager {
     }
 
     fun addBlobInStagingArea(blobObject: GeetBlob) {
-        val sameFileInStagingArea = indexData.stagingArea.find { it.name == blobObject.name }
-        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.name == blobObject.name }
+        val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
+        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
 
         if (sameFileInStagingArea != null) {
             if (sameFileInStagingArea.hashString == blobObject.hashString) {
@@ -51,7 +50,7 @@ class IndexManager {
         }
 
         if (sameFileInLastCommit == null) {
-            indexData.addedObjects.add(blobObject.name)
+            indexData.addedObjects.add(blobObject.path)
         } else {
             if (sameFileInLastCommit.hashString == blobObject.hashString) {
                 removeObjectFromStagingArea(blobObject)
@@ -59,7 +58,7 @@ class IndexManager {
                 return
             }
 
-            indexData.modifiedObjects.add(blobObject.name)
+            indexData.modifiedObjects.add(blobObject.path)
         }
 
         saveObjectInGeet(blobObject)
@@ -76,10 +75,10 @@ class IndexManager {
     }
 
     fun removeObjectFromStagingArea(blobObject: GeetBlob) {
-        indexData.stagingArea.removeIf { it.name == blobObject.name }
-        indexData.modifiedObjects.remove(blobObject.name)
-        indexData.addedObjects.remove(blobObject.name)
-        indexData.removedObjects.remove(blobObject.name)
+        indexData.stagingArea.removeIf { it.path == blobObject.path }
+        indexData.modifiedObjects.remove(blobObject.path)
+        indexData.addedObjects.remove(blobObject.path)
+        indexData.removedObjects.remove(blobObject.path)
     }
 
     fun writeIndexFile() {

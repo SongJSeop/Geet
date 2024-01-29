@@ -7,7 +7,7 @@ class GeetTree(
 
     init {
         content = objects.joinToString("") {
-            "${it.type} ${it.hashString} ${it.name}\n"
+            "${it.type} ${it.hashString} ${it.path}\n"
         }
     }
 }

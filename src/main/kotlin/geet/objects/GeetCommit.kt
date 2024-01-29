@@ -7,7 +7,7 @@ class GeetCommit(
     val parent: String,
     val message: String,
     val datetime: LocalDateTime = LocalDateTime.now()
-): GeetObject(type = "commit", name = "", content = "") {
+): GeetObject(type = "commit", path = "", content = "") {
 
         init {
             content = "tree $tree\n"

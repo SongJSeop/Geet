@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 open class GeetObject(
     val type: String,
-    var name: String,
+    var path: String,
     var content: String,
 ) {
 
