@@ -1,5 +1,9 @@
 package geet.commands.porcelain
 
+import geet.utils.getNotIgnoreFiles
+import java.io.File
+
 fun geetStatus(commandLines: Array<String>): Unit {
-    println("geetStatus")
+    val notIgnoreFiles = getNotIgnoreFiles(startDir = File("."))
+    println(notIgnoreFiles)
 }

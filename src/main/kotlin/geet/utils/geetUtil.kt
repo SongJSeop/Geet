@@ -1,5 +1,6 @@
 package geet.utils
 
+import geet.exceptions.BadRequest
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
@@ -95,4 +96,26 @@ fun getIgnoreFiles(): List<String> {
 
     val ignoreFiles = ignoreFile.readText().split("\n").map { "./${it}" }
     return ignoreFiles + listOf("./.geet")
+}
+
+fun getNotIgnoreFiles(startDir: File): List<File> {
+    if (!startDir.isDirectory) {
+        throw BadRequest("디렉토리가 아닙니다.")
+    }
+
+    val files = mutableListOf<File>()
+    startDir.listFiles()?.forEach {
+        if (it.path in getIgnoreFiles()) {
+            return@forEach
+        }
+
+        if (it.isFile) {
+            files.add(it)
+        } else if (it.isDirectory) {
+            getNotIgnoreFiles(it).forEach { file ->
+                files.add(file)
+            }
+        }
+    }
+    return files
 }
