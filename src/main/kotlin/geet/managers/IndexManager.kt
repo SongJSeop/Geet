@@ -2,7 +2,9 @@ package geet.managers
 
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
+import geet.objects.GeetTree
 import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.indexManager
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -62,6 +64,15 @@ class IndexManager {
 
         saveObjectInGeet(blobObject)
         indexData.stagingArea.add(blobObject)
+    }
+
+    fun addTreeInStagingArea(treeObject: GeetTree) {
+        treeObject.objects.forEach {
+            when (it) {
+                is GeetBlob -> addBlobInStagingArea(it)
+                is GeetTree -> addTreeInStagingArea(it)
+            }
+        }
     }
 
     fun removeObjectFromStagingArea(blobObject: GeetBlob) {

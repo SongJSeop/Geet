@@ -16,7 +16,7 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     if (file.isDirectory) {
         throw NotFound("update-index 명령어는 디렉토리를 지원하지 않습니다. : ${updateIndexOptions.path}")
     }
-    val blobObject = GeetBlob(name = file.name, content = file.readText())
+    val blobObject = GeetBlob(name = file.path, content = file.readText())
 
     when (updateIndexOptions.option) {
         "--add" -> {

@@ -22,11 +22,8 @@ fun geetAdd(commandLines: Array<String>): Unit {
     }
 
     when (val geetObject = createGeetObjectWithFile(file)) {
-        is GeetBlob -> {
-            indexManager.addBlobInStagingArea(geetObject)
-        }
-        is GeetTree -> {
-            println("tree ${geetObject.hashString} ${geetObject.name}")
-        }
+        is GeetBlob -> indexManager.addBlobInStagingArea(geetObject)
+        is GeetTree -> indexManager.addTreeInStagingArea(geetObject)
     }
+    indexManager.writeIndexFile()
 }
