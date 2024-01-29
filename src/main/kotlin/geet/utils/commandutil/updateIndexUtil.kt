@@ -20,7 +20,7 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
 
     when (updateIndexOptions.option) {
         "--add" -> {
-            indexManager.addObjectInStagingArea(blobObject)
+            indexManager.addBlobInStagingArea(blobObject)
             indexManager.writeIndexFile()
             println("개체를 Staging Area에 추가했습니다.")
         }

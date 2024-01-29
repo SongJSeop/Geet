@@ -1,6 +1,5 @@
 package geet.managers
 
-import geet.exceptions.NotModifiedObject
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.utils.commandutil.saveObjectInGeet
@@ -37,7 +36,7 @@ class IndexManager {
         return indexData
     }
 
-    fun addObjectInStagingArea(blobObject: GeetBlob) {
+    fun addBlobInStagingArea(blobObject: GeetBlob) {
         val sameFileInStagingArea = indexData.stagingArea.find { it.name == blobObject.name }
         val sameFileInLastCommit = indexData.lastCommitObjects.find { it.name == blobObject.name }
 
