@@ -2,6 +2,8 @@ package geet.utils.commandutil
 
 import geet.objects.GeetBlob
 import geet.utils.GeetObjectLoacation
+import geet.utils.GeetObjectLoacation.*
+import geet.utils.getRelativePath
 import geet.utils.indexManager
 import java.io.File
 
@@ -20,32 +22,33 @@ data class GeetStatusResult(
 fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
     val geetStatusResult = GeetStatusResult()
     notIgnoreFiles.forEach { file ->
-        val blobObject = GeetBlob(path = file.path, content = file.readText())
+        val relativePath = getRelativePath(file.path)
+        val blobObject = GeetBlob(path = relativePath, content = file.readText())
 
-        if (!indexManager.isIn(where = GeetObjectLoacation.LAST_COMMIT, blobObject)) {
-            if (indexManager.isIn(where = GeetObjectLoacation.STAGING_AREA, blobObject)) {
-                geetStatusResult.newFiles.stagedFiles.add(file.path)
+        if (!indexManager.isIn(where = LAST_COMMIT, blobObject)) {
+            if (indexManager.isIn(where = STAGING_AREA, blobObject)) {
+                geetStatusResult.newFiles.stagedFiles.add(relativePath)
 
-                if (!indexManager.isSameWith(where = GeetObjectLoacation.STAGING_AREA, blobObject)) {
-                    geetStatusResult.newFiles.unstagedFiles.add(file.path)
+                if (!indexManager.isSameWith(where = STAGING_AREA, blobObject)) {
+                    geetStatusResult.newFiles.unstagedFiles.add(relativePath)
                 }
             } else {
-                geetStatusResult.untrackedFiles.add(file.path)
+                geetStatusResult.untrackedFiles.add(relativePath)
             }
         } else {
-            if (indexManager.isIn(where = GeetObjectLoacation.STAGING_AREA, blobObject)) {
-                if (!indexManager.isSameWith(where = GeetObjectLoacation.LAST_COMMIT, blobObject)) {
-                    geetStatusResult.modifiedFiles.stagedFiles.add(file.path)
+            if (indexManager.isIn(where = STAGING_AREA, blobObject)) {
+                if (!indexManager.isSameWith(where = LAST_COMMIT, blobObject)) {
+                    geetStatusResult.modifiedFiles.stagedFiles.add(relativePath)
 
-                    if (!indexManager.isSameWith(where = GeetObjectLoacation.STAGING_AREA, blobObject)) {
-                        geetStatusResult.modifiedFiles.unstagedFiles.add(file.path)
+                    if (!indexManager.isSameWith(where = STAGING_AREA, blobObject)) {
+                        geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
                     }
                 }
             } else {
-                geetStatusResult.modifiedFiles.unstagedFiles.add(file.path)
+                geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
             }
         }
     }
 
-    return GeetStatusResult()
+    return geetStatusResult
 }

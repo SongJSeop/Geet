@@ -3,6 +3,7 @@ package geet.utils.commandutil
 import geet.commands.plumbing.GeetUpdateIndexOptions
 import geet.exceptions.NotFound
 import geet.objects.GeetBlob
+import geet.utils.getRelativePath
 import geet.utils.indexManager
 import java.io.File
 
@@ -16,7 +17,7 @@ fun updateIndex(updateIndexOptions: GeetUpdateIndexOptions) {
     if (file.isDirectory) {
         throw NotFound("update-index 명령어는 디렉토리를 지원하지 않습니다. : ${updateIndexOptions.path}")
     }
-    val blobObject = GeetBlob(path = file.path, content = file.readText())
+    val blobObject = GeetBlob(path = getRelativePath(file.path), content = file.readText())
 
     when (updateIndexOptions.option) {
         "--add" -> {

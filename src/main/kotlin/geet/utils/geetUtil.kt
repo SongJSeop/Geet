@@ -64,7 +64,7 @@ fun findObject(type: String, sha1: String): Boolean {
 
 fun createGeetObjectWithFile(file: File): GeetObject {
     if (file.isFile) {
-        val blobObject = GeetBlob(path = file.path, content = file.readText())
+        val blobObject = GeetBlob(path = getRelativePath(file.path), content = file.readText())
         saveObjectInGeet(blobObject)
         return blobObject
     }
@@ -80,7 +80,7 @@ fun createGeetObjectWithFile(file: File): GeetObject {
         objects.add(createGeetObjectWithFile(it))
     }
 
-    val treeObject = GeetTree(path = file.path, objects = objects)
+    val treeObject = GeetTree(path = getRelativePath(file.path), objects = objects)
     saveObjectInGeet(treeObject)
     return treeObject
 }
@@ -115,4 +115,19 @@ fun getNotIgnoreFiles(startDir: File): List<File> {
         }
     }
     return files
+}
+
+fun getRelativePath(path: String): String {
+    val rootPath = File(".").canonicalPath
+    val filePath = File(path).canonicalPath
+
+    val rootTokens = rootPath.split(File.separator)
+    val fileTokens = filePath.split(File.separator)
+
+    val commonPrefixLength = rootTokens.zip(fileTokens).takeWhile { it.first == it.second }.count()
+
+    val relativeTokens = List(rootTokens.size - commonPrefixLength) { ".." } +
+            fileTokens.drop(commonPrefixLength)
+
+    return relativeTokens.joinToString(File.separator)
 }

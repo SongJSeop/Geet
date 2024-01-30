@@ -7,6 +7,7 @@ import geet.objects.GeetObject
 import geet.utils.GEET_OBJECTS_DIR_PATH
 import geet.utils.compressToZlib
 import geet.utils.getIgnoreFiles
+import geet.utils.getRelativePath
 import java.io.File
 
 fun createHashObject(options: GeetHashObjectOptions) {
@@ -17,7 +18,7 @@ fun createHashObject(options: GeetHashObjectOptions) {
 
     when (options.type) {
         "blob" -> {
-            val blobObject = GeetBlob(path = file.path, content = file.readText())
+            val blobObject = GeetBlob(path = getRelativePath(file.path), content = file.readText())
             println(blobObject.hashString)
             if (options.write) {
                 saveObjectInGeet(blobObject)
