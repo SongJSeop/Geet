@@ -86,18 +86,18 @@ class IndexManager {
 
     fun isIn(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
         return when (where) {
-            STAGING_AREA_OBJECTS -> indexData.stagingArea.find { it.path == blobObject.path } != null
-            LAST_COMMIT_OBJECTS -> indexData.lastCommitObjects.find { it.path == blobObject.path } != null
+            STAGING_AREA -> indexData.stagingArea.find { it.path == blobObject.path } != null
+            LAST_COMMIT -> indexData.lastCommitObjects.find { it.path == blobObject.path } != null
         }
     }
 
     fun isSameWith(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
         return when (where) {
-            STAGING_AREA_OBJECTS -> {
+            STAGING_AREA -> {
                 val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
                 sameFileInStagingArea?.hashString == blobObject.hashString
             }
-            LAST_COMMIT_OBJECTS -> {
+            LAST_COMMIT -> {
                 val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
                 sameFileInLastCommit?.hashString == blobObject.hashString
             }
