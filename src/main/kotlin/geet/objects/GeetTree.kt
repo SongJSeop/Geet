@@ -1,9 +1,9 @@
 package geet.objects
 
 class GeetTree(
-    name: String = "bak",
+    path: String = "bak",
     val objects: MutableList<GeetObject>,
-): GeetObject(type = "tree", name, content = "") {
+): GeetObject(type = "tree", path = path, content = "") {
 
     init {
         content = objects.joinToString("") {

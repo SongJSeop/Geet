@@ -16,7 +16,7 @@ fun createHashObject(options: GeetHashObjectOptions) {
 
     when (options.type) {
         "blob" -> {
-            val blobObject = GeetBlob(name = file.path, content = file.readText())
+            val blobObject = GeetBlob(path = file.path, content = file.readText())
             println(blobObject.hashString)
             if (options.write) {
                 saveObjectInGeet(blobObject)

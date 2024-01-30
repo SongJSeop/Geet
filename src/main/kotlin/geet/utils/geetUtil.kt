@@ -67,7 +67,7 @@ fun findObject(type: String, sha1: String): Boolean {
 
 fun createGeetObjectWithFile(file: File): GeetObject {
     if (file.isFile) {
-        val blobObject = GeetBlob(name = file.path, content = file.readText())
+        val blobObject = GeetBlob(path = file.path, content = file.readText())
         saveObjectInGeet(blobObject)
         return blobObject
     }
@@ -83,7 +83,7 @@ fun createGeetObjectWithFile(file: File): GeetObject {
         objects.add(createGeetObjectWithFile(it))
     }
 
-    val treeObject = GeetTree(name = file.path, objects = objects)
+    val treeObject = GeetTree(path = file.path, objects = objects)
     saveObjectInGeet(treeObject)
     return treeObject
 }
