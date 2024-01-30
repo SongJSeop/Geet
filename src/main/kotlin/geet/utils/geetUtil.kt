@@ -15,11 +15,8 @@ import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
 fun isGeetObjectType(type: String): Boolean {
-    val typeLowerCase = type.lowercase()
-    return typeLowerCase == "blob" ||
-        typeLowerCase == "tree" ||
-        typeLowerCase == "commit" ||
-        typeLowerCase == "tag"
+    val typeLowerCase = type.uppercase()
+    return GeetObjectType.values().any { it.name == typeLowerCase }
 }
 
 fun compressToZlib(contents: String): String {
@@ -94,7 +91,7 @@ fun getIgnoreFiles(): List<String> {
         return listOf("./.geet")
     }
 
-    val ignoreFiles = ignoreFile.readText().split("\n").map { "./${it}" }
+    val ignoreFiles = ignoreFile.readText().split("\n").map { "./${it}".trim() }
     return ignoreFiles + listOf("./.geet")
 }
 

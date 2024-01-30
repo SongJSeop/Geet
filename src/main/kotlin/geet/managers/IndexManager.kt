@@ -1,5 +1,7 @@
 package geet.managers
 
+import geet.utils.GeetObjectLoacation
+import geet.utils.GeetObjectLoacation.*
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
@@ -81,25 +83,23 @@ class IndexManager {
         indexData.removedObjects.remove(blobObject.path)
     }
 
-    fun isIn(where: String, blobObject: GeetBlob): Boolean {
+    fun isIn(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
         return when (where) {
-            "stage" -> indexData.stagingArea.find { it.path == blobObject.path } != null
-            "lastCommit" -> indexData.lastCommitObjects.find { it.path == blobObject.path } != null
-            else -> false
+            STAGING_AREA_OBJECTS -> indexData.stagingArea.find { it.path == blobObject.path } != null
+            LAST_COMMIT_OBJECTS -> indexData.lastCommitObjects.find { it.path == blobObject.path } != null
         }
     }
 
-    fun isSameWith(where: String, blobObject: GeetBlob): Boolean {
+    fun isSameWith(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
         return when (where) {
-            "stage" -> {
+            STAGING_AREA_OBJECTS -> {
                 val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
                 sameFileInStagingArea?.hashString == blobObject.hashString
             }
-            "lastCommit" -> {
+            LAST_COMMIT_OBJECTS -> {
                 val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
                 sameFileInLastCommit?.hashString == blobObject.hashString
             }
-            else -> false
         }
     }
 
