@@ -81,6 +81,24 @@ class IndexManager {
         indexData.removedObjects.remove(blobObject.path)
     }
 
+    fun isInStagingArea(blobObject: GeetBlob): Boolean {
+        return indexData.stagingArea.find { it.path == blobObject.path } != null
+    }
+
+    fun isInLastCommit(blobObject: GeetBlob): Boolean {
+        return indexData.lastCommitObjects.find { it.path == blobObject.path } != null
+    }
+
+    fun isSameWithStagingArea(blobObject: GeetBlob): Boolean {
+        val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
+        return sameFileInStagingArea?.hashString == blobObject.hashString
+    }
+
+    fun isSameWithLastCommit(blobObject: GeetBlob): Boolean {
+        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
+        return sameFileInLastCommit?.hashString == blobObject.hashString
+    }
+
     fun writeIndexFile() {
         indexFile.writeText(Json.encodeToString(IndexData.serializer(), indexData))
     }
