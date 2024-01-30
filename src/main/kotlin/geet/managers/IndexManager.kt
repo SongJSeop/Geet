@@ -81,22 +81,26 @@ class IndexManager {
         indexData.removedObjects.remove(blobObject.path)
     }
 
-    fun isInStagingArea(blobObject: GeetBlob): Boolean {
-        return indexData.stagingArea.find { it.path == blobObject.path } != null
+    fun isIn(where: String, blobObject: GeetBlob): Boolean {
+        return when (where) {
+            "stage" -> indexData.stagingArea.find { it.path == blobObject.path } != null
+            "lastCommit" -> indexData.lastCommitObjects.find { it.path == blobObject.path } != null
+            else -> false
+        }
     }
 
-    fun isInLastCommit(blobObject: GeetBlob): Boolean {
-        return indexData.lastCommitObjects.find { it.path == blobObject.path } != null
-    }
-
-    fun isSameWithStagingArea(blobObject: GeetBlob): Boolean {
-        val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
-        return sameFileInStagingArea?.hashString == blobObject.hashString
-    }
-
-    fun isSameWithLastCommit(blobObject: GeetBlob): Boolean {
-        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
-        return sameFileInLastCommit?.hashString == blobObject.hashString
+    fun isSameWith(where: String, blobObject: GeetBlob): Boolean {
+        return when (where) {
+            "stage" -> {
+                val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
+                sameFileInStagingArea?.hashString == blobObject.hashString
+            }
+            "lastCommit" -> {
+                val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
+                sameFileInLastCommit?.hashString == blobObject.hashString
+            }
+            else -> false
+        }
     }
 
     fun writeIndexFile() {
