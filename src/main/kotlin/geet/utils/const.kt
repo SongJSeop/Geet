@@ -22,4 +22,4 @@ const val GEET_REFS_TAGS_DIR_PATH = "${GEET_REFS_DIR_PATH}/tags"
 const val GEET_OBJECTS_INFO_DIR_PATH = "${GEET_OBJECTS_DIR_PATH}/info"
 const val GEET_OBJECTS_PACK_DIR_PATH = "${GEET_OBJECTS_DIR_PATH}/pack"
 
-const val GEET_IGNORE_FILE_PATH = "./.gitignore"
+const val GEET_IGNORE_FILE_PATH = "./.geetignore"

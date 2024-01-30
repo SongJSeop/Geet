@@ -88,11 +88,11 @@ fun createGeetObjectWithFile(file: File): GeetObject {
 fun getIgnoreFiles(): List<String> {
     val ignoreFile = File(GEET_IGNORE_FILE_PATH)
     if (!ignoreFile.exists()) {
-        return listOf(GEET_DIR_PATH)
+        return listOf(getRelativePath(GEET_DIR_PATH))
     }
 
-    val ignoreFiles = ignoreFile.readText().split("\n").map { "./${it}".trim() }
-    return ignoreFiles + listOf(GEET_DIR_PATH)
+    val ignoreFiles = ignoreFile.readText().split("\n").map { getRelativePath(it).trim() }
+    return ignoreFiles + listOf(getRelativePath(GEET_DIR_PATH))
 }
 
 fun getNotIgnoreFiles(startDir: File): List<File> {
@@ -102,7 +102,7 @@ fun getNotIgnoreFiles(startDir: File): List<File> {
 
     val files = mutableListOf<File>()
     startDir.listFiles()?.forEach {
-        if (it.path in getIgnoreFiles()) {
+        if (getRelativePath(it.path) in getIgnoreFiles()) {
             return@forEach
         }
 
