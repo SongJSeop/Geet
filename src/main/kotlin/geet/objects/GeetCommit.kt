@@ -1,5 +1,7 @@
 package geet.objects
 
+import geet.utils.GeetObjectType
+import geet.utils.GeetObjectType.*
 import java.time.LocalDateTime
 
 class GeetCommit(
@@ -7,7 +9,7 @@ class GeetCommit(
     val parent: String,
     val message: String,
     val datetime: LocalDateTime = LocalDateTime.now()
-): GeetObject(type = "commit", path = "", content = "") {
+): GeetObject(type = COMMIT, path = "", content = "") {
 
         init {
             content = "tree $tree\n"

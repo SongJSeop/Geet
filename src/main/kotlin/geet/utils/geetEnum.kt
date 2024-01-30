@@ -5,9 +5,9 @@ enum class GeetObjectLoacation {
     LAST_COMMIT_OBJECTS,
 }
 
-enum class GeetObjectType {
-    BLOB,
-    TREE,
-    COMMIT,
-    TAG
+enum class GeetObjectType(val value: String) {
+    BLOB("blob"),
+    TREE("tree"),
+    COMMIT("commit"),
+    TAG("tag"),
 }

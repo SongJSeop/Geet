@@ -5,6 +5,7 @@ import geet.utils.GeetObjectLoacation.*
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
+import geet.utils.GEET_INDEX_FILE_PATH
 import geet.utils.commandutil.saveObjectInGeet
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -21,7 +22,7 @@ data class IndexData(
 
 class IndexManager {
 
-    private val indexFile: File = File(".geet/index")
+    private val indexFile: File = File(GEET_INDEX_FILE_PATH)
     private val indexData: IndexData by lazy {
         if (!indexFile.exists()) {
             indexFile.createNewFile()

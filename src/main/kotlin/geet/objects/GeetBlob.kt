@@ -1,6 +1,9 @@
 package geet.objects
 
+import geet.utils.GeetObjectType
+import geet.utils.GeetObjectType.*
+
 class GeetBlob(
     path: String,
     content: String,
-): GeetObject(type = "blob", path = path, content = content) { }
+): GeetObject(type = BLOB, path = path, content = content) { }

@@ -50,7 +50,7 @@ fun decompressFromZlib(zlibContents: String): String {
 fun findObject(type: String, sha1: String): Boolean {
     val dirName = sha1.substring(0, 2)
     val fileName = sha1.substring(2)
-    val file = File(".geet/objects/$dirName/$fileName")
+    val file = File("${GEET_OBJECTS_DIR_PATH}/$dirName/$fileName")
     if (!file.exists()) {
         return false
     }
@@ -86,13 +86,13 @@ fun createGeetObjectWithFile(file: File): GeetObject {
 }
 
 fun getIgnoreFiles(): List<String> {
-    val ignoreFile = File(".geetignore")
+    val ignoreFile = File(GEET_IGNORE_FILE_PATH)
     if (!ignoreFile.exists()) {
-        return listOf("./.geet")
+        return listOf(GEET_DIR_PATH)
     }
 
     val ignoreFiles = ignoreFile.readText().split("\n").map { "./${it}".trim() }
-    return ignoreFiles + listOf("./.geet")
+    return ignoreFiles + listOf(GEET_DIR_PATH)
 }
 
 fun getNotIgnoreFiles(startDir: File): List<File> {

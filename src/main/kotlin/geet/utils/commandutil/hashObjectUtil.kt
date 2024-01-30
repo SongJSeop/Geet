@@ -4,6 +4,7 @@ import geet.commands.plumbing.GeetHashObjectOptions
 import geet.exceptions.NotFound
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
+import geet.utils.GEET_OBJECTS_DIR_PATH
 import geet.utils.compressToZlib
 import geet.utils.getIgnoreFiles
 import java.io.File
@@ -35,6 +36,6 @@ fun saveObjectInGeet(geetObject: GeetObject) {
     val fileName = geetObject.hashString.substring(2)
     val compressedContents = compressToZlib(geetObject.content)
 
-    File(".geet/objects/$dirName").mkdirs()
-    File(".geet/objects/$dirName/$fileName").writeText(compressedContents)
+    File("${GEET_OBJECTS_DIR_PATH}/$dirName").mkdirs()
+    File("${GEET_OBJECTS_DIR_PATH}/$dirName/$fileName").writeText(compressedContents)
 }
