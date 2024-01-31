@@ -6,6 +6,7 @@ import geet.objects.GeetObject
 import geet.objects.GeetTree
 import geet.utils.*
 import geet.utils.ObjectStatus.*
+import geet.utils.commandutil.getRemovedFiles
 import geet.utils.commandutil.saveObjectInGeet
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -72,8 +73,14 @@ class IndexManager {
     }
 
     fun addTreeInStagingArea(treeObject: GeetTree) {
-        if (getRelativePath(treeObject.path) in getIgnoreFiles()) {
+        val relativePath = getRelativePath(treeObject.path)
+        if (relativePath in getIgnoreFiles()) {
             return
+        }
+
+        val file = File(relativePath)
+        if (file.exists() && file.isDirectory) {
+            addRemovedFilesInStagingArea(notIgnoreFiles = getNotIgnoreFiles(file))
         }
 
         treeObject.objects.forEach {
@@ -81,6 +88,20 @@ class IndexManager {
                 is GeetBlob -> addBlobInStagingArea(it)
                 is GeetTree -> addTreeInStagingArea(it)
             }
+        }
+    }
+
+    fun addRemovedFilesInStagingArea(notIgnoreFiles: List<File>) {
+        val removedFiles = getRemovedFiles(notIgnoreFiles)
+        removedFiles.forEach { file ->
+            val relativePath = getRelativePath(file.path)
+            val blobObject = GeetBlob(path = relativePath, content = file.readText())
+
+            if (isIn(where = STAGING_AREA, blobObject)) {
+                indexData.stagingArea.removeIf { it.blobObject.path == blobObject.path }
+            }
+
+            indexData.stagingArea.add(StageObjectData(blobObject, status = REMOVED))
         }
     }
 
