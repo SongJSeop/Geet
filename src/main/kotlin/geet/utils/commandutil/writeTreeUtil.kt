@@ -1,6 +1,7 @@
 package geet.utils.commandutil
 
 import geet.managers.IndexData
+import geet.objects.GeetObject
 import geet.objects.GeetTree
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -18,7 +19,9 @@ fun writeTree() {
         return
     }
 
-    val treeObject = GeetTree(objects = indexFileData.stagingArea)
+    val objects = mutableListOf<GeetObject>()
+    indexFileData.stagingArea.forEach { objects.add(it.blobObject) }
+    val treeObject = GeetTree(objects = objects)
     saveObjectInGeet(treeObject)
     println(treeObject.hashString)
 }

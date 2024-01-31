@@ -1,24 +1,26 @@
 package geet.managers
 
-import geet.utils.GeetObjectLoacation
 import geet.utils.GeetObjectLoacation.*
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
-import geet.utils.GEET_INDEX_FILE_PATH
+import geet.utils.*
+import geet.utils.ObjectStatus.*
 import geet.utils.commandutil.saveObjectInGeet
-import geet.utils.getRelativePath
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 
 @Serializable
+data class StageObjectData(
+    val blobObject: GeetObject,
+    val status: ObjectStatus,
+)
+
+@Serializable
 data class IndexData(
-    val stagingArea: MutableList<GeetObject> = mutableListOf(),
+    val stagingArea: MutableList<StageObjectData> = mutableListOf(),
     val lastCommitObjects: MutableList<GeetObject> = mutableListOf(),
-    val modifiedObjects: MutableSet<String> = mutableSetOf(),
-    val addedObjects: MutableSet<String> = mutableSetOf(),
-    val removedObjects: MutableSet<String> = mutableSetOf(),
 )
 
 class IndexManager {
@@ -42,34 +44,38 @@ class IndexManager {
     }
 
     fun addBlobInStagingArea(blobObject: GeetBlob) {
-        val sameFileInStagingArea = indexData.stagingArea.find { it.path == blobObject.path }
-        val sameFileInLastCommit = indexData.lastCommitObjects.find { it.path == blobObject.path }
+        if (getRelativePath(blobObject.path) in getIgnoreFiles()) {
+            return
+        }
 
-        if (sameFileInStagingArea != null) {
-            if (sameFileInStagingArea.hashString == blobObject.hashString) {
+        if (isIn(where = STAGING_AREA, blobObject)) {
+            if (isSameWith(where = STAGING_AREA, blobObject)) {
                 return
             }
 
-            indexData.stagingArea.remove(sameFileInStagingArea)
+            indexData.stagingArea.removeIf { it.blobObject.path == blobObject.path }
         }
 
-        if (sameFileInLastCommit == null) {
-            indexData.addedObjects.add(blobObject.path)
+        if (!isIn(where = LAST_COMMIT, blobObject)) {
+            indexData.stagingArea.add(StageObjectData(blobObject, status = NEW))
         } else {
-            if (sameFileInLastCommit.hashString == blobObject.hashString) {
+            if (isSameWith(where = LAST_COMMIT, blobObject)) {
                 removeObjectFromStagingArea(blobObject)
                 writeIndexFile()
                 return
             }
 
-            indexData.modifiedObjects.add(blobObject.path)
+            indexData.stagingArea.add(StageObjectData(blobObject, status = MODIFIED))
         }
 
         saveObjectInGeet(blobObject)
-        indexData.stagingArea.add(blobObject)
     }
 
     fun addTreeInStagingArea(treeObject: GeetTree) {
+        if (getRelativePath(treeObject.path) in getIgnoreFiles()) {
+            return
+        }
+
         treeObject.objects.forEach {
             when (it) {
                 is GeetBlob -> addBlobInStagingArea(it)
@@ -79,16 +85,13 @@ class IndexManager {
     }
 
     fun removeObjectFromStagingArea(blobObject: GeetBlob) {
-        indexData.stagingArea.removeIf { it.path == blobObject.path }
-        indexData.modifiedObjects.remove(blobObject.path)
-        indexData.addedObjects.remove(blobObject.path)
-        indexData.removedObjects.remove(blobObject.path)
+        indexData.stagingArea.removeIf { it.blobObject.path == blobObject.path }
     }
 
     fun isIn(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
         return when (where) {
             STAGING_AREA -> {
-                indexData.stagingArea.find { getRelativePath(it.path) == blobObject.path } != null
+                indexData.stagingArea.find { getRelativePath(it.blobObject.path) == blobObject.path } != null
             }
             LAST_COMMIT -> {
                 indexData.lastCommitObjects.find { getRelativePath(it.path) == blobObject.path } != null
@@ -99,8 +102,8 @@ class IndexManager {
     fun isSameWith(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
         return when (where) {
             STAGING_AREA -> {
-                val sameFileInStagingArea = indexData.stagingArea.find { getRelativePath(it.path) == blobObject.path }
-                sameFileInStagingArea?.hashString == blobObject.hashString
+                val sameFileInStagingArea = indexData.stagingArea.find { getRelativePath(it.blobObject.path) == blobObject.path }
+                sameFileInStagingArea?.blobObject?.hashString == blobObject.hashString
             }
             LAST_COMMIT -> {
                 val sameFileInLastCommit = indexData.lastCommitObjects.find { getRelativePath(it.path) == blobObject.path }

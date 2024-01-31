@@ -91,7 +91,7 @@ fun getIgnoreFiles(): List<String> {
         return listOf(getRelativePath(GEET_DIR_PATH))
     }
 
-    val ignoreFiles = ignoreFile.readText().split("\n").map { getRelativePath(it).trim() }
+    val ignoreFiles = ignoreFile.readText().trim().split("\n").map { getRelativePath(it).trim() }
     return ignoreFiles + listOf(getRelativePath(GEET_DIR_PATH))
 }
 
