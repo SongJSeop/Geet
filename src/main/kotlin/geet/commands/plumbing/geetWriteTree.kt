@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
-import geet.exception.BadRequest
-import geet.util.commandutil.writeTree
+import geet.exceptions.BadRequest
+import geet.utils.commandutil.writeTree
 
 fun geetWriteTree(commandLines: Array<String>): Unit {
     if (commandLines.size > 1) {

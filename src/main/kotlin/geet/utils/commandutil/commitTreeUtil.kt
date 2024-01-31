@@ -1,9 +1,9 @@
-package geet.util.commandutil
+package geet.utils.commandutil
 
 import geet.commands.plumbing.GeetCommitTreeOptions
-import geet.exception.BadRequest
+import geet.exceptions.BadRequest
 import geet.objects.GeetCommit
-import geet.util.findObject
+import geet.utils.findObject
 
 fun commitTree(commitTreeOptions: GeetCommitTreeOptions) {
     if (!findObject(type = "tree", sha1 = commitTreeOptions.tree)) {

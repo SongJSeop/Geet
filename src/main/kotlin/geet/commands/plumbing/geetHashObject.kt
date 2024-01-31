@@ -1,8 +1,8 @@
 package geet.commands.plumbing
 
-import geet.exception.BadRequest
-import geet.util.commandutil.createHashObject
-import geet.util.isGeetObjectType
+import geet.exceptions.BadRequest
+import geet.utils.commandutil.createHashObject
+import geet.utils.isGeetObjectType
 
 data class GeetHashObjectOptions(
     var type: String = "blob",

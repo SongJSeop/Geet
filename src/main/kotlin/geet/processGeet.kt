@@ -2,7 +2,7 @@ package geet
 
 import geet.commands.porcelain.*
 import geet.commands.plumbing.*
-import geet.exception.BadRequest
+import geet.exceptions.BadRequest
 import java.io.File
 
 fun processGeet(commandLines: Array<String>): Unit {
@@ -21,6 +21,8 @@ fun processGeet(commandLines: Array<String>): Unit {
     }
 
     when (commandLines[0]) {
+        "add" -> geetAdd(commandLines)
+        "status" -> geetStatus(commandLines)
         "hash-object" -> geetHashObject(commandLines)
         "cat-file" -> geetCatFile(commandLines)
         "update-index" -> geetUpdateIndex(commandLines)
@@ -37,7 +39,11 @@ fun guideGeet(): Unit {
 
     println("| 현재 사용 가능한 명령어 목록 |")
     println("|  help  |  사용 가능한 Geet 명령어 목록을 출력합니다.  |")
+    println("<<< porcelain 명령어 >>>")
     println("|  init  |  현재 디렉토리에 새로운 Geet 저장소를 초기화합니다.  |")
+    println("|  add  |  파일을 Staging Area에 추가합니다.  |")
+    println("|  status  |  현재 저장소의 상태를 출력합니다.  |")
+    println("<<< plumbing 명령어 >>>")
     println("|  hash-object  |  파일을 해시하여 Geet 저장소에 저장합니다.  |")
     println("|  cat-file  |  Geet 저장소에 저장된 파일을 출력합니다.  |")
     println("|  update-index  |  Staging Area에 파일을 추가합니다.  |")
