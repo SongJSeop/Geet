@@ -37,12 +37,10 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
             }
         } else {
             if (indexManager.isIn(where = STAGING_AREA, blobObject)) {
-                if (!indexManager.isSameWith(where = LAST_COMMIT, blobObject)) {
-                    geetStatusResult.modifiedFiles.stagedFiles.add(relativePath)
+                geetStatusResult.modifiedFiles.stagedFiles.add(relativePath)
 
-                    if (!indexManager.isSameWith(where = STAGING_AREA, blobObject)) {
-                        geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
-                    }
+                if (!indexManager.isSameWith(where = STAGING_AREA, blobObject)) {
+                    geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
                 }
             } else {
                 geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
