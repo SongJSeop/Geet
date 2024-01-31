@@ -129,5 +129,9 @@ fun getRelativePath(path: String): String {
     val relativeTokens = List(rootTokens.size - commonPrefixLength) { ".." } +
             fileTokens.drop(commonPrefixLength)
 
-    return relativeTokens.joinToString(File.separator)
+    when (val relativePath = relativeTokens.joinToString(File.separator)) {
+        "" -> return "."
+        "." -> return "."
+        else -> return relativePath
+    }
 }
