@@ -81,7 +81,7 @@ fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<File> {
 
 fun printGeetStatus(geetStatusResult: GeetStatusResult) {
     println("-- 스테이지에 존재하는 변경 사항들 --")
-    println("스테이지에 존재하는 변경 사항들은 커밋을 하려면 \"geet commit\" 명령어를 사용하세요.")
+    println("스테이지에 존재하는 변경 사항들은 커밋을 하려면 'geet commit -m \"메시지\"' 명령어를 사용하세요.")
     println("스테이지에 존재하는 변경 사항들은 스테이지에서 제거하려면 \"geet reset HEAD <file>\" 명령어를 사용하세요.\n")
     geetStatusResult.newFiles.stagedFiles.forEach { println("\t\u001B[32m새로 추가됨 : ${it}\u001B[0m") }
     geetStatusResult.modifiedFiles.stagedFiles.forEach { println("\t\u001B[32m수정됨: ${it}\u001B[0m") }
