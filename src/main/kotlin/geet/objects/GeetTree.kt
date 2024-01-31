@@ -1,13 +1,15 @@
 package geet.objects
 
+import geet.utils.GeetObjectType.*
+
 class GeetTree(
-    name: String = "bak",
+    path: String = "bak",
     val objects: MutableList<GeetObject>,
-): GeetObject(type = "tree", name, content = "") {
+): GeetObject(type = TREE, path = path, content = "") {
 
     init {
         content = objects.joinToString("") {
-            "${it.type} ${it.hashString} ${it.path}\n"
+            "${it.type.value} ${it.hashString} ${it.path}\n"
         }
     }
 }

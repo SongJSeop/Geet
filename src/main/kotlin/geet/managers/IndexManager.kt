@@ -1,9 +1,13 @@
 package geet.managers
 
+import geet.utils.GeetObjectLoacation
+import geet.utils.GeetObjectLoacation.*
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
+import geet.utils.GEET_INDEX_FILE_PATH
 import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.getRelativePath
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -19,7 +23,7 @@ data class IndexData(
 
 class IndexManager {
 
-    private val indexFile: File = File(".geet/index")
+    private val indexFile: File = File(GEET_INDEX_FILE_PATH)
     private val indexData: IndexData by lazy {
         if (!indexFile.exists()) {
             indexFile.createNewFile()
@@ -79,6 +83,30 @@ class IndexManager {
         indexData.modifiedObjects.remove(blobObject.path)
         indexData.addedObjects.remove(blobObject.path)
         indexData.removedObjects.remove(blobObject.path)
+    }
+
+    fun isIn(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
+        return when (where) {
+            STAGING_AREA -> {
+                indexData.stagingArea.find { getRelativePath(it.path) == blobObject.path } != null
+            }
+            LAST_COMMIT -> {
+                indexData.lastCommitObjects.find { getRelativePath(it.path) == blobObject.path } != null
+            }
+        }
+    }
+
+    fun isSameWith(where: GeetObjectLoacation, blobObject: GeetBlob): Boolean {
+        return when (where) {
+            STAGING_AREA -> {
+                val sameFileInStagingArea = indexData.stagingArea.find { getRelativePath(it.path) == blobObject.path }
+                sameFileInStagingArea?.hashString == blobObject.hashString
+            }
+            LAST_COMMIT -> {
+                val sameFileInLastCommit = indexData.lastCommitObjects.find { getRelativePath(it.path) == blobObject.path }
+                sameFileInLastCommit?.hashString == blobObject.hashString
+            }
+        }
     }
 
     fun writeIndexFile() {
