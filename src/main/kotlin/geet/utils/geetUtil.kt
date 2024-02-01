@@ -135,3 +135,14 @@ fun getRelativePath(path: String): String {
         else -> return relativePath
     }
 }
+
+fun getObjectContents(hashString: String): String {
+    val dirName = hashString.substring(0, 2)
+    val fileName = hashString.substring(2)
+    val file = File("${GEET_OBJECTS_DIR_PATH}/$dirName/$fileName")
+    if (!file.exists()) {
+        throw BadRequest("해당 오브젝트가 존재하지 않습니다.")
+    }
+
+    return decompressFromZlib(file.readText())
+}
