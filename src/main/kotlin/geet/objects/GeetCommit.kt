@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 class GeetCommit(
     val tree: String,
-    val parent: String,
+    val parent: String?,
     val message: String,
     val datetime: LocalDateTime = LocalDateTime.now()
 ): GeetObject(type = COMMIT, path = "", content = "") {
