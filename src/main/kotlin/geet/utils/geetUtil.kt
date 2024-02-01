@@ -146,3 +146,33 @@ fun getObjectContents(hashString: String): String {
 
     return decompressFromZlib(file.readText())
 }
+
+fun getObjectsFromTree(treeHash: String): List<GeetObject> {
+    val contents = getObjectContents(treeHash)
+    val splitContents = contents.split("\n")
+
+    val objects = mutableListOf<GeetObject>()
+    splitContents.forEach { line ->
+        if (line == "") {
+            return@forEach
+        }
+
+        val splitLine = line.split(" ")
+        val type = splitLine[0]
+        val objectHash = splitLine[1]
+        val path = splitLine[2]
+
+        when (type) {
+            "blob" -> {
+                val blobObject = GeetBlob(path = path, content = getObjectContents(objectHash))
+                objects.add(blobObject)
+            }
+            "tree" -> {
+                val treeObject = GeetTree(path = path, objects = getObjectsFromTree(objectHash) as MutableList)
+                objects.add(treeObject)
+            }
+        }
+    }
+
+    return objects
+}
