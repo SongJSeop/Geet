@@ -21,7 +21,7 @@ data class StageObjectData(
 @Serializable
 data class IndexData(
     val stagingArea: MutableList<StageObjectData> = mutableListOf(),
-    val lastCommitTreeHash: String? = null,
+    var lastCommitTreeHash: String? = null,
 )
 
 class IndexManager {

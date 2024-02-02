@@ -24,7 +24,7 @@ fun geetCommit(commandLines: Array<String>): Unit {
     )
     saveObjectInGeet(commitObject)
 
+     indexData.lastCommitTreeHash = treeObject.hashString
     indexData.stagingArea.clear()
-    // indexData.lastCommitObjects = indexData.stagingArea
     indexManager.writeIndexFile()
 }
