@@ -1,7 +1,7 @@
 package geet.commands.plumbing
 
 import geet.exceptions.BadRequest
-import geet.utils.commandutil.commitTree
+import geet.utils.commandutil.plumbingutil.commitTree
 
 data class GeetCommitTreeOptions(
     var tree: String = "",

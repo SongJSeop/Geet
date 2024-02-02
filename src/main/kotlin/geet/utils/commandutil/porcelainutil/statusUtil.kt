@@ -1,6 +1,5 @@
-package geet.utils.commandutil
+package geet.utils.commandutil.porcelainutil
 
-import geet.exceptions.BadRequest
 import geet.objects.GeetBlob
 import geet.utils.*
 import geet.utils.GeetObjectLoacation.*

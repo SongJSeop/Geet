@@ -6,8 +6,8 @@ import geet.objects.GeetObject
 import geet.objects.GeetTree
 import geet.utils.*
 import geet.utils.ObjectStatus.*
-import geet.utils.commandutil.getRemovedFiles
-import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.commandutil.porcelainutil.getRemovedFiles
+import geet.utils.commandutil.plumbingutil.saveObjectInGeet
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File

@@ -1,4 +1,4 @@
-package geet.utils.commandutil
+package geet.utils.commandutil.plumbingutil
 
 import geet.commands.plumbing.GeetHashObjectOptions
 import geet.exceptions.NotFound

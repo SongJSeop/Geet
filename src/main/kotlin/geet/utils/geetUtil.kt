@@ -4,7 +4,7 @@ import geet.exceptions.BadRequest
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
-import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.commandutil.plumbingutil.saveObjectInGeet
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File

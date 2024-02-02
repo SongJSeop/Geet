@@ -3,7 +3,7 @@ package geet.commands.porcelain
 import geet.exceptions.BadRequest
 import geet.objects.GeetCommit
 import geet.objects.GeetTree
-import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.commandutil.plumbingutil.saveObjectInGeet
 import geet.utils.indexManager
 
 fun geetCommit(commandLines: Array<String>): Unit {
