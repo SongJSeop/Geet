@@ -2,11 +2,8 @@ package geet.utils.commandutil
 
 import geet.exceptions.BadRequest
 import geet.objects.GeetBlob
-import geet.utils.GeetObjectLoacation
+import geet.utils.*
 import geet.utils.GeetObjectLoacation.*
-import geet.utils.getNotIgnoreFiles
-import geet.utils.getRelativePath
-import geet.utils.indexManager
 import java.io.File
 
 data class StagingData(
@@ -70,7 +67,8 @@ fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<File> {
 
     val notIgnoreFilesPath = notIgnoreFiles.map { getRelativePath(it.path) }
     val indexFileData = indexManager.getIndexFileData()
-    indexFileData.lastCommitObjects.forEach {
+    val lastCommitObjects = getObjectsFromTree(indexFileData.lastCommitTreeHash)
+    lastCommitObjects.forEach {
         if (getRelativePath(it.path) !in notIgnoreFilesPath) {
             removedFiles.add(File(it.path))
         }

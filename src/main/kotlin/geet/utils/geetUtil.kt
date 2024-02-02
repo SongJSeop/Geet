@@ -147,7 +147,11 @@ fun getObjectContents(hashString: String): String {
     return decompressFromZlib(file.readText())
 }
 
-fun getObjectsFromTree(treeHash: String): List<GeetObject> {
+fun getObjectsFromTree(treeHash: String?): List<GeetObject> {
+    if (treeHash == null) {
+        return listOf()
+    }
+
     val contents = getObjectContents(treeHash)
     val splitContents = contents.split("\n")
 
