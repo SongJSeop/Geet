@@ -152,8 +152,8 @@ fun getObjectsFromTree(treeHash: String?): List<GeetObject> {
         return listOf()
     }
 
-    val contents = getObjectContents(treeHash)
-    val splitContents = contents.split("\n")
+    val treeContents = getObjectContents(treeHash)
+    val splitContents = treeContents.split("\n")
 
     val objects = mutableListOf<GeetObject>()
     splitContents.forEach { line ->
@@ -176,6 +176,46 @@ fun getObjectsFromTree(treeHash: String?): List<GeetObject> {
                 val treeObject = GeetTree(path = path, objects = getObjectsFromTree(objectHash) as MutableList)
                 objects.add(treeObject)
             }
+        }
+    }
+
+    return objects
+}
+
+fun getObjectsFromCommit(commitHash: String): List<GeetObject> {
+    val objects = mutableListOf<GeetObject>()
+
+    val commitContents = getObjectContents(commitHash)
+    val splitContents = commitContents.trim().split(("\n"))
+    splitContents.forEach { line ->
+        if (line == "") {
+            return@forEach
+        }
+
+        val splitLine = line.split(" ")
+        if (splitLine.size < 2) {
+            return@forEach
+        }
+
+        val prop = splitLine[0]
+        val value = splitLine[1]
+        when (prop) {
+            "tree" -> {
+                getObjectsFromTree(value).forEach {
+                    objects.add(it)
+                }
+            }
+            "parent" -> {
+                getObjectsFromCommit(value).forEach {
+                    val samePathObject = objects.find { geetObject ->
+                        geetObject.path == it.path
+                    }
+                    if (samePathObject != null) {
+                        objects.add(it)
+                    }
+                }
+            }
+            else -> return@forEach
         }
     }
 

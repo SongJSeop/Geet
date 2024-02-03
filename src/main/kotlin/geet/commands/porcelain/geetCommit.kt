@@ -8,7 +8,7 @@ import geet.utils.commandutil.porcelainutil.editCurrentRefContent
 import geet.utils.indexManager
 
 fun geetCommit(commandLines: Array<String>): Unit {
-    if (commandLines.size != 3 && commandLines[1] != "-m") {
+    if (commandLines.size != 3 || commandLines[1] != "-m") {
         throw BadRequest("\'commit -m \"커밋 메시지\"\'와 같은 형식으로 입력해주세요.")
     }
 
