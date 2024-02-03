@@ -15,8 +15,7 @@ fun getCurrentRef(): String {
 }
 
 fun editCurrentRefContent(content: String) {
-    val currentRef = getCurrentRef()
-    val refFile = File("${GEET_DIR_PATH}/${currentRef}")
+    val refFile = File("${GEET_DIR_PATH}/${getCurrentRef()}")
     if (!refFile.exists()) {
         refFile.createNewFile()
     }

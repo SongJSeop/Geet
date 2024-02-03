@@ -21,7 +21,7 @@ data class StageObjectData(
 @Serializable
 data class IndexData(
     val stagingArea: MutableList<StageObjectData> = mutableListOf(),
-    var lastCommitTreeHash: String? = null,
+    var lastCommitHash: String? = null,
 )
 
 class IndexManager {
@@ -115,11 +115,11 @@ class IndexManager {
                 indexData.stagingArea.find { getRelativePath(it.blobObject.path) == blobObject.path } != null
             }
             LAST_COMMIT -> {
-                if (indexData.lastCommitTreeHash == null) {
+                if (indexData.lastCommitHash == null) {
                     return false
                 }
 
-                val lastCommitObjects = getObjectsFromTree(indexData.lastCommitTreeHash!!)
+                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash!!)
                 lastCommitObjects.find { getRelativePath(it.path) == blobObject.path } != null
             }
         }
@@ -132,11 +132,11 @@ class IndexManager {
                 sameFileInStagingArea?.blobObject?.hashString == blobObject.hashString
             }
             LAST_COMMIT -> {
-                if (indexData.lastCommitTreeHash == null) {
+                if (indexData.lastCommitHash == null) {
                     return false
                 }
 
-                val lastCommitObjects = getObjectsFromTree(indexData.lastCommitTreeHash!!)
+                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash!!)
                 val sameFileInLastCommit = lastCommitObjects.find { getRelativePath(it.path) == blobObject.path }
                 sameFileInLastCommit?.hashString == blobObject.hashString
             }

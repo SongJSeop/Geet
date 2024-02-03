@@ -20,12 +20,12 @@ fun geetCommit(commandLines: Array<String>): Unit {
 
     val commitObject = GeetCommit(
         tree = treeObject.hashString,
-        parent = null,
+        parent = indexData.lastCommitHash,
         message = commandLines[2],
     )
     saveObjectInGeet(commitObject)
 
-    indexData.lastCommitTreeHash = treeObject.hashString
+    indexData.lastCommitHash = commitObject.hashString
     indexData.stagingArea.clear()
     indexManager.writeIndexFile()
 

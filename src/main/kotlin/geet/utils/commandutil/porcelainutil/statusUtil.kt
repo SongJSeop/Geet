@@ -68,7 +68,7 @@ fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<File> {
 
     val notIgnoreFilesPath = notIgnoreFiles.map { getRelativePath(it.path) }
     val indexFileData = indexManager.getIndexFileData()
-    val lastCommitObjects = getObjectsFromTree(indexFileData.lastCommitTreeHash)
+    val lastCommitObjects = getObjectsFromTree(indexFileData.lastCommitHash)
     lastCommitObjects.forEach {
         if (getRelativePath(it.path) !in notIgnoreFilesPath) {
             removedFiles.add(File(it.path))
