@@ -182,7 +182,11 @@ fun getObjectsFromTree(treeHash: String?): List<GeetObject> {
     return objects
 }
 
-fun getObjectsFromCommit(commitHash: String): List<GeetObject> {
+fun getObjectsFromCommit(commitHash: String?): List<GeetObject> {
+    if (commitHash == null) {
+        return listOf()
+    }
+
     val objects = mutableListOf<GeetObject>()
 
     val commitContents = getObjectContents(commitHash)
