@@ -4,6 +4,7 @@ import geet.exceptions.BadRequest
 import geet.objects.GeetCommit
 import geet.objects.GeetTree
 import geet.utils.commandutil.plumbingutil.saveObjectInGeet
+import geet.utils.commandutil.porcelainutil.editCurrentRefContent
 import geet.utils.indexManager
 
 fun geetCommit(commandLines: Array<String>): Unit {
@@ -24,7 +25,9 @@ fun geetCommit(commandLines: Array<String>): Unit {
     )
     saveObjectInGeet(commitObject)
 
-     indexData.lastCommitTreeHash = treeObject.hashString
+    indexData.lastCommitTreeHash = treeObject.hashString
     indexData.stagingArea.clear()
     indexManager.writeIndexFile()
+
+    editCurrentRefContent(commitObject.hashString)
 }

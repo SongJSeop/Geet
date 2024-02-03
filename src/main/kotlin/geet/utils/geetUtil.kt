@@ -181,12 +181,3 @@ fun getObjectsFromTree(treeHash: String?): List<GeetObject> {
 
     return objects
 }
-
-fun getCurrentRef(): String {
-    val headFile = File(GEET_HEAD_FILE_PATH)
-    if (!headFile.exists()) {
-
-    }
-
-    return headFile.readText().trim().split(" ")[1]
-}
