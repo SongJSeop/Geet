@@ -14,7 +14,7 @@ class GeetCommit(
         init {
             content = "tree $tree\n"
 
-            if (parent != "") {
+            if (parent != null) {
                 content += "parent $parent\n"
             }
             content += "createtime ${datetime}\n"
