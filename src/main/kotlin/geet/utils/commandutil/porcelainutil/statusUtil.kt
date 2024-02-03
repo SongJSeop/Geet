@@ -41,7 +41,9 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
                     geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
                 }
             } else {
-                geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
+                if (!indexManager.isSameWith(where = LAST_COMMIT, blobObject)) {
+                    geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
+                }
             }
         }
     }
