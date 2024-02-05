@@ -64,9 +64,9 @@ class IndexManager {
                 removeObjectFromStagingArea(blobObject)
                 writeIndexFile()
                 return
+            } else {
+                indexData.stagingArea.add(StageObjectData(blobObject, status = MODIFIED))
             }
-
-            indexData.stagingArea.add(StageObjectData(blobObject, status = MODIFIED))
         }
 
         saveObjectInGeet(blobObject)
@@ -76,11 +76,6 @@ class IndexManager {
         val relativePath = getRelativePath(treeObject.path)
         if (relativePath in getIgnoreFiles()) {
             return
-        }
-
-        val file = File(relativePath)
-        if (file.exists() && file.isDirectory) {
-            addRemovedFilesInStagingArea(notIgnoreFiles = getNotIgnoreFiles(file))
         }
 
         treeObject.objects.forEach {
@@ -115,11 +110,7 @@ class IndexManager {
                 indexData.stagingArea.find { getRelativePath(it.blobObject.path) == blobObject.path } != null
             }
             LAST_COMMIT -> {
-                if (indexData.lastCommitHash == null) {
-                    return false
-                }
-
-                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash!!)
+                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash)
                 lastCommitObjects.find { getRelativePath(it.path) == blobObject.path } != null
             }
         }
@@ -132,11 +123,7 @@ class IndexManager {
                 sameFileInStagingArea?.blobObject?.hashString == blobObject.hashString
             }
             LAST_COMMIT -> {
-                if (indexData.lastCommitHash == null) {
-                    return false
-                }
-
-                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash!!)
+                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash)
                 val sameFileInLastCommit = lastCommitObjects.find { getRelativePath(it.path) == blobObject.path }
                 sameFileInLastCommit?.hashString == blobObject.hashString
             }

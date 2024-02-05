@@ -51,7 +51,7 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
     val removedFiles = getRemovedFiles(notIgnoreFiles)
     removedFiles.forEach {
         val relativePath = getRelativePath(it.path)
-        val blobObject = GeetBlob(path = relativePath, content = it.readText())
+        val blobObject = GeetBlob(path = relativePath, content = "removed")
 
         if (indexManager.isIn(where = STAGING_AREA, blobObject)) {
             geetStatusResult.removedFiles.stagedFiles.add(relativePath)
