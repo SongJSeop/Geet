@@ -1,4 +1,4 @@
-package geet.utils.commandutil
+package geet.utils.commandutil.plumbingutil
 
 import geet.commands.plumbing.GeetCatFileOptions
 import geet.exceptions.NotFound

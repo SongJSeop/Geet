@@ -4,7 +4,7 @@ import geet.exceptions.BadRequest
 import geet.objects.GeetBlob
 import geet.objects.GeetObject
 import geet.objects.GeetTree
-import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.commandutil.plumbingutil.saveObjectInGeet
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -134,4 +134,94 @@ fun getRelativePath(path: String): String {
         "." -> return "."
         else -> return relativePath
     }
+}
+
+fun getObjectContents(hashString: String): String {
+    val dirName = hashString.substring(0, 2)
+    val fileName = hashString.substring(2)
+    val file = File("${GEET_OBJECTS_DIR_PATH}/$dirName/$fileName")
+    if (!file.exists()) {
+        throw BadRequest("해당 오브젝트가 존재하지 않습니다.")
+    }
+
+    return decompressFromZlib(file.readText())
+}
+
+fun getObjectsFromTree(treeHash: String?): List<GeetObject> {
+    if (treeHash == null) {
+        return listOf()
+    }
+
+    val treeContents = getObjectContents(treeHash)
+    val splitContents = treeContents.split("\n")
+
+    val objects = mutableListOf<GeetObject>()
+    splitContents.forEach { line ->
+        if (line == "") {
+            return@forEach
+        }
+
+        val splitLine = line.split(" ")
+        val type = splitLine[0]
+        val objectHash = splitLine[1]
+        val path = splitLine[2]
+
+        when (type) {
+            "blob" -> {
+                val blobObject = GeetBlob(path = path, content = getObjectContents(objectHash))
+                objects.add(blobObject)
+            }
+
+            "tree" -> {
+                val treeObject = GeetTree(path = path, objects = getObjectsFromTree(objectHash) as MutableList)
+                objects.add(treeObject)
+            }
+        }
+    }
+
+    return objects
+}
+
+fun getObjectsFromCommit(commitHash: String?): List<GeetObject> {
+    if (commitHash == null) {
+        return listOf()
+    }
+
+    val objects = mutableListOf<GeetObject>()
+
+    val commitContents = getObjectContents(commitHash)
+    val splitContents = commitContents.trim().split(("\n"))
+    splitContents.forEach { line ->
+        if (line == "") {
+            return@forEach
+        }
+
+        val splitLine = line.split(" ")
+        if (splitLine.size < 2) {
+            return@forEach
+        }
+
+        val prop = splitLine[0]
+        val value = splitLine[1]
+        when (prop) {
+            "tree" -> {
+                getObjectsFromTree(value).forEach {
+                    objects.add(it)
+                }
+            }
+            "parent" -> {
+                getObjectsFromCommit(value).forEach {
+                    val samePathObject = objects.find { geetObject ->
+                        geetObject.path == it.path
+                    }
+                    if (samePathObject == null) {
+                        objects.add(it)
+                    }
+                }
+            }
+            else -> return@forEach
+        }
+    }
+
+    return objects
 }

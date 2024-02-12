@@ -6,8 +6,8 @@ import geet.objects.GeetObject
 import geet.objects.GeetTree
 import geet.utils.*
 import geet.utils.ObjectStatus.*
-import geet.utils.commandutil.getRemovedFiles
-import geet.utils.commandutil.saveObjectInGeet
+import geet.utils.commandutil.porcelainutil.getRemovedFiles
+import geet.utils.commandutil.plumbingutil.saveObjectInGeet
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -21,7 +21,7 @@ data class StageObjectData(
 @Serializable
 data class IndexData(
     val stagingArea: MutableList<StageObjectData> = mutableListOf(),
-    val lastCommitObjects: MutableList<GeetObject> = mutableListOf(),
+    var lastCommitHash: String? = null,
 )
 
 class IndexManager {
@@ -64,9 +64,9 @@ class IndexManager {
                 removeObjectFromStagingArea(blobObject)
                 writeIndexFile()
                 return
+            } else {
+                indexData.stagingArea.add(StageObjectData(blobObject, status = MODIFIED))
             }
-
-            indexData.stagingArea.add(StageObjectData(blobObject, status = MODIFIED))
         }
 
         saveObjectInGeet(blobObject)
@@ -76,11 +76,6 @@ class IndexManager {
         val relativePath = getRelativePath(treeObject.path)
         if (relativePath in getIgnoreFiles()) {
             return
-        }
-
-        val file = File(relativePath)
-        if (file.exists() && file.isDirectory) {
-            addRemovedFilesInStagingArea(notIgnoreFiles = getNotIgnoreFiles(file))
         }
 
         treeObject.objects.forEach {
@@ -115,7 +110,8 @@ class IndexManager {
                 indexData.stagingArea.find { getRelativePath(it.blobObject.path) == blobObject.path } != null
             }
             LAST_COMMIT -> {
-                indexData.lastCommitObjects.find { getRelativePath(it.path) == blobObject.path } != null
+                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash)
+                lastCommitObjects.find { getRelativePath(it.path) == blobObject.path } != null
             }
         }
     }
@@ -127,7 +123,8 @@ class IndexManager {
                 sameFileInStagingArea?.blobObject?.hashString == blobObject.hashString
             }
             LAST_COMMIT -> {
-                val sameFileInLastCommit = indexData.lastCommitObjects.find { getRelativePath(it.path) == blobObject.path }
+                val lastCommitObjects = getObjectsFromCommit(indexData.lastCommitHash)
+                val sameFileInLastCommit = lastCommitObjects.find { getRelativePath(it.path) == blobObject.path }
                 sameFileInLastCommit?.hashString == blobObject.hashString
             }
         }

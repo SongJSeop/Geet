@@ -1,12 +1,8 @@
-package geet.utils.commandutil
+package geet.utils.commandutil.porcelainutil
 
-import geet.exceptions.BadRequest
 import geet.objects.GeetBlob
-import geet.utils.GeetObjectLoacation
+import geet.utils.*
 import geet.utils.GeetObjectLoacation.*
-import geet.utils.getNotIgnoreFiles
-import geet.utils.getRelativePath
-import geet.utils.indexManager
 import java.io.File
 
 data class StagingData(
@@ -45,7 +41,9 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
                     geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
                 }
             } else {
-                geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
+                if (!indexManager.isSameWith(where = LAST_COMMIT, blobObject)) {
+                    geetStatusResult.modifiedFiles.unstagedFiles.add(relativePath)
+                }
             }
         }
     }
@@ -53,7 +51,7 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
     val removedFiles = getRemovedFiles(notIgnoreFiles)
     removedFiles.forEach {
         val relativePath = getRelativePath(it.path)
-        val blobObject = GeetBlob(path = relativePath, content = it.readText())
+        val blobObject = GeetBlob(path = relativePath, content = "removed")
 
         if (indexManager.isIn(where = STAGING_AREA, blobObject)) {
             geetStatusResult.removedFiles.stagedFiles.add(relativePath)
@@ -70,7 +68,8 @@ fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<File> {
 
     val notIgnoreFilesPath = notIgnoreFiles.map { getRelativePath(it.path) }
     val indexFileData = indexManager.getIndexFileData()
-    indexFileData.lastCommitObjects.forEach {
+    val lastCommitObjects = getObjectsFromCommit(indexFileData.lastCommitHash)
+    lastCommitObjects.forEach {
         if (getRelativePath(it.path) !in notIgnoreFilesPath) {
             removedFiles.add(File(it.path))
         }
@@ -81,7 +80,7 @@ fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<File> {
 
 fun printGeetStatus(geetStatusResult: GeetStatusResult) {
     println("-- 스테이지에 존재하는 변경 사항들 --")
-    println("스테이지에 존재하는 변경 사항들은 커밋을 하려면 \"geet commit\" 명령어를 사용하세요.")
+    println("스테이지에 존재하는 변경 사항들은 커밋을 하려면 'geet commit -m \"메시지\"' 명령어를 사용하세요.")
     println("스테이지에 존재하는 변경 사항들은 스테이지에서 제거하려면 \"geet reset HEAD <file>\" 명령어를 사용하세요.\n")
     geetStatusResult.newFiles.stagedFiles.forEach { println("\t\u001B[32m새로 추가됨 : ${it}\u001B[0m") }
     geetStatusResult.modifiedFiles.stagedFiles.forEach { println("\t\u001B[32m수정됨: ${it}\u001B[0m") }
