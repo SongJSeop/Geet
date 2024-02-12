@@ -214,7 +214,7 @@ fun getObjectsFromCommit(commitHash: String?): List<GeetObject> {
                     val samePathObject = objects.find { geetObject ->
                         geetObject.path == it.path
                     }
-                    if (samePathObject != null) {
+                    if (samePathObject == null) {
                         objects.add(it)
                     }
                 }
