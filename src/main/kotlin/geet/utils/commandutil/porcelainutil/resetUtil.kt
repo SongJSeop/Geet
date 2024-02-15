@@ -16,7 +16,7 @@ fun reset(geetResetOptions: GeetResetOptions) {
 }
 
 fun softReset(commitHash: String) {
-    println("soft Reset")
+    editCurrentRefContent(commitHash)
 }
 
 fun mixedReset(commitHash: String) {
