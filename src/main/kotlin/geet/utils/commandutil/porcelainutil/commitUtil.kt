@@ -16,6 +16,15 @@ fun getCurrentRef(): String {
     return headFile.readText().trim().split(" ")[1]
 }
 
+fun getCurrentRefCommitHash(): String {
+    val refFile = File("${GEET_DIR_PATH}/${getCurrentRef()}")
+    if (!refFile.exists()) {
+        throw NotFound("참조 파일을 찾을 수 없습니다.")
+    }
+
+    return refFile.readText().trim()
+}
+
 fun editCurrentRefContent(content: String) {
     val refFile = File("${GEET_DIR_PATH}/${getCurrentRef()}")
     if (!refFile.exists()) {

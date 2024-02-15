@@ -1,11 +1,15 @@
 package geet.utils.commandutil.porcelainutil
 
-fun changeToFullHash(commitString: String) {
+fun changeToFullHash(commitString: String): String {
     if (startsWithHeadRef(commitString)) {
+        var commitHash = getCurrentRefCommitHash()
+
         val carrotCount = countCarrot(commitString)
         for (i in 0 until carrotCount) {
-            println("carrot")
+            commitHash = getParentCommitFromCommitHash(commitHash)
         }
+
+        return commitHash
     }
 }
 
