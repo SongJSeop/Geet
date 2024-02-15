@@ -61,5 +61,9 @@ fun getParentCommitFromCommitHash(commitHash: String): String {
     val commitContents = commitFile.readText()
     val commitContentsDecompressed = decompressFromZlib(commitContents)
     val commitContentsSplit = commitContentsDecompressed.split("\n")
-    return commitContentsSplit[1].split(" ")[1]
+    if (commitContentsSplit[1].split(" ")[0] == "parent") {
+        return commitContentsSplit[1].split(" ")[1]
+    }
+
+    throw BadRequest("부모 커밋을 찾을 수 없습니다.")
 }
