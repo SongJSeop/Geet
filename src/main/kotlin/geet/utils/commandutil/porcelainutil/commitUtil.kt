@@ -17,7 +17,7 @@ fun getCurrentRef(): String {
 fun getCurrentRefCommitHash(): String {
     val refFile = File("${GEET_DIR_PATH}/${getCurrentRef()}")
     if (!refFile.exists()) {
-        throw NotFound("참조 파일을 찾을 수 없습니다.")
+        refFile.createNewFile()
     }
 
     return refFile.readText().trim()

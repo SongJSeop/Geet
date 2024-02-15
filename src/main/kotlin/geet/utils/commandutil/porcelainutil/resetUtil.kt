@@ -5,6 +5,7 @@ import geet.exceptions.BadRequest
 import geet.exceptions.NotFound
 import geet.utils.GEET_OBJECTS_DIR_PATH
 import geet.utils.decompressFromZlib
+import geet.utils.indexManager
 import java.io.File
 
 fun reset(geetResetOptions: GeetResetOptions) {
@@ -20,7 +21,10 @@ fun softReset(commitHash: String) {
 }
 
 fun mixedReset(commitHash: String) {
-    println("mixed Reset")
+    editCurrentRefContent(commitHash)
+    indexManager.getIndexFileData().stagingArea.clear()
+    indexManager.getIndexFileData().lastCommitHash = commitHash
+    indexManager.writeIndexFile()
 }
 
 fun hardReset(commitHash: String) {

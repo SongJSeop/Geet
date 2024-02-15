@@ -2,11 +2,12 @@ package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
 import geet.utils.commandutil.porcelainutil.changeToFullHash
+import geet.utils.commandutil.porcelainutil.getCurrentRefCommitHash
 import geet.utils.commandutil.porcelainutil.reset
 
 data class GeetResetOptions(
     var option: String = "--mixed",
-    var commitHash: String = "HEAD"
+    var commitHash: String = getCurrentRefCommitHash()
 )
 
 fun geetReset(commandLines: Array<String>) {
