@@ -1,10 +1,31 @@
 package geet.utils.commandutil.porcelainutil
 
+import geet.commands.porcelain.GeetResetOptions
 import geet.exceptions.BadRequest
 import geet.exceptions.NotFound
 import geet.utils.GEET_OBJECTS_DIR_PATH
 import geet.utils.decompressFromZlib
 import java.io.File
+
+fun reset(geetResetOptions: GeetResetOptions) {
+    when (geetResetOptions.option) {
+        "--soft" -> softReset(geetResetOptions.commitHash)
+        "--mixed" -> mixedReset(geetResetOptions.commitHash)
+        "--hard" -> hardReset(geetResetOptions.commitHash)
+    }
+}
+
+fun softReset(commitHash: String) {
+    println("soft Reset")
+}
+
+fun mixedReset(commitHash: String) {
+    println("mixed Reset")
+}
+
+fun hardReset(commitHash: String) {
+    println("hard Reset")
+}
 
 fun changeToFullHash(commitString: String): String {
     if (startsWithHeadRef(commitString)) {

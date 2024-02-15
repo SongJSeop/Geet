@@ -2,15 +2,16 @@ package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
 import geet.utils.commandutil.porcelainutil.changeToFullHash
+import geet.utils.commandutil.porcelainutil.reset
 
 data class GeetResetOptions(
     var option: String = "--mixed",
-    var to: String = "HEAD"
+    var commitHash: String = "HEAD"
 )
 
 fun geetReset(commandLines: Array<String>) {
     val geetResetOptions = getGeetResetOptions(commandLines)
-    println(geetResetOptions)
+    reset(geetResetOptions)
 }
 
 fun getGeetResetOptions(commandLines: Array<String>): GeetResetOptions {
@@ -29,7 +30,7 @@ fun getGeetResetOptions(commandLines: Array<String>): GeetResetOptions {
 
     if (commandLines.size == 3) {
         val commitHash = changeToFullHash(commandLines[2])
-        return GeetResetOptions(option = option, to = commitHash)
+        return GeetResetOptions(option = option, commitHash = commitHash)
     }
 
     throw BadRequest("옵션이 올바르지 않습니다.")
