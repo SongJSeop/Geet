@@ -5,6 +5,7 @@ import geet.exceptions.BadRequest
 import geet.exceptions.NotFound
 import geet.utils.GEET_OBJECTS_DIR_PATH
 import geet.utils.decompressFromZlib
+import geet.utils.getObjectsFromCommit
 import geet.utils.indexManager
 import java.io.File
 
@@ -22,13 +23,28 @@ fun softReset(commitHash: String) {
 
 fun mixedReset(commitHash: String) {
     editCurrentRefContent(commitHash)
+
     indexManager.getIndexFileData().stagingArea.clear()
     indexManager.getIndexFileData().lastCommitHash = commitHash
     indexManager.writeIndexFile()
 }
 
 fun hardReset(commitHash: String) {
-    println("hard Reset")
+    editCurrentRefContent(commitHash)
+
+    indexManager.getIndexFileData().stagingArea.clear()
+    indexManager.getIndexFileData().lastCommitHash = commitHash
+    indexManager.writeIndexFile()
+
+    val workingDirectory = File(".")
+    workingDirectory.listFiles()?.forEach { file ->
+        if (file.name != ".geet") {
+            file.deleteRecursively()
+        }
+    }
+
+    val commitObjects = getObjectsFromCommit(commitHash)
+    // TODO: 개체로 파일을 복원하는 로직 구현
 }
 
 fun changeToFullHash(commitString: String): String {
