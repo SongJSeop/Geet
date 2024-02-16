@@ -88,9 +88,9 @@ class IndexManager {
 
     fun addRemovedFilesInStagingArea(notIgnoreFiles: List<File>) {
         val removedFiles = getRemovedFiles(notIgnoreFiles)
-        removedFiles.forEach { file ->
-            val relativePath = getRelativePath(file.path)
-            val blobObject = GeetBlob(path = relativePath, content = file.readText())
+        removedFiles.forEach { filePath ->
+            val relativePath = getRelativePath(filePath)
+            val blobObject = GeetBlob(path = relativePath, content = "removed")
 
             if (isIn(where = STAGING_AREA, blobObject)) {
                 indexData.stagingArea.removeIf { it.blobObject.path == blobObject.path }
