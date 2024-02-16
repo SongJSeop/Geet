@@ -50,7 +50,7 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
 
     val removedFiles = getRemovedFiles(notIgnoreFiles)
     removedFiles.forEach {
-        val relativePath = getRelativePath(it.path)
+        val relativePath = getRelativePath(it)
         val blobObject = GeetBlob(path = relativePath, content = "removed")
 
         if (indexManager.isIn(where = STAGING_AREA, blobObject)) {
@@ -63,15 +63,15 @@ fun getGeetStatusResult(notIgnoreFiles: List<File>): GeetStatusResult {
     return geetStatusResult
 }
 
-fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<File> {
-    val removedFiles = mutableListOf<File>()
+fun getRemovedFiles(notIgnoreFiles: List<File>): MutableList<String> {
+    val removedFiles = mutableListOf<String>()
 
     val notIgnoreFilesPath = notIgnoreFiles.map { getRelativePath(it.path) }
     val indexFileData = indexManager.getIndexFileData()
     val lastCommitObjects = getObjectsFromCommit(indexFileData.lastCommitHash)
     lastCommitObjects.forEach {
         if (getRelativePath(it.path) !in notIgnoreFilesPath) {
-            removedFiles.add(File(it.path))
+            removedFiles.add(it.path)
         }
     }
 

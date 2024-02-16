@@ -3,7 +3,6 @@ package geet.utils.commandutil.porcelainutil
 import geet.exceptions.NotFound
 import geet.utils.GEET_DIR_PATH
 import geet.utils.GEET_HEAD_FILE_PATH
-import geet.utils.compressToZlib
 import java.io.File
 
 fun getCurrentRef(): String {
@@ -13,6 +12,15 @@ fun getCurrentRef(): String {
     }
 
     return headFile.readText().trim().split(" ")[1]
+}
+
+fun getCurrentRefCommitHash(): String {
+    val refFile = File("${GEET_DIR_PATH}/${getCurrentRef()}")
+    if (!refFile.exists()) {
+        refFile.createNewFile()
+    }
+
+    return refFile.readText().trim()
 }
 
 fun editCurrentRefContent(content: String) {
