@@ -3,10 +3,8 @@ package geet.utils.commandutil.porcelainutil
 import geet.commands.porcelain.GeetResetOptions
 import geet.exceptions.BadRequest
 import geet.exceptions.NotFound
-import geet.utils.GEET_OBJECTS_DIR_PATH
-import geet.utils.decompressFromZlib
-import geet.utils.getObjectsFromCommit
-import geet.utils.indexManager
+import geet.objects.GeetBlob
+import geet.utils.*
 import java.io.File
 
 fun reset(geetResetOptions: GeetResetOptions) {
@@ -44,7 +42,7 @@ fun hardReset(commitHash: String) {
     }
 
     val commitObjects = getObjectsFromCommit(commitHash)
-    // TODO: 개체로 파일을 복원하는 로직 구현
+    commitObjects.forEach { restoreObject(it as GeetBlob) }
 }
 
 fun changeToFullHash(commitString: String): String {
@@ -107,4 +105,26 @@ fun getParentCommitFromCommitHash(commitHash: String): String {
     }
 
     throw BadRequest("부모 커밋을 찾을 수 없습니다.")
+}
+
+fun restoreObject(blobObject: GeetBlob) {
+    val path = getRelativePath(blobObject.path)
+    val content = blobObject.content
+
+    val parentPath = path.split("/").subList(0, path.split("/").size - 1)
+    if (parentPath.isNotEmpty()) {
+        parentPath.forEachIndexed { index, _ ->
+            val parentPathString = parentPath.subList(0, index + 1).joinToString("/")
+            val parentDir = File(parentPathString)
+            if (!parentDir.exists()) {
+                parentDir.mkdir()
+            }
+        }
+    }
+
+    val file = File(path)
+    if (!file.exists()) {
+        file.createNewFile()
+    }
+    file.writeText(content)
 }
