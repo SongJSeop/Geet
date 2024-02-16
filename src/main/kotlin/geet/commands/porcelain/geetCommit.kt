@@ -3,6 +3,7 @@ package geet.commands.porcelain
 import geet.exceptions.BadRequest
 import geet.objects.GeetCommit
 import geet.objects.GeetTree
+import geet.utils.ObjectStatus.*
 import geet.utils.commandutil.plumbingutil.saveObjectInGeet
 import geet.utils.commandutil.porcelainutil.editCurrentRefContent
 import geet.utils.indexManager
@@ -14,7 +15,7 @@ fun geetCommit(commandLines: Array<String>): Unit {
 
     val indexData = indexManager.getIndexFileData()
 
-    val stageObjects = indexData.stagingArea.map { it.blobObject }
+    val stageObjects = indexData.stagingArea.filter { it.status != REMOVED }.map { it.blobObject }
     val treeObject = GeetTree(objects = stageObjects as MutableList)
     saveObjectInGeet(treeObject)
 
