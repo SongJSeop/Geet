@@ -1,12 +1,13 @@
 package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
+import geet.managers.StageObjectData
 import geet.objects.GeetBlob
 import geet.objects.GeetTree
+import geet.utils.*
+import geet.utils.ObjectStatus.*
+import geet.utils.commandutil.porcelainutil.addRemovedFileDirectly
 import geet.utils.commandutil.porcelainutil.getRemovedFiles
-import geet.utils.createGeetObjectWithFile
-import geet.utils.getNotIgnoreFiles
-import geet.utils.indexManager
 import java.io.File
 
 fun geetAdd(commandLines: Array<String>): Unit {
@@ -20,6 +21,8 @@ fun geetAdd(commandLines: Array<String>): Unit {
 
     val file = File(commandLines[1])
     if (!file.exists()) {
+        if (addRemovedFileDirectly(file)) return
+
         throw BadRequest("존재하지 않는 파일입니다. : ${commandLines[1]}")
     }
 
