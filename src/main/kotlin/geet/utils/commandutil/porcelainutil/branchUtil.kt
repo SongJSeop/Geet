@@ -47,5 +47,24 @@ fun deleteBranch(branchName: String) {
 
 fun showBranchList() {
     val headsDir = File(".geet/refs/heads")
-    headsDir.listFiles()?.forEach { println(it.name) }
+    headsDir.listFiles()?.forEach { headFile ->
+        getBranchNames(headFile).forEach { branchName ->
+            println(branchName)
+        }
+    }
+}
+
+fun getBranchNames(file: File): List<String> {
+    val branchNames = mutableListOf<String>()
+    if (file.isDirectory) {
+        file.listFiles()?.forEach {
+            branchNames.addAll(getBranchNames(it).map { branchName -> "${file.name}/${branchName}" })
+        }
+    }
+
+    if (!file.isDirectory) {
+        branchNames.add(file.name)
+    }
+
+    return branchNames
 }
