@@ -10,7 +10,7 @@ data class GeetResetOptions(
     var commitHash: String = getCurrentRefCommitHash()
 )
 
-fun geetReset(commandLines: Array<String>) {
+fun geetReset(commandLines: Array<String>): Unit {
     val geetResetOptions = getGeetResetOptions(commandLines)
     reset(geetResetOptions)
 }

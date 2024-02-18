@@ -21,9 +21,10 @@ fun processGeet(commandLines: Array<String>): Unit {
     }
 
     when (commandLines[0]) {
+        "status" -> geetStatus(commandLines)
+        "log" -> geetLog(commandLines)
         "add" -> geetAdd(commandLines)
         "commit" -> geetCommit(commandLines)
-        "status" -> geetStatus(commandLines)
         "reset" -> geetReset(commandLines)
         "hash-object" -> geetHashObject(commandLines)
         "cat-file" -> geetCatFile(commandLines)
@@ -43,9 +44,10 @@ fun guideGeet(): Unit {
     println("|  help  |  사용 가능한 Geet 명령어 목록을 출력합니다.  |")
     println("<<< porcelain 명령어 >>>")
     println("|  init  |  현재 디렉토리에 새로운 Geet 저장소를 초기화합니다.  |")
+    println("|  status  |  현재 저장소의 상태를 출력합니다.  |")
+    println("|  log  |  현재 저장소의 커밋 로그를 출력합니다.  |")
     println("|  add  |  파일을 Staging Area에 추가합니다.  |")
     println("|  commit  |  Staging Area에 저장된 파일을 커밋합니다.  |")
-    println("|  status  |  현재 저장소의 상태를 출력합니다.  |")
     println("|  reset  |  옵션에 따라 Staging Area와 Working Directory를 초기화하거나, HEAD가 가리키는 커밋을 변경합니다.  |")
     println("<<< plumbing 명령어 >>>")
     println("|  hash-object  |  파일을 해시하여 Geet 저장소에 저장합니다.  |")
