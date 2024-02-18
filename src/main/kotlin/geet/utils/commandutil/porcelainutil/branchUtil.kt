@@ -1,6 +1,7 @@
 package geet.utils.commandutil.porcelainutil
 
 import geet.commands.porcelain.GeetBranchOptions
+import java.io.File
 
 fun branch(geetBranchOptions: GeetBranchOptions) {
     if (geetBranchOptions.delete) {
@@ -17,7 +18,13 @@ fun branch(geetBranchOptions: GeetBranchOptions) {
 }
 
 fun createBranch(branchName: String) {
-    println("브랜치를 생성했습니다. : $branchName")
+    val file = File(".geet/refs/heads/$branchName")
+    if (file.exists()) {
+        println("브랜치가 이미 존재합니다. : $branchName")
+        return
+    }
+    file.createNewFile()
+    file.writeText(getCurrentRefCommitHash())
 }
 
 fun deleteBranch(branchName: String) {
