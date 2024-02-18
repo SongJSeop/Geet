@@ -42,7 +42,11 @@ fun createBranch(branchName: String) {
 }
 
 fun deleteBranch(branchName: String) {
-    println("브랜치를 삭제했습니다. : ${branchName}")
+    val file = File("${GEET_REFS_HEADS_DIR_PATH}/${branchName}")
+    if (!file.exists()) {
+        throw BadRequest("브랜치가 존재하지 않습니다. : ${branchName}")
+    }
+    file.delete()
 }
 
 fun showBranchList() {
