@@ -11,12 +11,13 @@ fun geetLog(commandLines: Array<String>): Unit {
 
     var commitHash = getCurrentRefCommitHash()
     while (true) {
+        println("-------------------------------------")
         val commitObjectData = getCommitObjectData(commitHash)
-        println("commit ${commitHash}")
-        println("Date: ${commitObjectData.datetime}")
+        println("\u001B[32mcommit \u001B[0m${commitHash}")
+        if (commitObjectData.parent != null) println("\u001B[34mMerge To: \u001B[0m${commitObjectData.parent}")
+        println("\u001B[33mDate: \u001B[0m${commitObjectData.datetime}")
         println()
         println("\t${commitObjectData.message}")
-        println()
         commitHash = commitObjectData.parent ?: break
     }
 }
