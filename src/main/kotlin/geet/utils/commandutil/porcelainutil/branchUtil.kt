@@ -2,6 +2,7 @@ package geet.utils.commandutil.porcelainutil
 
 import geet.commands.porcelain.GeetBranchOptions
 import geet.exceptions.BadRequest
+import geet.utils.GEET_REFS_HEADS_DIR_PATH
 import java.io.File
 
 fun branch(geetBranchOptions: GeetBranchOptions) {
@@ -19,9 +20,22 @@ fun branch(geetBranchOptions: GeetBranchOptions) {
 }
 
 fun createBranch(branchName: String) {
-    val file = File(".geet/refs/heads/${branchName}")
+    var file = File("${GEET_REFS_HEADS_DIR_PATH}/${branchName}")
     if (file.exists()) {
         throw BadRequest("브랜치가 이미 존재합니다. : ${branchName}")
+    }
+
+    if ("/" in branchName) {
+        var branchDir = ""
+        val splitBranchName = branchName.trim().split("/")
+        splitBranchName.subList(0, splitBranchName.size - 1).forEach {
+            branchDir += "/${it}"
+            val dir = File("${GEET_REFS_HEADS_DIR_PATH}${branchDir}")
+            if (!dir.exists()) {
+                dir.mkdir()
+            }
+        }
+        file = File("${GEET_REFS_HEADS_DIR_PATH}${branchDir}/${splitBranchName.last()}")
     }
     file.createNewFile()
     file.writeText(getCurrentRefCommitHash())
