@@ -1,6 +1,7 @@
 package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
+import geet.utils.commandutil.porcelainutil.branch
 
 data class GeetBranchOptions(
     val branchName: String? = null,
@@ -9,7 +10,7 @@ data class GeetBranchOptions(
 
 fun geetBranch(commandLines: Array<String>) {
     val geetBranchOptions = getGeetBranchOptions(commandLines)
-    println(geetBranchOptions)
+    branch(geetBranchOptions)
 }
 
 fun getGeetBranchOptions(commandLines: Array<String>): GeetBranchOptions {
