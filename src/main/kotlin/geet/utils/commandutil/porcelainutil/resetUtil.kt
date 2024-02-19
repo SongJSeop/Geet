@@ -34,12 +34,7 @@ fun hardReset(commitHash: String) {
     indexManager.getIndexFileData().lastCommitHash = commitHash
     indexManager.writeIndexFile()
 
-    val workingDirectory = File(".")
-    workingDirectory.listFiles()?.forEach { file ->
-        if (file.name != ".geet") {
-            file.deleteRecursively()
-        }
-    }
+    clearWorkingDirectory()
 
     val commitObjects = getObjectsFromCommit(commitHash)
     commitObjects.forEach { restoreObject(it as GeetBlob) }
@@ -87,6 +82,15 @@ fun countCarrot(string: String): Int {
 fun isHash(hash: String): Boolean {
     val pattern = Regex("^[0-9a-f]{4,40}$")
     return hash.matches(pattern)
+}
+
+fun clearWorkingDirectory() {
+    val workingDirectory = File(".")
+    workingDirectory.listFiles()?.forEach { file ->
+        if (file.name != ".geet") {
+            file.deleteRecursively()
+        }
+    }
 }
 
 fun getParentCommitFromCommitHash(commitHash: String): String {
