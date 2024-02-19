@@ -51,9 +51,15 @@ fun deleteBranch(branchName: String) {
 
 fun showBranchList() {
     val headsDir = File(".geet/refs/heads")
+    val currentBranchSplit = getCurrentRef().split("/")
+    val currentBranchName = currentBranchSplit.subList(2, currentBranchSplit.size).joinToString("/")
     headsDir.listFiles()?.forEach { headFile ->
         getBranchNames(headFile).forEach { branchName ->
-            println(branchName)
+            if (branchName == currentBranchName) {
+                println("\u001B[33m${branchName} *\u001B[0m")
+            } else {
+                println(branchName)
+            }
         }
     }
 }

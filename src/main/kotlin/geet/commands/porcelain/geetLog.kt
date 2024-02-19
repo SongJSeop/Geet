@@ -14,8 +14,8 @@ fun geetLog(commandLines: Array<String>): Unit {
         println("-------------------------------------")
         val commitObjectData = getCommitObjectData(commitHash)
         println("\u001B[32mcommit \u001B[0m${commitHash}")
-        if (commitObjectData.parent != null) println("\u001B[34mMerge To: \u001B[0m${commitObjectData.parent}")
-        println("\u001B[33mDate: \u001B[0m${commitObjectData.datetime}")
+        if (commitObjectData.parent != null) println("\u001B[34mparent: \u001B[0m${commitObjectData.parent}")
+        println("\u001B[33mdate: \u001B[0m${commitObjectData.datetime}")
         println()
         println("\t${commitObjectData.message}")
         commitHash = commitObjectData.parent ?: break
