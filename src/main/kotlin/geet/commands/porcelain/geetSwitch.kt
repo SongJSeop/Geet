@@ -1,6 +1,7 @@
 package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
+import geet.utils.commandutil.porcelainutil.switch
 
 data class GeetSwitchOptions(
     val branchName: String,
