@@ -46,14 +46,27 @@ fun deleteBranch(branchName: String) {
     if (!file.exists()) {
         throw BadRequest("브랜치가 존재하지 않습니다. : ${branchName}")
     }
+
+    val currentBranchSplit = getCurrentRef().split("/")
+    val currentBranchName = currentBranchSplit.subList(2, currentBranchSplit.size).joinToString("/")
+    if (branchName == currentBranchName) {
+        throw BadRequest("현재 브랜치는 삭제할 수 없습니다.")
+    }
+
     file.delete()
 }
 
 fun showBranchList() {
     val headsDir = File(".geet/refs/heads")
+    val currentBranchSplit = getCurrentRef().split("/")
+    val currentBranchName = currentBranchSplit.subList(2, currentBranchSplit.size).joinToString("/")
     headsDir.listFiles()?.forEach { headFile ->
         getBranchNames(headFile).forEach { branchName ->
-            println(branchName)
+            if (branchName == currentBranchName) {
+                println("\u001B[33m${branchName} *\u001B[0m")
+            } else {
+                println(branchName)
+            }
         }
     }
 }
