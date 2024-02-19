@@ -46,6 +46,13 @@ fun deleteBranch(branchName: String) {
     if (!file.exists()) {
         throw BadRequest("브랜치가 존재하지 않습니다. : ${branchName}")
     }
+
+    val currentBranchSplit = getCurrentRef().split("/")
+    val currentBranchName = currentBranchSplit.subList(2, currentBranchSplit.size).joinToString("/")
+    if (branchName == currentBranchName) {
+        throw BadRequest("현재 브랜치는 삭제할 수 없습니다.")
+    }
+
     file.delete()
 }
 
