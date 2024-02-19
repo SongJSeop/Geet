@@ -21,6 +21,11 @@ fun changeBranch(branchName: String) {
         throw NotFound("HEAD 파일을 찾을 수 없습니다.\ninit 명령어를 통해 저장소를 초기화하세요.")
     }
 
+    val branchFile = File(".geet/refs/heads/$branchName")
+    if (!branchFile.exists()) {
+        throw NotFound("브랜치를 찾을 수 없습니다. : ${branchName}")
+    }
+
     headFile.writeText("ref: refs/heads/$branchName")
     val branchCommitHash = getCurrentRefCommitHash()
     indexManager.getIndexFileData().lastCommitHash = branchCommitHash
