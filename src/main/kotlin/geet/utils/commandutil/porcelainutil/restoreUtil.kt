@@ -1,5 +1,7 @@
 package geet.utils.commandutil.porcelainutil
 
+import geet.commands.porcelain.GeetRestoreOptions
+
 fun isSourceOption(option: String): Boolean {
     val regex = Regex("^--source=HEAD~[0-9]+")
     if (!regex.matches(option)) {
@@ -16,4 +18,26 @@ fun getSourceCommitHash(option: String): String {
         commitHash = getParentCommitFromCommitHash(commitHash)
     }
     return commitHash
+}
+
+fun restore(geetRestoreOptions: GeetRestoreOptions) {
+    if (geetRestoreOptions.worktree) {
+        restoreToWorktree(geetRestoreOptions.fileName)
+    }
+
+    if (geetRestoreOptions.staged) {
+        restoreStage(geetRestoreOptions.fileName)
+    }
+
+    if (geetRestoreOptions.sourceCommitHash != null) {
+        restoreToWorktree(geetRestoreOptions.fileName, geetRestoreOptions.sourceCommitHash!!)
+    }
+}
+
+fun restoreToWorktree(fileName: String, commitHash: String = getCurrentRefCommitHash()) {
+
+}
+
+fun restoreStage(fileName: String) {
+
 }

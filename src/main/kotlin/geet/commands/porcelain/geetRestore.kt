@@ -3,6 +3,7 @@ package geet.commands.porcelain
 import geet.exceptions.BadRequest
 import geet.utils.commandutil.porcelainutil.getSourceCommitHash
 import geet.utils.commandutil.porcelainutil.isSourceOption
+import geet.utils.commandutil.porcelainutil.restore
 
 data class GeetRestoreOptions(
     var worktree: Boolean = true,
@@ -13,7 +14,7 @@ data class GeetRestoreOptions(
 
 fun geetRestore(commandLines: Array<String>): Unit {
     val geetRestoreOptions = getGeetRestoreOptions(commandLines)
-    println(geetRestoreOptions)
+    restore(geetRestoreOptions)
 }
 
 fun getGeetRestoreOptions(commandLines: Array<String>): GeetRestoreOptions {
