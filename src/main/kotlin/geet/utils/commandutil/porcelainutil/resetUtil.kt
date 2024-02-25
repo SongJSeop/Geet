@@ -108,7 +108,7 @@ fun getParentCommitFromCommitHash(commitHash: String): String {
         return commitContentsSplit[1].split(" ")[1]
     }
 
-    throw BadRequest("부모 커밋을 찾을 수 없습니다.")
+    throw BadRequest("${commitHash.substring(0, 6)}커밋의 부모 커밋을 찾을 수 없습니다.")
 }
 
 fun restoreObject(blobObject: GeetBlob) {

@@ -1,10 +1,13 @@
 package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
+import geet.utils.commandutil.porcelainutil.getSourceCommitHash
+import geet.utils.commandutil.porcelainutil.isSourceOption
 
 data class GeetRestoreOptions(
     var worktree: Boolean = true,
     var staged: Boolean = false,
+    var sourceCommitHash: String? = null,
     val fileName: String,
 )
 
@@ -24,7 +27,14 @@ fun getGeetRestoreOptions(commandLines: Array<String>): GeetRestoreOptions {
 
     if (commandLines.size == 3) {
         val fileName = commandLines[2]
-        when (commandLines[1]) {
+
+        val option = commandLines[1]
+
+        if (isSourceOption(option)) {
+            return GeetRestoreOptions(worktree = false, sourceCommitHash = getSourceCommitHash(option), fileName = fileName)
+        }
+
+        when (option) {
             "--worktree" -> return GeetRestoreOptions(fileName = fileName)
             "--staged" -> return GeetRestoreOptions(worktree = false, staged = true, fileName = fileName)
             else -> throw BadRequest("옵션이 올바르지 않습니다.: ${commandLines[1]}")
