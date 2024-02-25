@@ -26,7 +26,12 @@ fun getSourceCommitHash(option: String): String {
 }
 
 fun restore(geetRestoreOptions: GeetRestoreOptions) {
-    if (geetRestoreOptions.worktree) {
+    if (geetRestoreOptions.worktree && geetRestoreOptions.staged) {
+        restoreToWorktree(geetRestoreOptions.fileName)
+        restoreStage(geetRestoreOptions.fileName)
+    }
+
+    if (geetRestoreOptions.worktree && !geetRestoreOptions.staged) {
         restoreToWorktree(geetRestoreOptions.fileName)
     }
 
