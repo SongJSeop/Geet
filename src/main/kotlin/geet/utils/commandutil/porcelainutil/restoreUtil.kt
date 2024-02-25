@@ -1,8 +1,10 @@
 package geet.utils.commandutil.porcelainutil
 
 import geet.commands.porcelain.GeetRestoreOptions
+import geet.objects.GeetBlob
 import geet.utils.getObjectsFromCommit
 import geet.utils.getRelativePath
+import geet.utils.indexManager
 import java.io.File
 
 fun isSourceOption(option: String): Boolean {
@@ -47,5 +49,6 @@ fun restoreToWorktree(fileName: String, commitHash: String = getCurrentRefCommit
 }
 
 fun restoreStage(fileName: String) {
-
+    indexManager.removeObjectFromStagingArea(GeetBlob(fileName, "removed"))
+    indexManager.writeIndexFile()
 }
