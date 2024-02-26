@@ -1,6 +1,7 @@
 package geet.commands.porcelain
 
 import geet.exceptions.BadRequest
+import geet.utils.commandutil.porcelainutil.merge
 
 data class GeetMergeOptions(
     val branchName: String? = null,
@@ -9,7 +10,7 @@ data class GeetMergeOptions(
 
 fun geetMerge(commandLines: Array<String>): Unit {
     val geetMergeOptions = getGeetMergeOptions(commandLines)
-    println(geetMergeOptions)
+    merge(geetMergeOptions)
 }
 
 fun getGeetMergeOptions(commandLines: Array<String>): GeetMergeOptions {
