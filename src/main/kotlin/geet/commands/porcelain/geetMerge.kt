@@ -22,9 +22,8 @@ fun getGeetMergeOptions(commandLines: Array<String>): GeetMergeOptions {
         throw BadRequest("옵션을 잘못 입력하셨습니다.")
     }
 
-    when (val command = commandLines[1]) {
-        "--abort" -> return GeetMergeOptions(option = "abort")
-        "--continue" -> return GeetMergeOptions(option = "continue")
-        else -> return GeetMergeOptions(branchName = command)
+    return when (val command = commandLines[1]) {
+        "--abort", "--continue" -> GeetMergeOptions(option = command.removePrefix("--"))
+        else -> GeetMergeOptions(branchName = command)
     }
 }
