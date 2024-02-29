@@ -30,4 +30,8 @@ class BranchManager {
             branchFile.writeText(headCommitHash)
         }
     }
+
+    fun switchBranch(branchName: String) {
+        headManager.setHead(branchName)
+    }
 }
