@@ -1,8 +1,7 @@
 package geet.command
 
 import geet.exception.BadRequest
-import geet.util.const.red
-import geet.util.const.resetColor
+import geet.util.const.*
 
 data class BranchCommandOptions(
     val branchName: String? = null,
@@ -11,7 +10,22 @@ data class BranchCommandOptions(
 
 fun geetBranch(commandLines: Array<String>): Unit {
     val options = getBranchCommandOptions(commandLines)
-    println(options)
+
+    if (options.branchName == null) {
+        printBranchList()
+        return
+    }
+}
+
+fun printBranchList(): Unit {
+    val headBranchName = headManager.getHeadBranchName()
+    branchManager.getAllBranchNames().forEach {
+        if (it == headBranchName) {
+            println("${yellow}${it} *${resetColor}")
+        } else {
+            println(it)
+        }
+    }
 }
 
 fun getBranchCommandOptions(commandLines: Array<String>): BranchCommandOptions {
