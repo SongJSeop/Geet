@@ -11,6 +11,15 @@ class BranchManager {
 
     val refsDir = File(".geet/refs")
 
+    fun getAllBranchNames(): List<String> {
+        val branchDir = File(refsDir, "heads")
+
+        return branchDir.walkTopDown()
+            .filter { it.isFile }
+            .map { it.relativeTo(branchDir).path }
+            .toList()
+    }
+
     fun getBranchCommitHash(branchName: String): String {
         val branchFile = File(refsDir, "heads/$branchName")
         if (!branchFile.exists()) {
