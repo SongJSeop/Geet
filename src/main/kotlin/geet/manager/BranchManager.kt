@@ -63,4 +63,13 @@ class BranchManager {
 
         headManager.setHead(branchName)
     }
+
+    fun deleteBranch(branchName: String) {
+        val branchFile = File(refsDir, "heads/$branchName")
+        if (!branchFile.exists()) {
+            throw NotFound("이미 존재하지 않는 브랜치입니다.: ${red}${branchName}${resetColor}")
+        }
+
+        branchFile.delete()
+    }
 }

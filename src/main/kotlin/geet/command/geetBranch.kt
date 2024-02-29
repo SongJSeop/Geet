@@ -15,6 +15,11 @@ fun geetBranch(commandLines: Array<String>): Unit {
         printBranchList()
         return
     }
+
+    if (options.delete) {
+        branchManager.deleteBranch(options.branchName)
+        return
+    }
 }
 
 fun printBranchList(): Unit {
