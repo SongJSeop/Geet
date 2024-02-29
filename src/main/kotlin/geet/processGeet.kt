@@ -1,6 +1,6 @@
 package geet
 
-import geet.command.geetHelp
+import geet.command.*
 import geet.exception.BadRequest
 
 fun processGeet(commandLines: Array<String>): Unit {
@@ -10,6 +10,7 @@ fun processGeet(commandLines: Array<String>): Unit {
     }
 
     when (commandLines[0]) {
+        "init" -> geetInit(commandLines)
         else -> throw BadRequest("지원하지 않는 명령어입니다.: ${commandLines[0]}")
     }
 }
