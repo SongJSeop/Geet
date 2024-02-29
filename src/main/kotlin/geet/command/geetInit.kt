@@ -18,7 +18,12 @@ fun geetInit(commandLines: Array<String>): Unit {
         throw BadRequest("이미 초기화된 Git 저장소 입니다.")
     }
 
+    initGeetRepository(geetFile)
     println("현재 디렉토리를 Git 저장소로 초기화합니다.")
+
+}
+
+fun initGeetRepository(geetFile: File): Unit {
     geetFile.mkdir()
     File(geetFile, "objects").mkdir()
     File(geetFile, "objects/info").mkdir()
