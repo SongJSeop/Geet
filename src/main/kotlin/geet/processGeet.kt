@@ -12,7 +12,7 @@ fun processGeet(commandLines: Array<String>): Unit {
         return
     }
 
-    if (!isGeetDirectory()) {
+    if (commandLines[0] != "init" && !isGeetDirectory()) {
         throw BadRequest("현재 디렉토리는 Geet 저장소가 아닙니다.")
     }
 
