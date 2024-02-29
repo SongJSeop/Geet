@@ -13,6 +13,7 @@ fun processGeet(commandLines: Array<String>): Unit {
 
     when (commandLines[0]) {
         "init" -> geetInit(commandLines)
+        "branch" -> geetBranch(commandLines)
         else -> throw BadRequest("지원하지 않는 명령어입니다.: ${red}${commandLines[0]}${resetColor}")
     }
 }
