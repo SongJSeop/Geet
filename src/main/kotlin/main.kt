@@ -1,3 +1,5 @@
-fun main() {
-    println("Hello, World!")
+import geet.processGeet
+
+fun main(commandLines: Array<String>) {
+    processGeet(commandLines)
 }
