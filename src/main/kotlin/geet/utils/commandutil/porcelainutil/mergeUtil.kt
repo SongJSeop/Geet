@@ -2,7 +2,10 @@ package geet.utils.commandutil.porcelainutil
 
 import geet.commands.porcelain.GeetMergeOptions
 import geet.exceptions.NotFound
+import geet.objects.GeetObject
+import geet.utils.GEET_OBJECTS_DIR_PATH
 import geet.utils.GEET_REFS_HEADS_DIR_PATH
+import geet.utils.decompressFromZlib
 import geet.utils.getObjectsFromCommit
 import java.io.File
 
@@ -16,19 +19,22 @@ fun merge(geetMergeOptions: GeetMergeOptions): Unit {
             return
         }
 
-        val currentObjects = getObjectsFromCommit(currentCommitHash)
-        val branchObjects = getObjectsFromCommit(branchCommitHash)
+        val commitHistory = getCommitHistory(currentCommitHash)
+        commitHistory.forEach { println(it) }
 
-        branchObjects.forEach { branchObject ->
-            val sameFileObject = currentObjects.find { it.path == branchObject.path }
-            if (sameFileObject != null && sameFileObject.hashString != branchObject.hashString) {
-                println("내용이 수정된 파일, 병합 필요: ${branchObject.path}")
-            }
-
-            if (sameFileObject == null) {
-                println("새로운 파일, 병합 필요: ${branchObject.path}")
-            }
-        }
+//        val currentObjects = getObjectsFromCommit(currentCommitHash)
+//        val branchObjects = getObjectsFromCommit(branchCommitHash)
+//
+//        branchObjects.forEach { branchObject ->
+//            val sameFileObject = currentObjects.find { it.path == branchObject.path }
+//            if (sameFileObject != null && sameFileObject.hashString != branchObject.hashString) {
+//
+//            }
+//
+//            if (sameFileObject == null) {
+//                currentObjects.add(branchObject)
+//            }
+//        }
     }
 
     when (geetMergeOptions.option) {
@@ -45,3 +51,33 @@ fun getBranchCommitHash(branchName: String): String {
 
     return refFile.readText()
 }
+
+fun getDiffObjects(oneCommitHash: String, otherCommitHash: String) {
+
+}
+
+fun getCommitHistory(commitHash: String): List<String> {
+    val dirName = commitHash.substring(0, 2)
+    val fileName = commitHash.substring(2)
+    val commitFile = File("${GEET_OBJECTS_DIR_PATH}/${dirName}/${fileName}")
+    if (!commitFile.exists()) {
+        throw NotFound("존재하지 않는 커밋입니다.: ${commitHash}")
+    }
+
+    val contentSplit = decompressFromZlib(commitFile.readText()).split("\n")
+    if (contentSplit[1].split(" ")[0] == "parent") {
+        return getCommitHistory(contentSplit[1].split(" ")[1]) + listOf<String>(commitHash)
+    }
+
+    return listOf<String>(commitHash)
+}
+
+data class DiffObjects(
+    val oneObjects: DiffObjectStatus,
+    val otherObjects: DiffObjectStatus
+)
+
+data class DiffObjectStatus(
+    val geetObject: GeetObject,
+    val status: String
+)
