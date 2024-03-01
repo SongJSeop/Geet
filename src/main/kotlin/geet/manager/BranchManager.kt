@@ -1,6 +1,5 @@
 package geet.manager
 
-import geet.exception.BadRequest
 import geet.exception.NotFound
 import geet.util.const.headManager
 import geet.util.const.red
@@ -40,20 +39,21 @@ class BranchManager {
 
     fun createBranch(branchName: String) {
         if (File(refsDir, "heads/$branchName").exists()) {
-            throw BadRequest("브랜치가 이미 존재합니다.: ${red}${branchName}${resetColor}")
+            throw NotFound("이미 존재하는 브랜치입니다.: ${red}${branchName}${resetColor}")
         }
 
+
         if (branchName.contains("/")) {
-            val branchNameList = branchName.split("/")
-            val branchDir = File(refsDir, "heads/${branchNameList[0]}")
-            branchDir.mkdirs()
-            createBranch(branchNameList.subList(1, branchNameList.size).joinToString("/"))
-        } else {
-            val branchFile = File(refsDir, "heads/$branchName")
-            val headBranchName = headManager.getHeadBranchName()
-            val headCommitHash = getBranchCommitHash(headBranchName)
-            branchFile.writeText(headCommitHash)
+            branchName.split("/").subList(0, branchName.split("/").size - 1).forEachIndexed { index, _ ->
+                val dirName = branchName.split("/").subList(0, index + 1).joinToString("/")
+                File(refsDir, "heads/${dirName}").mkdir()
+            }
         }
+
+        val headBranchName = headManager.getHeadBranchName()
+        val headCommitHash = getBranchCommitHash(headBranchName)
+        File(refsDir, "heads/$branchName").createNewFile()
+        setBranchCommitHash(branchName, headCommitHash)
     }
 
     fun switchBranch(branchName: String) {

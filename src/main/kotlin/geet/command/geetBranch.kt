@@ -1,6 +1,7 @@
 package geet.command
 
 import geet.exception.BadRequest
+import geet.exception.NotFound
 import geet.util.const.*
 
 data class BranchCommandOptions(
@@ -19,6 +20,12 @@ fun geetBranch(commandLines: Array<String>): Unit {
     if (options.delete) {
         branchManager.deleteBranch(options.branchName)
         return
+    }
+
+    try {
+        branchManager.createBranch(options.branchName)
+    } catch (exception: NotFound) {
+        throw BadRequest("첫 커밋을 하기 전에는 브랜치를 생성할 수 없습니다.")
     }
 }
 
