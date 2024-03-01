@@ -7,7 +7,8 @@ import geet.util.const.yellow
 
 val supportingCommandsList = mapOf<String, String>(
     "help" to "Geet에 대한 설명 및 지원하는 명령어 목록을 출력합니다.",
-    "init" to "새로운 Git 저장소를 초기화합니다."
+    "init" to "새로운 Git 저장소를 초기화합니다.",
+    "branch" to "브랜치 목록을 출력하거나, 새로운 브랜치를 생성합니다.",
 )
 
 fun geetHelp(): Unit {
