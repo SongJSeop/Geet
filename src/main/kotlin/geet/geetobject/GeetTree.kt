@@ -7,7 +7,7 @@ class GeetTree(
 
     override val type: String = "tree"
     override val content: String
-        get() = tree.joinToString("\n") {
-            "${it.type} ${it.hashString} ${it.filePath}\u0000"
+        get() = tree.joinToString("") {
+            "${it.type} ${it.hashString} ${it.filePath}\n"
         }
 }
