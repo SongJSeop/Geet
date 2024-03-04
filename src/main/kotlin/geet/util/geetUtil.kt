@@ -44,3 +44,12 @@ fun String.fromZlibToString(): String {
 
     return outputStream.toString()
 }
+
+fun getRelativePathFromRoot(file: File): String {
+    val rootPath = File(".").canonicalPath
+    val filePath = file.canonicalPath
+
+    val relativePath = filePath.removePrefix(rootPath).trimStart(File.separatorChar)
+
+    return if (relativePath.isEmpty()) "." else relativePath
+}
