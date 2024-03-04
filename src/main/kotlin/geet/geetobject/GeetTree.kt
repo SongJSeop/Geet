@@ -1,7 +1,7 @@
 package geet.geetobject
 
 class GeetTree(
-    override val filePath: String = "bak",
+    override val filePath: String,
     val tree: List<GeetObjectWithFile>
 ): GeetObjectWithFile {
 
