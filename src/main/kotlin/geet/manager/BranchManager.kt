@@ -63,6 +63,7 @@ class BranchManager {
         }
 
         headManager.setHead(branchName)
+        // TODO: 브랜치가 가리키는 커밋 상태로 복구
     }
 
     fun deleteBranch(branchName: String) {
