@@ -12,6 +12,10 @@ data class BranchCommandOptions(
 fun geetBranch(commandLines: Array<String>): Unit {
     val options = getBranchCommandOptions(commandLines)
 
+    if (options.branchName == null && options.delete) {
+        throw BadRequest("삭제하기 위한 브랜치 이름이 없습니다.")
+    }
+
     if (options.branchName == null) {
         printBranchList()
         return
