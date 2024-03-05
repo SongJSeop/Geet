@@ -107,5 +107,6 @@ fun printStatusResult(statusResult: StatusResult): Unit {
     println()
 
     println("** 추적되지 않는 파일 **")
-    statusResult.untracked.forEach { println("${red}\t$it${resetColor}") }
+    statusResult.untracked.forEach { println("${red}  $it${resetColor}") }
+    println()
 }
