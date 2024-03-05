@@ -14,10 +14,11 @@ fun geetAdd(commandLines: Array<String>): Unit {
     val filePath = getRelativePathFromRoot(commandFile)
 
     if (commandFile.exists()) {
+        if (ignoreManager.isIgnored(commandFile)) {
+            throw BadRequest(".geetignore에 의해 무시되는 파일입니다.: ${red}${filePath}${resetColor}")
+        }
+
         if (commandFile.isFile) {
-            if (ignoreManager.isIgnored(commandFile)) {
-                throw BadRequest(".geetignore에 의해 무시되는 파일입니다.: ${red}${filePath}${resetColor}")
-            }
             addFileToStage(commandFile)
         } else {
             addAllFilesInDirectory(commandFile)
@@ -34,6 +35,10 @@ fun geetAdd(commandLines: Array<String>): Unit {
 }
 
 fun addFileToStage(file: File) {
+    if (ignoreManager.isIgnored(file)) {
+        return
+    }
+
     val filePath = getRelativePathFromRoot(file)
     val blob = objectManager.saveBlob(file)
 
@@ -46,6 +51,10 @@ fun addFileToStage(file: File) {
 }
 
 fun addAllFilesInDirectory(directory: File) {
+    if (ignoreManager.isIgnored(directory)) {
+        return
+    }
+
     directory.listFiles()?.forEach { file ->
         if (file.isDirectory) {
             addAllFilesInDirectory(file)
