@@ -2,7 +2,6 @@ package geet.manager
 
 import geet.enums.StageObjectStatus
 import geet.geetobject.GeetBlob
-import geet.geetobject.GeetObjectWithFile
 import geet.util.fromZlibToString
 import geet.util.toZlib
 import kotlinx.serialization.Serializable
@@ -22,7 +21,7 @@ data class StageObject(
 @Serializable
 data class IndexData(
     val stageObjects: MutableList<StageObject>,
-    val lastCommitObjects: List<GeetObjectWithFile>
+    val lastCommitObjects: List<GeetBlob>
 )
 
 class IndexManager {
@@ -41,8 +40,8 @@ class IndexManager {
         var status: StageObjectStatus
         when (true) {
             deleted -> status = StageObjectStatus.DELETED
-            isInLastCommit(blob.filePath) -> status = StageObjectStatus.MODIFIED
-            else -> status = StageObjectStatus.NEW
+            (searchObjectFromLastCommit(blob.filePath) == null) -> status = StageObjectStatus.NEW
+            else -> status = StageObjectStatus.MODIFIED
         }
 
         val stageObject = StageObject(
@@ -55,8 +54,8 @@ class IndexManager {
         indexData.stageObjects.add(stageObject)
     }
 
-    fun isInLastCommit(filePath: String): Boolean {
-        return indexData.lastCommitObjects.any { it.filePath == filePath }
+    fun searchObjectFromLastCommit(filePath: String): GeetBlob? {
+        return indexData.lastCommitObjects.find { it.filePath == filePath }
     }
 
     fun writeIndex() {
