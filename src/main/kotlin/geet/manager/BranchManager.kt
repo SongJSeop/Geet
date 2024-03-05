@@ -1,5 +1,6 @@
 package geet.manager
 
+import geet.exception.BadRequest
 import geet.exception.NotFound
 import geet.util.const.headManager
 import geet.util.const.red
@@ -39,7 +40,7 @@ class BranchManager {
 
     fun createBranch(branchName: String) {
         if (File(refsDir, "heads/$branchName").exists()) {
-            throw NotFound("이미 존재하는 브랜치입니다.: ${red}${branchName}${resetColor}")
+            throw BadRequest("이미 존재하는 브랜치입니다.: ${red}${branchName}${resetColor}")
         }
 
 
@@ -62,6 +63,7 @@ class BranchManager {
         }
 
         headManager.setHead(branchName)
+        // TODO: 브랜치가 가리키는 커밋 상태로 복구
     }
 
     fun deleteBranch(branchName: String) {
