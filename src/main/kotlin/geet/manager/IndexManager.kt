@@ -1,20 +1,19 @@
 package geet.manager
 
-import geet.geetobject.GeetBlob
+import geet.enums.StageObjectStatus
 import geet.geetobject.GeetObjectWithFile
 import geet.util.fromZlibToString
 import geet.util.toZlib
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.time.LocalDateTime
 
 @Serializable
 data class StageObject(
     val hash: String,
     val slot: Int = 0,
     val filePath: String,
-    val status: String,
+    val status: StageObjectStatus,
     val lastUpdateTime: String
 )
 
