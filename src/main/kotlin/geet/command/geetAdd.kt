@@ -15,6 +15,9 @@ fun geetAdd(commandLines: Array<String>): Unit {
 
     if (commandFile.exists()) {
         if (commandFile.isFile) {
+            if (ignoreManager.isIgnored(commandFile)) {
+                throw BadRequest(".geetignore에 의해 무시되는 파일입니다.: ${red}${filePath}${resetColor}")
+            }
             addFileToStage(commandFile)
         } else {
             addAllFilesInDirectory(commandFile)
