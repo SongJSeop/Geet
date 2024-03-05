@@ -28,13 +28,14 @@ class IndexManager {
 
     val indexFile = File(".geet/index")
     val indexData: IndexData
-        get() {
-            if (!indexFile.exists()) {
-                return IndexData(stageObjects = mutableListOf(), lastCommitObjects = emptyList())
-            }
 
-            return Json.decodeFromString(IndexData.serializer(), indexFile.readText().fromZlibToString())
+    init {
+        if (indexFile.exists()) {
+            indexData = Json.decodeFromString(IndexData.serializer(), indexFile.readText().fromZlibToString())
+        } else {
+            indexData = IndexData(mutableListOf(), listOf())
         }
+    }
 
     fun addToStage(blob: GeetBlob, deleted: Boolean = false, slot: Int = 0) {
         var status: StageObjectStatus

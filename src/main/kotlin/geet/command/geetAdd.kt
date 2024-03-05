@@ -1,10 +1,7 @@
 package geet.command
 
 import geet.exception.BadRequest
-import geet.util.const.indexManager
-import geet.util.const.objectManager
-import geet.util.const.resetColor
-import geet.util.const.yellow
+import geet.util.const.*
 import geet.util.getRelativePathFromRoot
 import java.io.File
 
@@ -28,7 +25,7 @@ fun geetAdd(commandLines: Array<String>): Unit {
     }
 
     val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
-        ?: throw BadRequest("파일이 존재하지 않습니다.: ${yellow}${filePath}${resetColor}")
+        ?: throw BadRequest("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")
     indexManager.addToStage(objectInLastCommit, deleted = true)
     indexManager.writeIndex()
 }
