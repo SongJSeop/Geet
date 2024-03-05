@@ -14,8 +14,8 @@ class ObjectManager {
     fun saveBlob(file: File): GeetBlob {
         val blob = GeetBlob(content = file.readText(), filePath = getRelativePathFromRoot(file))
         
-        val blobDir = File(objectDir, blob.hashString.substring(0, 2))
-        val blobFile = File(blobDir, blob.hashString.substring(2))
+        val blobDir = File(objectDir, blob.hash.substring(0, 2))
+        val blobFile = File(blobDir, blob.hash.substring(2))
 
         if (!blobDir.exists()) {
             blobDir.mkdirs()
@@ -37,8 +37,8 @@ class ObjectManager {
 
         val treeObject = GeetTree(filePath = getRelativePathFromRoot(file), tree = tree)
 
-        val treeDir = File(objectDir, treeObject.hashString.substring(0, 2))
-        val treeFile = File(treeDir, treeObject.hashString.substring(2))
+        val treeDir = File(objectDir, treeObject.hash.substring(0, 2))
+        val treeFile = File(treeDir, treeObject.hash.substring(2))
 
         if (!treeDir.exists()) {
             treeDir.mkdirs()

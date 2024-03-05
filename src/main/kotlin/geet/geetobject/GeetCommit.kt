@@ -13,8 +13,8 @@ class GeetCommit(
     override val type = COMMIT
     override val content: String
         get() {
-            return "tree ${tree.hashString}\n" +
-                    (parent?.let { "parent ${it.hashString}\n" } ?: "") +
+            return "tree ${tree.hash}\n" +
+                    (parent?.let { "parent ${it.hash}\n" } ?: "") +
                     "date ${dateTime.toString()}\n" +
                     "\n" +
                     message

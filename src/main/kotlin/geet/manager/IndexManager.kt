@@ -46,13 +46,21 @@ class IndexManager {
         }
 
         val stageObject = StageObject(
-            hash = blob.hashString,
+            hash = blob.hash,
             slot = slot,
             filePath = blob.filePath,
             status = status,
             lastUpdateTime = LocalDateTime.now().toString()
         )
         indexData.stageObjects.add(stageObject)
+    }
+
+    fun removeFromStage(filePath: String) {
+        indexData.stageObjects.removeIf { it.filePath == filePath }
+    }
+
+    fun searchObjectFromStage(filePath: String): StageObject? {
+        return indexData.stageObjects.find { it.filePath == filePath }
     }
 
     fun searchObjectFromLastCommit(filePath: String): GeetBlob? {

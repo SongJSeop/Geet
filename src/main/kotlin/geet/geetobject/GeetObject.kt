@@ -7,7 +7,7 @@ interface GeetObject {
 
     val type: GeetObjectType
     val content: String
-    val hashString: String
+    val hash: String
         get() {
             val header = "${type.value} ${content.length}\u0000"
             val store = header + content
