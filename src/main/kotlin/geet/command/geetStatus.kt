@@ -3,10 +3,7 @@ package geet.command
 import geet.enums.StageObjectStatus
 import geet.exception.BadRequest
 import geet.geetobject.GeetBlob
-import geet.util.const.ignoreManager
-import geet.util.const.indexManager
-import geet.util.const.red
-import geet.util.const.resetColor
+import geet.util.const.*
 import geet.util.getRelativePathFromRoot
 import java.io.File
 
@@ -28,7 +25,7 @@ fun geetStatus(commandLines: Array<String>): Unit {
     }
 
     val statusResult = getStageObjectStatus()
-    println(statusResult)
+    printStatusResult(statusResult)
 }
 
 fun getUntrackedFiles(dir: File): List<String> {
@@ -92,4 +89,21 @@ fun getStageObjectStatus(): StatusResult {
     }
 
     return statusResult
+}
+
+fun printStatusResult(statusResult: StatusResult): Unit {
+    println("** 스테이지된 변경사항 **")
+    statusResult.staged.newFiles.forEach { println("${green}  새로운 파일: $it${resetColor}") }
+    statusResult.staged.modifiedFiles.forEach { println("${green}  수정된 파일: $it${resetColor}") }
+    statusResult.staged.deletedFiles.forEach { println("${green}  삭제된 파일: $it${resetColor}") }
+    println()
+
+    println("** 스테이지되지 않은 변경사항 **")
+    statusResult.unstaged.newFiles.forEach { println("${yellow}  새로운 파일: $it${resetColor}") }
+    statusResult.unstaged.modifiedFiles.forEach { println("${yellow}  수정된 파일: $it${resetColor}") }
+    statusResult.unstaged.deletedFiles.forEach { println("${yellow}  삭제된 파일: $it${resetColor}") }
+    println()
+
+    println("** 추적되지 않는 파일 **")
+    statusResult.untracked.forEach { println("${red}\t$it${resetColor}") }
 }
