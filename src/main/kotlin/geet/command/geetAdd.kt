@@ -2,6 +2,7 @@ package geet.command
 
 import geet.exception.BadRequest
 import geet.util.const.indexManager
+import geet.util.const.objectManager
 import geet.util.const.resetColor
 import geet.util.const.yellow
 import geet.util.getRelativePathFromRoot
@@ -21,17 +22,28 @@ fun geetAdd(commandLines: Array<String>): Unit {
         } else {
             addAllFilesInDirectory(commandFile)
         }
+
+        indexManager.writeIndex()
+        return
     }
 
     val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
         ?: throw BadRequest("파일이 존재하지 않습니다.: ${yellow}${filePath}${resetColor}")
     indexManager.addToStage(objectInLastCommit, deleted = true)
+    indexManager.writeIndex()
 }
 
 fun addFileToStage(file: File) {
-    // TODO: 구현
+    val blob = objectManager.saveBlob(file)
+    indexManager.addToStage(blob)
 }
 
 fun addAllFilesInDirectory(directory: File) {
-    // TODO: 구현
+    directory.listFiles()?.forEach { file ->
+        if (file.isDirectory) {
+            addAllFilesInDirectory(file)
+        } else {
+            addFileToStage(file)
+        }
+    }
 }
