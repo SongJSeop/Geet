@@ -83,7 +83,9 @@ fun getStageObjectStatus(): StatusResult {
 
     indexManager.indexData.lastCommitObjects.forEach { lastCommitObject ->
         val file = File(lastCommitObject.filePath)
-        if (!file.exists()) {
+        val objectInStage = indexManager.searchObjectFromStage(lastCommitObject.filePath)
+
+        if (!file.exists() && objectInStage == null) {
             statusResult.unstaged.deletedFiles.add(lastCommitObject.filePath)
         }
     }
