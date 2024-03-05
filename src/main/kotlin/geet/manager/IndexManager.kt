@@ -11,9 +11,8 @@ import java.time.LocalDateTime
 
 @Serializable
 data class StageObject(
-    val hash: String,
+    val blob: GeetBlob,
     val slot: Int,
-    val filePath: String,
     val status: StageObjectStatus,
     val lastUpdateTime: String
 )
@@ -46,9 +45,8 @@ class IndexManager {
         }
 
         val stageObject = StageObject(
-            hash = blob.hash,
+            blob = blob,
             slot = slot,
-            filePath = blob.filePath,
             status = status,
             lastUpdateTime = LocalDateTime.now().toString()
         )
@@ -56,11 +54,11 @@ class IndexManager {
     }
 
     fun removeFromStage(filePath: String) {
-        indexData.stageObjects.removeIf { it.filePath == filePath }
+        indexData.stageObjects.removeIf { it.blob.filePath == filePath }
     }
 
     fun searchObjectFromStage(filePath: String): StageObject? {
-        return indexData.stageObjects.find { it.filePath == filePath }
+        return indexData.stageObjects.find { it.blob.filePath == filePath }
     }
 
     fun searchObjectFromLastCommit(filePath: String): GeetBlob? {
