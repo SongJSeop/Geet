@@ -8,13 +8,28 @@ import geet.util.const.resetColor
 import geet.util.getRelativePathFromRoot
 import java.io.File
 
+data class StatusObject(
+    val newFiles: MutableList<String> = mutableListOf(),
+    val modifiedFiles: MutableList<String> = mutableListOf(),
+    val deletedFiles: MutableList<String> = mutableListOf()
+)
+
+data class StatusResult(
+    val staged: StatusObject,
+    val unstaged: StatusObject,
+    val untracked: List<String>
+)
+
 fun geetStatus(commandLines: Array<String>): Unit {
     if (commandLines.size != 1) {
         throw BadRequest("status 명령어는 다른 옵션을 가지지 않습니다.: ${red}${commandLines.joinToString(" ")}${resetColor}")
     }
 
-    val untrackedFiles = getUntrackedFiles(File("."))
-    println(untrackedFiles)
+    val statusResult = StatusResult(
+        staged = StatusObject(),
+        unstaged = StatusObject(),
+        untracked = getUntrackedFiles(File("."))
+    )
 }
 
 fun getUntrackedFiles(dir: File): List<String> {
