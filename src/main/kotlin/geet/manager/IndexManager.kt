@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 @Serializable
 data class StageObject(
     val hash: String,
-    val slot: Int = 0,
+    val slot: Int,
     val filePath: String,
     val status: StageObjectStatus,
     val lastUpdateTime: String
@@ -36,6 +36,24 @@ class IndexManager {
 
             return Json.decodeFromString(IndexData.serializer(), indexFile.readText().fromZlibToString())
         }
+
+    fun addToStage(blob: GeetBlob, deleted: Boolean = false, slot: Int = 0) {
+        var status: StageObjectStatus
+        when (true) {
+            deleted -> status = StageObjectStatus.DELETED
+            isInLastCommit(blob.filePath) -> status = StageObjectStatus.MODIFIED
+            else -> status = StageObjectStatus.NEW
+        }
+
+        val stageObject = StageObject(
+            hash = blob.hashString,
+            slot = slot,
+            filePath = blob.filePath,
+            status = status,
+            lastUpdateTime = LocalDateTime.now().toString()
+        )
+        indexData.stageObjects.add(stageObject)
+    }
 
     fun isInLastCommit(filePath: String): Boolean {
         return indexData.lastCommitObjects.any { it.filePath == filePath }
