@@ -1,7 +1,7 @@
 package geet.enums
 
 enum class StageObjectStatus {
-    ADDED,
+    NEW,
     MODIFIED,
     DELETED,
     UNTRACKED
