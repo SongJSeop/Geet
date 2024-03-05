@@ -1,5 +1,6 @@
 package geet.geetobject
 
+import geet.enums.GeetObjectType.COMMIT
 import java.time.LocalDateTime
 
 class GeetCommit(
@@ -9,7 +10,7 @@ class GeetCommit(
     val message: String
 ): GeetObject {
 
-    override val type: String = "commit"
+    override val type = COMMIT
     override val content: String
         get() {
             return "tree ${tree.hashString}\n" +

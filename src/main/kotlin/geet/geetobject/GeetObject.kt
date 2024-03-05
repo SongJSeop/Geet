@@ -1,14 +1,15 @@
 package geet.geetobject
 
+import geet.enums.GeetObjectType
 import geet.util.const.messageDigest
 
 interface GeetObject {
 
-    val type: String
+    val type: GeetObjectType
     val content: String
     val hashString: String
         get() {
-            val header = "${type} ${content.length}\u0000"
+            val header = "${type.value} ${content.length}\u0000"
             val store = header + content
 
             val hash = messageDigest.digest(store.toByteArray())
