@@ -1,59 +1,30 @@
 package geet.command
 
-import geet.enums.StageObjectStatus.*
-import geet.exception.BadRequest
-import geet.util.const.*
-
-data class StatusObject(
-    val newFiles: MutableList<String> = mutableListOf(),
-    val modifiedFiles: MutableList<String> = mutableListOf(),
-    val deletedFiles: MutableList<String> = mutableListOf()
-)
-
 data class StatusResult(
-    val staged: StatusObject,
-    val unstaged: StatusObject,
-    val untracked: List<String>
+    val stagedNewFiles: MutableSet<String> = mutableSetOf(),
+    val stagedModifiedFiles: MutableSet<String> = mutableSetOf(),
+    val stagedDeletedFiles: MutableSet<String> = mutableSetOf(),
+    val unstagedModifiedFiles: MutableSet<String> = mutableSetOf(),
+    val unstagedDeletedFiles: MutableSet<String> = mutableSetOf(),
+    val untrackedFiles: MutableSet<String> = mutableSetOf(),
 )
 
 fun geetStatus(commandLines: Array<String>): Unit {
-    if (commandLines.size != 1) {
-        throw BadRequest("status 명령어는 다른 옵션을 가지지 않습니다.: ${red}${commandLines.joinToString(" ")}${resetColor}")
-    }
+    // stage - new
+    // 최근 커밋에 없고, 스테이지엔 있음(NEW)
 
-    val staged = getStatusResult()
-}
+    // stage - modified
+    // 최근 커밋에 있고, 스테이지에도 있음(삭제 제외) / 최근 커밋에 없고, 스테이지에도 있고, 스테이지와 작업 디렉토리 해시값 다름
 
-fun getStatusResult(): StatusObject {
-    val staged = StatusObject()
+    // stage - deleted
+    // 최근 커밋에 있고, 스테이지에도 있음(삭제)
 
-    val stageObjects = indexManager.getStageObjects()
-    stageObjects.forEach { stageObject ->
-        when (stageObject.status) {
-            NEW -> staged.newFiles.add(stageObject.blob.filePath)
-            MODIFIED -> staged.modifiedFiles.add(stageObject.blob.filePath)
-            DELETED -> staged.deletedFiles.add(stageObject.blob.filePath)
-            else -> return@forEach
-        }
-    }
+    // unstage - modified
+    // 최근 커밋에 있고, 스테이지엔 없고, 최근 커밋과 작업 디렉토리 해시값 다름 / 최근 커밋 상관 없음, 스테이지에 있고, 스테이지와 작업 디렉토리 해시값 다름
 
-    return staged
-}
+    // unstage - deleted
+    // 최근 커밋에 있고, 스테이지엔 없으며, 작업 디렉토리에서 파일이 삭제됨
 
-fun printStatusResult(statusResult: StatusResult): Unit {
-    println("** 스테이지된 변경사항 **")
-    statusResult.staged.newFiles.forEach { println("${green}  새로운 파일: $it${resetColor}") }
-    statusResult.staged.modifiedFiles.forEach { println("${green}  수정된 파일: $it${resetColor}") }
-    statusResult.staged.deletedFiles.forEach { println("${green}  삭제된 파일: $it${resetColor}") }
-    println()
-
-    println("** 스테이지되지 않은 변경사항 **")
-    statusResult.unstaged.newFiles.forEach { println("${yellow}  새로운 파일: $it${resetColor}") }
-    statusResult.unstaged.modifiedFiles.forEach { println("${yellow}  수정된 파일: $it${resetColor}") }
-    statusResult.unstaged.deletedFiles.forEach { println("${yellow}  삭제된 파일: $it${resetColor}") }
-    println()
-
-    println("** 추적되지 않는 파일 **")
-    statusResult.untracked.forEach { println("${red}  $it${resetColor}") }
-    println()
+    // untracked
+    // 최근 커밋에 없고, 스테이지에도 없고, 작업 디렉토리엔 존재
 }
