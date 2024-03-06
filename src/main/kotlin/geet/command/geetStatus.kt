@@ -24,7 +24,7 @@ fun geetStatus(commandLines: Array<String>): Unit {
         throw BadRequest("status 명령어는 다른 옵션을 가지지 않습니다.: ${red}${commandLines.joinToString(" ")}${resetColor}")
     }
 
-    val statusResult = getStageObjectStatus()
+    val statusResult = getStatusResult()
     printStatusResult(statusResult)
 }
 
@@ -50,7 +50,7 @@ fun getUntrackedFiles(dir: File): List<String> {
     return untrackedFiles
 }
 
-fun getStageObjectStatus(): StatusResult {
+fun getStatusResult(): StatusResult {
     val statusResult = StatusResult(
         staged = StatusObject(),
         unstaged = StatusObject(),
