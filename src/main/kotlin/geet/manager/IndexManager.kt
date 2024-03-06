@@ -1,6 +1,7 @@
 package geet.manager
 
 import geet.enums.StageObjectStatus
+import geet.enums.StageObjectStatus.*
 import geet.geetobject.GeetBlob
 import geet.util.fromZlibToString
 import geet.util.toZlib
@@ -26,7 +27,7 @@ data class IndexData(
 class IndexManager {
 
     val indexFile = File(".geet/index")
-    val indexData: IndexData
+    private val indexData: IndexData
 
     init {
         if (indexFile.exists()) {
@@ -39,9 +40,9 @@ class IndexManager {
     fun addToStage(blob: GeetBlob, deleted: Boolean = false, slot: Int = 0) {
         var status: StageObjectStatus
         when (true) {
-            deleted -> status = StageObjectStatus.DELETED
-            (searchObjectFromLastCommit(blob.filePath) == null) -> status = StageObjectStatus.NEW
-            else -> status = StageObjectStatus.MODIFIED
+            deleted -> status = DELETED
+            (searchObjectFromLastCommit(blob.filePath) == null) -> status = NEW
+            else -> status = MODIFIED
         }
 
         val stageObject = StageObject(
@@ -59,6 +60,15 @@ class IndexManager {
 
     fun searchObjectFromStage(filePath: String): StageObject? {
         return indexData.stageObjects.find { it.blob.filePath == filePath }
+    }
+
+    fun getStageObjects(status: StageObjectStatus? = null): List<StageObject> {
+        when (status) {
+            NEW -> return indexData.stageObjects.filter { it.status == NEW }
+            MODIFIED -> return indexData.stageObjects.filter { it.status == MODIFIED }
+            DELETED -> return indexData.stageObjects.filter { it.status == DELETED }
+            else -> return indexData.stageObjects
+        }
     }
 
     fun searchObjectFromLastCommit(filePath: String): GeetBlob? {
