@@ -1,6 +1,6 @@
 package geet.command
 
-import geet.enums.StageObjectStatus
+import geet.enums.StageObjectStatus.*
 import geet.exception.BadRequest
 import geet.geetobject.GeetBlob
 import geet.util.const.*
@@ -62,21 +62,21 @@ fun getStatusResult(): StatusResult {
         val blob = GeetBlob(content = file.readText(), filePath = getRelativePathFromRoot(file))
 
         when (stageObject.status) {
-            StageObjectStatus.NEW -> {
+            NEW -> {
                 if (stageObject.blob.hash != blob.hash) {
                     statusResult.unstaged.newFiles.add(stageObject.blob.filePath)
                 }
 
                 statusResult.staged.newFiles.add(stageObject.blob.filePath)
             }
-            StageObjectStatus.MODIFIED -> {
+            MODIFIED -> {
                 if (stageObject.blob.hash != blob.hash) {
                     statusResult.unstaged.modifiedFiles.add(stageObject.blob.filePath)
                 }
 
                 statusResult.staged.modifiedFiles.add(stageObject.blob.filePath)
             }
-            StageObjectStatus.DELETED -> statusResult.staged.deletedFiles.add(stageObject.blob.filePath)
+            DELETED -> statusResult.staged.deletedFiles.add(stageObject.blob.filePath)
             else -> return@forEach
         }
     }
@@ -85,7 +85,7 @@ fun getStatusResult(): StatusResult {
         val file = File(lastCommitObject.filePath)
         val objectInStage = indexManager.searchObjectFromStage(lastCommitObject.filePath)
 
-        if (!file.exists() && objectInStage == null) {
+        if (!file.exists() && (objectInStage == null || objectInStage.status != DELETED)) {
             statusResult.unstaged.deletedFiles.add(lastCommitObject.filePath)
         }
     }
