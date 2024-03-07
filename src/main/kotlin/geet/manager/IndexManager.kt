@@ -3,6 +3,8 @@ package geet.manager
 import geet.enums.StageObjectStatus
 import geet.enums.StageObjectStatus.*
 import geet.geetobject.GeetBlob
+import geet.geetobject.GeetObjectWithFile
+import geet.geetobject.GeetTree
 import geet.util.fromZlibToString
 import geet.util.toZlib
 import kotlinx.serialization.Serializable
@@ -21,7 +23,7 @@ data class StageObject(
 @Serializable
 data class IndexData(
     val stageObjects: MutableList<StageObject>,
-    val lastCommitObjects: List<GeetBlob>
+    val lastCommitObjects: List<GeetObjectWithFile>
 )
 
 class IndexManager {
@@ -71,7 +73,19 @@ class IndexManager {
         }
     }
 
-    fun searchObjectFromLastCommit(filePath: String): GeetBlob? {
+    fun searchObjectFromLastCommit(filePath: String): GeetObjectWithFile? {
+        if (filePath.contains(File.separatorChar)) {
+            val filePathSplit = filePath.split(File.separatorChar)
+            var treeObject: GeetObjectWithFile = indexData.lastCommitObjects.find { it.filePath == filePathSplit[0] }
+                ?: return null
+            filePathSplit.subList(1, filePathSplit.size - 1).forEach { splitPath ->
+                treeObject = (treeObject as GeetTree).tree.find {
+                    it.filePath.split(File.separatorChar).last() == splitPath
+                } ?: return null
+            }
+            return (treeObject as GeetTree).tree.find { it.filePath == filePathSplit.last() }
+        }
+
         return indexData.lastCommitObjects.find { it.filePath == filePath }
     }
 

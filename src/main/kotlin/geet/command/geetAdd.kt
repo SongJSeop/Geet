@@ -1,6 +1,8 @@
 package geet.command
 
 import geet.exception.BadRequest
+import geet.geetobject.GeetBlob
+import geet.geetobject.GeetTree
 import geet.util.const.*
 import geet.util.getRelativePathFromRoot
 import java.io.File
@@ -28,10 +30,13 @@ fun geetAdd(commandLines: Array<String>): Unit {
         return
     }
 
-    val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
-        ?: throw BadRequest("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")
-    indexManager.addToStage(objectInLastCommit, deleted = true)
-    indexManager.writeIndex()
+    when (val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
+        ?: throw BadRequest("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")) {
+        is GeetBlob -> {}
+        is GeetTree -> {}
+    }
+//    indexManager.addToStage(objectInLastCommit, deleted = true)
+//    indexManager.writeIndex()
 }
 
 fun addFileToStage(file: File) {
