@@ -32,11 +32,12 @@ fun geetAdd(commandLines: Array<String>): Unit {
 
     when (val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
         ?: throw BadRequest("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")) {
-        is GeetBlob -> {}
-        is GeetTree -> {}
+        is GeetBlob -> indexManager.addToStage(objectInLastCommit, deleted = true)
+        is GeetTree -> objectInLastCommit.getAllBlobObjectsOfTree().forEach {
+            indexManager.addToStage(it, deleted = true)
+        }
     }
-//    indexManager.addToStage(objectInLastCommit, deleted = true)
-//    indexManager.writeIndex()
+    indexManager.writeIndex()
 }
 
 fun addFileToStage(file: File) {
