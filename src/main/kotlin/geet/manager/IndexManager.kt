@@ -39,6 +39,15 @@ class IndexManager {
         }
     }
 
+    fun getStageObjects(status: StageObjectStatus? = null): List<StageObject> {
+        when (status) {
+            NEW -> return indexData.stageObjects.filter { it.status == NEW }
+            MODIFIED -> return indexData.stageObjects.filter { it.status == MODIFIED }
+            DELETED -> return indexData.stageObjects.filter { it.status == DELETED }
+            else -> return indexData.stageObjects
+        }
+    }
+
     fun addToStage(blob: GeetBlob, deleted: Boolean = false, slot: Int = 0) {
         var status: StageObjectStatus
         when (true) {
@@ -62,15 +71,6 @@ class IndexManager {
 
     fun searchObjectFromStage(filePath: String): StageObject? {
         return indexData.stageObjects.find { it.blob.filePath == filePath }
-    }
-
-    fun getStageObjects(status: StageObjectStatus? = null): List<StageObject> {
-        when (status) {
-            NEW -> return indexData.stageObjects.filter { it.status == NEW }
-            MODIFIED -> return indexData.stageObjects.filter { it.status == MODIFIED }
-            DELETED -> return indexData.stageObjects.filter { it.status == DELETED }
-            else -> return indexData.stageObjects
-        }
     }
 
     fun searchObjectFromLastCommit(filePath: String): GeetObjectWithFile? {

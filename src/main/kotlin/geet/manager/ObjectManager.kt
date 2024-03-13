@@ -1,6 +1,7 @@
 package geet.manager
 
 import geet.geetobject.GeetBlob
+import geet.geetobject.GeetObject
 import geet.geetobject.GeetObjectWithFile
 import geet.geetobject.GeetTree
 import geet.util.getRelativePathFromRoot
@@ -46,5 +47,12 @@ class ObjectManager {
 
         treeFile.writeText(treeObject.content.toZlib())
         return treeObject
+    }
+
+    fun isDeletedObject(geetObject: GeetObject): Boolean {
+        val dirName = geetObject.hash.substring(0, 2)
+        val fileName = geetObject.hash.substring(2)
+        val objectFile = File(File(objectDir, dirName), fileName)
+        return !objectFile.exists()
     }
 }
