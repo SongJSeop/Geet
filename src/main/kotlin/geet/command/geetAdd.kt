@@ -1,6 +1,7 @@
 package geet.command
 
 import geet.exception.BadRequest
+import geet.exception.NotFound
 import geet.geetobject.GeetBlob
 import geet.geetobject.GeetTree
 import geet.util.const.*
@@ -31,7 +32,7 @@ fun geetAdd(commandLines: Array<String>): Unit {
     }
 
     when (val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
-        ?: throw BadRequest("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")) {
+        ?: throw NotFound("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")) {
         is GeetBlob -> indexManager.addToStage(objectInLastCommit, deleted = true)
         is GeetTree -> objectInLastCommit.getAllBlobObjectsOfTree().forEach {
             indexManager.addToStage(it, deleted = true)
@@ -61,6 +62,7 @@ fun addAllFilesInDirectory(directory: File) {
         return
     }
 
+    indexManager.addDeletedFilesInDir(getRelativePathFromRoot(directory))
     directory.listFiles()?.forEach { file ->
         if (file.isDirectory) {
             addAllFilesInDirectory(file)

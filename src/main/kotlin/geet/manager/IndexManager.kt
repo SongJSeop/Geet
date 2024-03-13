@@ -5,6 +5,7 @@ import geet.enums.StageObjectStatus.*
 import geet.geetobject.GeetBlob
 import geet.geetobject.GeetObjectWithFile
 import geet.geetobject.GeetTree
+import geet.util.const.objectManager
 import geet.util.fromZlibToString
 import geet.util.toZlib
 import kotlinx.serialization.Serializable
@@ -63,6 +64,31 @@ class IndexManager {
             lastUpdateTime = LocalDateTime.now().toString()
         )
         indexData.stageObjects.add(stageObject)
+    }
+
+    fun addDeletedFilesInDir(filePath: String) {
+        var treeObject: GeetTree
+        if (filePath == ".") {
+            treeObject = GeetTree(filePath = filePath, tree = indexData.lastCommitObjects)
+        } else {
+            val lastCommitObject = searchObjectFromLastCommit(filePath) ?: return
+            if (lastCommitObject !is GeetTree) return
+            treeObject = lastCommitObject as GeetTree
+        }
+        addDeletedObjectInTree(treeObject)
+    }
+
+    fun addDeletedObjectInTree(treeObject: GeetTree) {
+        treeObject.tree.forEach {
+            if (it is GeetBlob) {
+                val file = File(it.filePath)
+                if (!file.exists()) {
+                    addToStage(it, deleted = true)
+                }
+            } else {
+                addDeletedObjectInTree(it as GeetTree)
+            }
+        }
     }
 
     fun removeFromStage(filePath: String) {
