@@ -1,6 +1,5 @@
 package geet.command
 
-import geet.enums.StageObjectStatus
 import geet.enums.StageObjectStatus.*
 import geet.exception.BadRequest
 import geet.util.const.indexManager
@@ -26,6 +25,7 @@ fun geetStatus(commandLines: Array<String>): Unit {
     val statusResult = StatusResult()
 
     val files = getAllFilesInDir(File("."))
+    val deletedFileNames = indexManager.getDeletedObjects().map { it.filePath }
     files.forEach { file ->
         val filePath = getRelativePathFromRoot(file)
         val samePathObjectInStage = indexManager.searchObjectFromStage(filePath)
@@ -40,6 +40,10 @@ fun geetStatus(commandLines: Array<String>): Unit {
             if (samePathObjectInLastCommit.content != file.readText()) {
                 statusResult.unstagedModifiedFiles.add(filePath)
             }
+
+            if (filePath in deletedFileNames) {
+                statusResult.unstagedDeletedFiles.add(filePath)
+            }
             return@forEach
         }
 
@@ -49,6 +53,4 @@ fun geetStatus(commandLines: Array<String>): Unit {
             DELETED -> statusResult.stagedDeletedFiles.add(filePath)
         }
     }
-
-    println(statusResult)
 }
