@@ -30,18 +30,11 @@ fun geetStatus(commandLines: Array<String>): Unit {
         val samePathObjectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
 
         if (samePathObjectInStage == null) {
-            if (samePathObjectInLastCommit == null) {
-                statusResult.untrackedFiles.add(filePath)
-                return@forEach
-            }
-
-            if (samePathObjectInLastCommit.content != file.readText()) {
-                statusResult.unstagedModifiedFiles.add(filePath)
-                return@forEach
-            }
-
-            if (filePath in deletedFileNames) {
-                statusResult.unstagedDeletedFiles.add(filePath)
+            when (true) {
+                (samePathObjectInLastCommit == null) -> statusResult.untrackedFiles.add(filePath)
+                (samePathObjectInLastCommit.content != file.readText()) -> statusResult.unstagedModifiedFiles.add(filePath)
+                (filePath in deletedFileNames) -> statusResult.unstagedDeletedFiles.add(filePath)
+                else -> return@forEach
             }
             return@forEach
         }
