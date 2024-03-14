@@ -49,6 +49,28 @@ class IndexManager {
         }
     }
 
+    fun getDeletedObjects(tree: GeetTree? = null): List<GeetBlob> {
+        val deletedObjects = mutableListOf<GeetBlob>()
+        var objects: List<GeetObjectWithFile>
+        if (tree == null) {
+            objects = indexData.lastCommitObjects
+        } else {
+            objects = tree.tree
+        }
+
+        objects.forEach {
+            if (it is GeetBlob) {
+                if (!File(it.filePath).exists()) {
+                    deletedObjects.add(it)
+                }
+                return@forEach
+            }
+
+            deletedObjects.addAll(getDeletedObjects(it as GeetTree))
+        }
+        return deletedObjects
+    }
+
     fun addToStage(blob: GeetBlob, deleted: Boolean = false, slot: Int = 0) {
         var status: StageObjectStatus
         when (true) {
@@ -75,19 +97,9 @@ class IndexManager {
             if (lastCommitObject !is GeetTree) return
             treeObject = lastCommitObject as GeetTree
         }
-        addDeletedObjectInTree(treeObject)
-    }
-
-    fun addDeletedObjectInTree(treeObject: GeetTree) {
-        treeObject.tree.forEach {
-            if (it is GeetBlob) {
-                val file = File(it.filePath)
-                if (!file.exists()) {
-                    addToStage(it, deleted = true)
-                }
-            } else {
-                addDeletedObjectInTree(it as GeetTree)
-            }
+        val deletedObjects = getDeletedObjects(treeObject)
+        deletedObjects.forEach {
+            addToStage(it, deleted = true)
         }
     }
 
