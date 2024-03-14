@@ -1,5 +1,12 @@
 package geet.command
 
+import geet.exception.BadRequest
+import geet.util.const.resetColor
+import geet.util.const.yellow
+import geet.util.getAllFilesInDir
+import geet.util.getRelativePathFromRoot
+import java.io.File
+
 data class StatusResult(
     val stagedNewFiles: MutableSet<String> = mutableSetOf(),
     val stagedModifiedFiles: MutableSet<String> = mutableSetOf(),
@@ -10,8 +17,14 @@ data class StatusResult(
 )
 
 fun geetStatus(commandLines: Array<String>): Unit {
-    // stage - new
-    // 최근 커밋에 없고, 스테이지엔 있음(NEW)
+    if (commandLines.size != 1) {
+        throw BadRequest("status 명령어에 대한 옵션이 올바르지 않습니다. ${yellow}'status'${resetColor} 명령어는 옵션을 필요로 하지 않습니다.")
+    }
+
+    val files = getAllFilesInDir(File("."))
+    files.forEach { file ->
+        println(getRelativePathFromRoot(file))
+    }
 
     // stage - modified
     // 최근 커밋에 있고, 스테이지에도 있음(삭제 제외) / 최근 커밋에 없고, 스테이지에도 있고, 스테이지와 작업 디렉토리 해시값 다름

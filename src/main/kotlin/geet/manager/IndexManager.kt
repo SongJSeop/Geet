@@ -95,7 +95,7 @@ class IndexManager {
         } else {
             val lastCommitObject = searchObjectFromLastCommit(filePath) ?: return
             if (lastCommitObject !is GeetTree) return
-            treeObject = lastCommitObject as GeetTree
+            treeObject = lastCommitObject
         }
         val deletedObjects = getDeletedObjects(treeObject)
         deletedObjects.forEach {

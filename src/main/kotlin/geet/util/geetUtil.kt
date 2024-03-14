@@ -1,5 +1,6 @@
 package geet.util
 
+import geet.util.const.ignoreManager
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -52,4 +53,20 @@ fun getRelativePathFromRoot(file: File): String {
     val relativePath = filePath.removePrefix(rootPath).trimStart(File.separatorChar)
 
     return if (relativePath.isEmpty()) "." else relativePath
+}
+
+fun getAllFilesInDir(directory: File): List<File> {
+    if (ignoreManager.isIgnored(directory)) {
+        return listOf()
+    }
+
+    val files = mutableListOf<File>()
+    directory.listFiles()?.forEach {
+        if (it.isDirectory) {
+            files.addAll(getAllFilesInDir(it))
+        } else {
+            files.add(it)
+        }
+    }
+    return files
 }
