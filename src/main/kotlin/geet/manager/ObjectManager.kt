@@ -1,6 +1,7 @@
 package geet.manager
 
 import geet.geetobject.GeetBlob
+import geet.geetobject.GeetObject
 import geet.geetobject.GeetObjectWithFile
 import geet.geetobject.GeetTree
 import geet.util.getRelativePathFromRoot

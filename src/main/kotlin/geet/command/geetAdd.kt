@@ -1,6 +1,9 @@
 package geet.command
 
 import geet.exception.BadRequest
+import geet.exception.NotFound
+import geet.geetobject.GeetBlob
+import geet.geetobject.GeetTree
 import geet.util.const.*
 import geet.util.getRelativePathFromRoot
 import java.io.File
@@ -28,9 +31,13 @@ fun geetAdd(commandLines: Array<String>): Unit {
         return
     }
 
-    val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
-        ?: throw BadRequest("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")
-    indexManager.addToStage(objectInLastCommit, deleted = true)
+    when (val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
+        ?: throw NotFound("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")) {
+        is GeetBlob -> indexManager.addToStage(objectInLastCommit, deleted = true)
+        is GeetTree -> objectInLastCommit.getAllBlobObjectsOfTree().forEach {
+            indexManager.addToStage(it, deleted = true)
+        }
+    }
     indexManager.writeIndex()
 }
 
@@ -42,11 +49,6 @@ fun addFileToStage(file: File) {
     val filePath = getRelativePathFromRoot(file)
     val blob = objectManager.saveBlob(file)
 
-    val samePathObjectInStage = indexManager.searchObjectFromStage(filePath)
-    if (samePathObjectInStage != null) {
-        indexManager.removeFromStage(filePath)
-    }
-
     indexManager.addToStage(blob)
 }
 
@@ -55,6 +57,7 @@ fun addAllFilesInDirectory(directory: File) {
         return
     }
 
+    indexManager.addDeletedFilesInDir(getRelativePathFromRoot(directory))
     directory.listFiles()?.forEach { file ->
         if (file.isDirectory) {
             addAllFilesInDirectory(file)
