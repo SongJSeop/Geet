@@ -2,9 +2,7 @@ package geet.command
 
 import geet.enums.StageObjectStatus.*
 import geet.exception.BadRequest
-import geet.util.const.indexManager
-import geet.util.const.resetColor
-import geet.util.const.yellow
+import geet.util.const.*
 import geet.util.getAllFilesInDir
 import geet.util.getRelativePathFromRoot
 import java.io.File
@@ -53,4 +51,22 @@ fun geetStatus(commandLines: Array<String>): Unit {
             DELETED -> statusResult.stagedDeletedFiles.add(filePath)
         }
     }
+
+    printStatusResult(statusResult)
+}
+
+fun printStatusResult(statusResult: StatusResult): Unit {
+    println("** 스테이지된 변경 사항 **${green}")
+    statusResult.stagedNewFiles.forEach { println("  새로운 파일: $it") }
+    statusResult.stagedModifiedFiles.forEach { println("  수정된 파일: $it") }
+    statusResult.stagedDeletedFiles.forEach { println("  삭제된 파일: $it") }
+    println(resetColor)
+
+    println("** 스테이지되지 않은 변경 사항 **${yellow}")
+    statusResult.unstagedModifiedFiles.forEach { println("  수정된 파일: $it") }
+    statusResult.unstagedDeletedFiles.forEach { println("  삭제된 파일: $it") }
+    println(resetColor)
+
+    println("** 추적하지 않는 파일 **${red}")
+    statusResult.untrackedFiles.forEach { println("  $it") }
 }
