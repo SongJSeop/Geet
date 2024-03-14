@@ -79,6 +79,11 @@ class IndexManager {
             else -> status = MODIFIED
         }
 
+        val samePathObjectInStage = searchObjectFromStage(blob.filePath)
+        if (samePathObjectInStage != null) {
+            removeFromStage(samePathObjectInStage.blob.filePath)
+        }
+
         val stageObject = StageObject(
             blob = blob,
             slot = slot,

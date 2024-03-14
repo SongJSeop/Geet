@@ -49,11 +49,6 @@ fun addFileToStage(file: File) {
     val filePath = getRelativePathFromRoot(file)
     val blob = objectManager.saveBlob(file)
 
-    val samePathObjectInStage = indexManager.searchObjectFromStage(filePath)
-    if (samePathObjectInStage != null) {
-        indexManager.removeFromStage(filePath)
-    }
-
     indexManager.addToStage(blob)
 }
 

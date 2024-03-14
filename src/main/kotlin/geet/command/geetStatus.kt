@@ -37,6 +37,7 @@ fun geetStatus(commandLines: Array<String>): Unit {
 
             if (samePathObjectInLastCommit.content != file.readText()) {
                 statusResult.unstagedModifiedFiles.add(filePath)
+                return@forEach
             }
 
             if (filePath in deletedFileNames) {
