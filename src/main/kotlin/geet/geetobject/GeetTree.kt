@@ -8,9 +8,11 @@ class GeetTree(
 ): GeetObjectWithFile {
 
     override val type = TREE
+    override val fileName: String
+        get() = filePath.split("/").last()
     override val content: String
         get() = tree.joinToString("") {
-            "${it.type} ${it.hash} ${it.filePath}\n"
+            "${it.type} ${it.hash} ${it.fileName}\n"
         }
 
     fun getAllBlobObjectsOfTree(): List<GeetBlob> {
