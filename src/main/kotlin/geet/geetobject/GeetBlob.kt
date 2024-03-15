@@ -12,4 +12,8 @@ class GeetBlob(
     override val type = BLOB
     override val fileName: String
         get() = filePath.split("/").last()
+
+    override fun toString(): String {
+        return "GeetBlob(filePath='$filePath', content='$content')"
+    }
 }

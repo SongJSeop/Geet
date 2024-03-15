@@ -19,4 +19,8 @@ class GeetCommit(
                     "\n" +
                     message
         }
+
+    override fun toString(): String {
+        return "GeetCommit(tree=$tree, parent=$parent, message='$message')"
+    }
 }

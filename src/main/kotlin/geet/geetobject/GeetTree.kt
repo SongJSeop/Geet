@@ -4,7 +4,7 @@ import geet.enums.GeetObjectType.TREE
 
 class GeetTree(
     override val filePath: String,
-    val tree: List<GeetObjectWithFile>
+    val tree: MutableList<GeetObjectWithFile>
 ): GeetObjectWithFile {
 
     override val type = TREE
@@ -25,5 +25,9 @@ class GeetTree(
             }
         }
         return blobs
+    }
+
+    override fun toString(): String {
+        return "GeetTree(filePath='$filePath', tree=$tree)"
     }
 }

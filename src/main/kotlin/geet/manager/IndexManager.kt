@@ -5,7 +5,6 @@ import geet.enums.StageObjectStatus.*
 import geet.geetobject.GeetBlob
 import geet.geetobject.GeetObjectWithFile
 import geet.geetobject.GeetTree
-import geet.util.const.objectManager
 import geet.util.fromZlibToString
 import geet.util.toZlib
 import kotlinx.serialization.Serializable
@@ -24,7 +23,7 @@ data class StageObject(
 @Serializable
 data class IndexData(
     val stageObjects: MutableList<StageObject>,
-    val lastCommitObjects: List<GeetObjectWithFile>
+    val lastCommitObjects: MutableList<GeetObjectWithFile>
 )
 
 class IndexManager {
@@ -36,7 +35,7 @@ class IndexManager {
         if (indexFile.exists()) {
             indexData = Json.decodeFromString(IndexData.serializer(), indexFile.readText().fromZlibToString())
         } else {
-            indexData = IndexData(mutableListOf(), listOf())
+            indexData = IndexData(mutableListOf(), mutableListOf())
         }
     }
 
