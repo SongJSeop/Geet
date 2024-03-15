@@ -40,12 +40,10 @@ class IndexManager {
         }
     }
 
-    fun getStageObjects(status: StageObjectStatus? = null): List<StageObject> {
+    fun getStageObjects(status: StageObjectStatus? = null): List<GeetBlob> {
         when (status) {
-            NEW -> return indexData.stageObjects.filter { it.status == NEW }
-            MODIFIED -> return indexData.stageObjects.filter { it.status == MODIFIED }
-            DELETED -> return indexData.stageObjects.filter { it.status == DELETED }
-            else -> return indexData.stageObjects
+            null -> return indexData.stageObjects.map { it.blob }
+            else -> return indexData.stageObjects.filter { it.status == status }.map { it.blob }
         }
     }
 
