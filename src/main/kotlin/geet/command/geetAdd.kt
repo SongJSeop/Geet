@@ -53,10 +53,12 @@ fun addFileToStage(file: File) {
 
     if (samePathObjectInStage == null) {
         if (samePathObjectInLastCommit == null) {
-            val blob = objectManager.saveBlob(file)
+            val blob = GeetBlob(filePath = filePath, content = file.readText())
+            objectManager.saveBlob(blob)
             indexManager.addToStage(blob, status = NEW)
         } else if (samePathObjectInLastCommit.content != file.readText()) {
-            val blob = objectManager.saveBlob(file)
+            val blob = GeetBlob(filePath = filePath, content = file.readText())
+            objectManager.saveBlob(blob)
             indexManager.addToStage(blob, status = MODIFIED)
         }
         return
@@ -64,7 +66,8 @@ fun addFileToStage(file: File) {
 
     if (samePathObjectInStage.blob.content != file.readText()) {
         indexManager.removeFromStage(samePathObjectInStage.blob.filePath)
-        val blob = objectManager.saveBlob(file)
+        val blob = GeetBlob(filePath = filePath, content = file.readText())
+        objectManager.saveBlob(blob)
         indexManager.addToStage(blob, status = samePathObjectInStage.status)
     }
 }

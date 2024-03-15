@@ -1,7 +1,6 @@
 package geet.manager
 
 import geet.geetobject.*
-import geet.util.getRelativePathFromRoot
 import geet.util.toZlib
 import java.io.File
 
@@ -9,9 +8,7 @@ class ObjectManager {
     
     val objectDir = File(".geet/objects")
     
-    fun saveBlob(file: File): GeetBlob {
-        val blobObject = GeetBlob(content = file.readText(), filePath = getRelativePathFromRoot(file))
-        
+    fun saveBlob(blobObject: GeetBlob): Unit {
         val blobDir = File(objectDir, blobObject.hash.substring(0, 2))
         val blobFile = File(blobDir, blobObject.hash.substring(2))
 
@@ -20,12 +17,9 @@ class ObjectManager {
         }
 
         blobFile.writeText(blobObject.content.toZlib())
-        return blobObject
     }
 
-    fun saveTree(filePath: String = "bak", tree: List<GeetObjectWithFile>): GeetTree {
-        val treeObject = GeetTree(filePath = filePath, tree = tree)
-
+    fun saveTree(treeObject: GeetTree): Unit {
         val treeDir = File(objectDir, treeObject.hash.substring(0, 2))
         val treeFile = File(treeDir, treeObject.hash.substring(2))
 
@@ -34,12 +28,9 @@ class ObjectManager {
         }
 
         treeFile.writeText(treeObject.content.toZlib())
-        return treeObject
     }
 
-    fun saveCommit(tree: GeetTree, parent: GeetCommit? = null, message: String): GeetCommit {
-        val commitObject = GeetCommit(tree = tree, parent = parent, message = message)
-
+    fun saveCommit(commitObject: GeetCommit): Unit {
         val commitDir = File(objectDir, commitObject.hash.substring(0, 2))
         val commitFile = File(commitDir, commitObject.hash.substring(2))
 
@@ -48,6 +39,5 @@ class ObjectManager {
         }
 
         commitFile.writeText(commitObject.content.toZlib())
-        return commitObject
     }
 }
