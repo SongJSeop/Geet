@@ -23,17 +23,8 @@ class ObjectManager {
         return blobObject
     }
 
-    fun saveTree(file: File): GeetTree {
-        val tree = mutableListOf<GeetObjectWithFile>()
-        file.listFiles()?.forEach { it ->
-            if (it.isDirectory && !it.listFiles().isNullOrEmpty()) {
-                tree.add(saveTree(it))
-            } else {
-                tree.add(saveBlob(it))
-            }
-        }
-
-        val treeObject = GeetTree(filePath = getRelativePathFromRoot(file), tree = tree)
+    fun saveTree(filePath: String = "bak", tree: List<GeetObjectWithFile>): GeetTree {
+        val treeObject = GeetTree(filePath = filePath, tree = tree)
 
         val treeDir = File(objectDir, treeObject.hash.substring(0, 2))
         val treeFile = File(treeDir, treeObject.hash.substring(2))
