@@ -1,5 +1,6 @@
 package geet.command
 
+import geet.enums.StageObjectStatus.*
 import geet.exception.BadRequest
 import geet.exception.NotFound
 import geet.geetobject.GeetBlob
@@ -33,9 +34,9 @@ fun geetAdd(commandLines: Array<String>): Unit {
 
     when (val objectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
         ?: throw NotFound("파일이 존재하지 않습니다.: ${red}${filePath}${resetColor}")) {
-        is GeetBlob -> indexManager.addToStage(objectInLastCommit, deleted = true)
+        is GeetBlob -> indexManager.addToStage(objectInLastCommit, status = DELETED)
         is GeetTree -> objectInLastCommit.getAllBlobObjectsOfTree().forEach {
-            indexManager.addToStage(it, deleted = true)
+            indexManager.addToStage(it, status = DELETED)
         }
     }
     indexManager.writeIndex()
@@ -47,9 +48,25 @@ fun addFileToStage(file: File) {
     }
 
     val filePath = getRelativePathFromRoot(file)
-    val blob = objectManager.saveBlob(file)
+    val samePathObjectInStage = indexManager.searchObjectFromStage(filePath)
+    val samePathObjectInLastCommit = indexManager.searchObjectFromLastCommit(filePath)
 
-    indexManager.addToStage(blob)
+    if (samePathObjectInStage == null) {
+        if (samePathObjectInLastCommit == null) {
+            val blob = objectManager.saveBlob(file)
+            indexManager.addToStage(blob, status = NEW)
+        } else if (samePathObjectInLastCommit.content != file.readText()) {
+            val blob = objectManager.saveBlob(file)
+            indexManager.addToStage(blob, status = MODIFIED)
+        }
+        return
+    }
+
+    if (samePathObjectInStage.blob.content != file.readText()) {
+        indexManager.removeFromStage(samePathObjectInStage.blob.filePath)
+        val blob = objectManager.saveBlob(file)
+        indexManager.addToStage(blob, status = samePathObjectInStage.status)
+    }
 }
 
 fun addAllFilesInDirectory(directory: File) {

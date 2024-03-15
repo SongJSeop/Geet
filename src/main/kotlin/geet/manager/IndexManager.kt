@@ -69,19 +69,7 @@ class IndexManager {
         return deletedObjects
     }
 
-    fun addToStage(blob: GeetBlob, deleted: Boolean = false, slot: Int = 0) {
-        var status: StageObjectStatus
-        when (true) {
-            deleted -> status = DELETED
-            (searchObjectFromLastCommit(blob.filePath) == null) -> status = NEW
-            else -> status = MODIFIED
-        }
-
-        val samePathObjectInStage = searchObjectFromStage(blob.filePath)
-        if (samePathObjectInStage != null) {
-            removeFromStage(samePathObjectInStage.blob.filePath)
-        }
-
+    fun addToStage(blob: GeetBlob, status: StageObjectStatus, slot: Int = 0) {
         val stageObject = StageObject(
             blob = blob,
             slot = slot,
@@ -102,7 +90,7 @@ class IndexManager {
         }
         val deletedObjects = getDeletedObjects(treeObject)
         deletedObjects.forEach {
-            addToStage(it, deleted = true)
+            addToStage(it, status = DELETED)
         }
     }
 
