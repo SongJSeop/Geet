@@ -46,6 +46,10 @@ class IndexManager {
         }
     }
 
+    fun getLastCommitTree(): GeetTree {
+        return GeetTree(filePath = "", tree = indexData.lastCommitObjects)
+    }
+
     fun getDeletedObjects(tree: GeetTree? = null): List<GeetBlob> {
         val deletedObjects = mutableListOf<GeetBlob>()
         var objects: List<GeetObjectWithFile>
