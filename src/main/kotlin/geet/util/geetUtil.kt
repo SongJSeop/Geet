@@ -52,7 +52,7 @@ fun getRelativePathFromRoot(file: File): String {
 
     val relativePath = filePath.removePrefix(rootPath).trimStart(File.separatorChar)
 
-    return if (relativePath.isEmpty()) "." else relativePath
+    return if (relativePath.isEmpty()) "" else relativePath
 }
 
 fun getAllFilesInDir(directory: File): List<File> {
