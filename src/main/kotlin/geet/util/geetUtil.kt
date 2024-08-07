@@ -10,11 +10,29 @@ import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
 fun isGeetDirectory(): Boolean {
-    val geetDir = File(".geet")
-    val geetObjectDir = File(geetDir, "objects")
-    val geetRefsDir = File(geetDir, "refs")
-    val geetHeadFile = File(geetDir, "HEAD")
-    return geetDir.exists() && geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists()
+    var currentDir = File(".").absoluteFile
+
+    while (true) {
+        val geetDir = File(currentDir, ".geet")
+        if (geetDir.exists()) {
+            val geetObjectDir = File(geetDir, "objects")
+            val geetRefsDir = File(geetDir, "refs")
+            val geetHeadFile = File(geetDir, "HEAD")
+            val geetConfigFile = File(geetDir, "config")
+            val geetDescriptionFile = File(geetDir, "description")
+            val geetHooksDir = File(geetDir, "hooks")
+            val geetInfoDir = File(geetDir, "info")
+            val geetLogsDir = File(geetDir, "logs")
+
+            return geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists() &&
+                    geetConfigFile.exists() && geetDescriptionFile.exists() &&
+                    geetHooksDir.exists() && geetInfoDir.exists() && geetLogsDir.exists()
+        }
+
+        val parentDir = currentDir.parentFile ?: return false
+        if (parentDir == currentDir) return false // 루트 디렉토리에 도달
+        currentDir = parentDir
+    }
 }
 
 fun String.toZlib(): String {
