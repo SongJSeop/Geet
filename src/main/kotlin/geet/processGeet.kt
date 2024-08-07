@@ -4,7 +4,7 @@ import geet.command.*
 import geet.exception.BadRequest
 import geet.util.const.red
 import geet.util.const.resetColor
-import geet.util.isGeetDirectory
+import geet.util.isGeetRepository
 
 fun processGeet(commandLines: Array<String>): Unit {
     if (commandLines.isEmpty() || commandLines[0] == "help") {
@@ -12,7 +12,7 @@ fun processGeet(commandLines: Array<String>): Unit {
         return
     }
 
-    if (commandLines[0] != "init" && !isGeetDirectory()) {
+    if (commandLines[0] != "init" && !isGeetRepository()) {
         throw BadRequest("현재 디렉토리는 Geet 저장소가 아닙니다.")
     }
 

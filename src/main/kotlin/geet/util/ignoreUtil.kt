@@ -2,8 +2,8 @@ package geet.util
 
 import java.io.File
 
-val ignoreFile = File(".geetignore")
-val ignoreSet = if (ignoreFile.exists()) {
+val ignoreFile = getGeetIgnoreFile()
+val ignoreSet = if (ignoreFile != null && ignoreFile.exists()) {
     val ignoreSet = mutableSetOf(".geet")
     ignoreFile.readLines().toSet()
         .map { it.trim() }
@@ -21,4 +21,9 @@ fun isIgnored(file: File): Boolean {
     return ignoreSet.any {
         it == fileName || it == relativePath
     }
+}
+
+fun getGeetIgnoreFile(): File? {
+    val geetRootDir = getGeetRootDirectory() ?: return null
+    return File(geetRootDir, ".geetignore")
 }

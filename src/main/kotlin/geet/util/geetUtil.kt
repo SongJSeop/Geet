@@ -22,7 +22,7 @@ fun getGeetRootDirectory(): File? {
     }
 }
 
-fun isGeetDirectory(): Boolean {
+fun isGeetRepository(): Boolean {
     val geetRootDir = getGeetRootDirectory() ?: return false
 
     val geetObjectDir = File(geetRootDir, "objects")
@@ -37,6 +37,17 @@ fun isGeetDirectory(): Boolean {
     return geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists() &&
             geetConfigFile.exists() && geetDescriptionFile.exists() &&
             geetHooksDir.exists() && geetInfoDir.exists() && geetLogsDir.exists()
+}
+
+fun getRelativePathFromRoot(file: File): String {
+    val rootPath = getGeetRootDirectory()?.canonicalFile
+    val filePath = file.canonicalFile
+
+    return try {
+        filePath.relativeTo(rootPath!!).path
+    } catch (e: IllegalArgumentException) {
+        filePath.absolutePath
+    }
 }
 
 fun String.toZlib(): String {
@@ -65,15 +76,4 @@ fun String.fromZlibToString(): String {
     }
 
     return outputStream.toString()
-}
-
-fun getRelativePathFromRoot(file: File): String {
-    val rootPath = File(".").canonicalFile
-    val filePath = file.canonicalFile
-
-    return try {
-        filePath.relativeTo(rootPath).path
-    } catch (e: IllegalArgumentException) {
-        filePath.absolutePath
-    }
 }
