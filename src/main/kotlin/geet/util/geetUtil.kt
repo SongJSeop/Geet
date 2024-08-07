@@ -9,30 +9,34 @@ import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
-fun isGeetDirectory(): Boolean {
+fun getGeetRootDirectory(): File? {
     var currentDir = File(".").absoluteFile
 
     while (true) {
         val geetDir = File(currentDir, ".geet")
         if (geetDir.exists()) {
-            val geetObjectDir = File(geetDir, "objects")
-            val geetRefsDir = File(geetDir, "refs")
-            val geetHeadFile = File(geetDir, "HEAD")
-            val geetConfigFile = File(geetDir, "config")
-            val geetDescriptionFile = File(geetDir, "description")
-            val geetHooksDir = File(geetDir, "hooks")
-            val geetInfoDir = File(geetDir, "info")
-            val geetLogsDir = File(geetDir, "logs")
-
-            return geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists() &&
-                    geetConfigFile.exists() && geetDescriptionFile.exists() &&
-                    geetHooksDir.exists() && geetInfoDir.exists() && geetLogsDir.exists()
+            return geetDir
         }
 
-        val parentDir = currentDir.parentFile ?: return false
-        if (parentDir == currentDir) return false // 루트 디렉토리에 도달
-        currentDir = parentDir
+        currentDir = currentDir.parentFile ?: return null
     }
+}
+
+fun isGeetDirectory(): Boolean {
+    val geetRootDir = getGeetRootDirectory() ?: return false
+
+    val geetObjectDir = File(geetRootDir, "objects")
+    val geetRefsDir = File(geetRootDir, "refs")
+    val geetHeadFile = File(geetRootDir, "HEAD")
+    val geetConfigFile = File(geetRootDir, "config")
+    val geetDescriptionFile = File(geetRootDir, "description")
+    val geetHooksDir = File(geetRootDir, "hooks")
+    val geetInfoDir = File(geetRootDir, "info")
+    val geetLogsDir = File(geetRootDir, "logs")
+
+    return geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists() &&
+            geetConfigFile.exists() && geetDescriptionFile.exists() &&
+            geetHooksDir.exists() && geetInfoDir.exists() && geetLogsDir.exists()
 }
 
 fun String.toZlib(): String {
