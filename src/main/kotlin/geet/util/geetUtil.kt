@@ -64,10 +64,12 @@ fun String.fromZlibToString(): String {
 }
 
 fun getRelativePathFromRoot(file: File): String {
-    val rootPath = File(".").canonicalPath
-    val filePath = file.canonicalPath
+    val rootPath = File(".").canonicalFile
+    val filePath = file.canonicalFile
 
-    val relativePath = filePath.removePrefix(rootPath).trimStart(File.separatorChar)
-
-    return if (relativePath.isEmpty()) "" else relativePath
+    return try {
+        filePath.relativeTo(rootPath).path
+    } catch (e: IllegalArgumentException) {
+        filePath.absolutePath
+    }
 }
