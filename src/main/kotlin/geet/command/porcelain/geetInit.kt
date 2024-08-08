@@ -1,4 +1,4 @@
-package geet.command
+package geet.command.porcelain
 
 import geet.exception.BadRequest
 import geet.util.const.red

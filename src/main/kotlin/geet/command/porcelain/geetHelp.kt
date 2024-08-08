@@ -1,4 +1,4 @@
-package geet.command
+package geet.command.porcelain
 
 import geet.util.const.cyan
 import geet.util.const.green
