@@ -2,6 +2,9 @@ package geet.command.plumbing
 
 import geet.enums.GeetObjectType
 import geet.exception.BadRequest
+import geet.util.const.red
+import geet.util.const.resetColor
+import java.io.File
 
 data class HashObjectOptions(
     val write: Boolean = false,
@@ -12,7 +15,13 @@ data class HashObjectOptions(
 
 fun geetHashObject(commandLines: Array<String>): Unit {
     val options = getHashObjectOptions(commandLines)
-    println(options)
+
+    val content = when {
+        options.stdin -> getStdinContent()
+        options.path != null -> getPathContent(options.path)
+        else -> ""
+    }
+    println(content)
 }
 
 fun getHashObjectOptions(commandLines: Array<String>): HashObjectOptions {
@@ -44,4 +53,19 @@ fun getHashObjectOptions(commandLines: Array<String>): HashObjectOptions {
     }
 
     return options
+}
+
+fun getStdinContent(): String {
+    val content = generateSequence { readlnOrNull() }.joinToString("\n")
+    return content
+}
+
+fun getPathContent(path: String): String {
+    val file = File(path)
+
+    if (!file.exists() || !file.isFile) {
+        throw BadRequest("파일이 아닙니다.: ${red}${path}${resetColor}")
+    }
+
+    return file.readText()
 }
