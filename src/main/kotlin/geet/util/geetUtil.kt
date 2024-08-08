@@ -1,8 +1,5 @@
 package geet.util
 
-import geet.exception.BadRequest
-import geet.util.const.resetColor
-import geet.util.const.weekRed
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
