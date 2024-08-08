@@ -2,6 +2,7 @@ package geet.command.plumbing
 
 import geet.enums.GeetObjectType
 import geet.exception.BadRequest
+import geet.geetobject.GeetBlob
 import geet.util.const.resetColor
 import geet.util.const.weekRed
 import java.io.File
@@ -19,9 +20,31 @@ fun geetHashObject(commandLines: Array<String>): Unit {
     val content = when {
         options.stdin -> getStdinContent()
         options.path != null -> getPathContent(options.path)
-        else -> ""
+        else -> null
     }
-    println(content)
+
+    if (content != null) {
+        val geetObject = when (options.objectType) {
+            GeetObjectType.BLOB -> GeetBlob(content)
+            GeetObjectType.TREE -> {
+                // TODO
+                println("hash-object로 Tree 객체 생성은 구현 중입니다.")
+                return
+            }
+            GeetObjectType.COMMIT -> {
+                // TODO
+                println("hash-object로 Commit 객체 생성은 구현 중입니다.")
+                return
+            }
+        }
+
+        println(geetObject.hash)
+
+        if (options.write) {
+            // TODO
+            println("hash-object로 객체 저장은 구현 중입니다.")
+        }
+    }
 }
 
 fun getHashObjectOptions(commandLines: Array<String>): HashObjectOptions {
