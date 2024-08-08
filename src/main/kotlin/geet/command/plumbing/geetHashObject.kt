@@ -5,8 +5,8 @@ import geet.exception.BadRequest
 import geet.geetobject.GeetBlob
 import geet.util.const.resetColor
 import geet.util.const.weekRed
+import geet.util.getPathFileContent
 import geet.util.saveObject
-import java.io.File
 
 data class HashObjectOptions(
     val write: Boolean = false,
@@ -20,7 +20,7 @@ fun geetHashObject(commandLines: Array<String>): Unit {
 
     val content = when {
         options.stdin -> getStdinContent()
-        options.path != null -> getPathContent(options.path)
+        options.path != null -> getPathFileContent(options.path)
         else -> null
     }
 
@@ -81,14 +81,4 @@ fun getHashObjectOptions(commandLines: Array<String>): HashObjectOptions {
 fun getStdinContent(): String {
     val content = generateSequence { readlnOrNull() }.joinToString("\n")
     return content
-}
-
-fun getPathContent(path: String): String {
-    val file = File(path)
-
-    if (!file.exists() || !file.isFile) {
-        throw BadRequest("파일이 아닙니다.: ${weekRed}${path}${resetColor}")
-    }
-
-    return file.readText()
 }

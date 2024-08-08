@@ -1,5 +1,8 @@
 package geet.util
 
+import geet.exception.BadRequest
+import geet.util.const.resetColor
+import geet.util.const.weekRed
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -75,4 +78,14 @@ fun String.fromZlibToString(): String {
     }
 
     return outputStream.toString()
+}
+
+fun getPathFileContent(path: String): String? {
+    val file = File(path)
+
+    if (!file.exists() || !file.isFile) {
+        return null
+    }
+
+    return file.readText()
 }
