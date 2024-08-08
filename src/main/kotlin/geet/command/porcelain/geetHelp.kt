@@ -9,6 +9,7 @@ val supportingPorcelainCommands = mapOf<String, String>(
 
 val supportingPlumbingCommands = mapOf<String, String>(
     "hash-object" to "파일이나 문자열을 해시하여 Geet 객체를 생성합니다.",
+    "cat-file" to "Geet 객체의 해시값을 입력받아 해당 객체의 내용 또는 타입을 출력합니다.",
 )
 
 fun geetHelp(): Unit {
