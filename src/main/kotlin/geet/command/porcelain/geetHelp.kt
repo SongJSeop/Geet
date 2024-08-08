@@ -1,13 +1,14 @@
-package geet.command
+package geet.command.porcelain
 
-import geet.util.const.cyan
-import geet.util.const.green
-import geet.util.const.resetColor
-import geet.util.const.yellow
+import geet.util.const.*
 
-val supportingCommandsList = mapOf<String, String>(
+val supportingPorcelainCommands = mapOf<String, String>(
     "help" to "Geet에 대한 설명 및 지원하는 명령어 목록을 출력합니다.",
     "init" to "새로운 Git 저장소를 초기화합니다.",
+)
+
+val supportingPlumbingCommands = mapOf<String, String>(
+    "hash-object" to "파일이나 문자열을 해시하여 Geet 객체를 생성합니다.",
 )
 
 fun geetHelp(): Unit {
@@ -30,7 +31,14 @@ fun printGeetGreeting(): Unit {
 
 fun printSupportingCommands(): Unit {
     println("${green}<< 지원하는 명령어 목록 >>${resetColor}")
-    supportingCommandsList.forEach { (command, description) ->
+
+    println("${weekGreen}Porcelain 명령어들${resetColor}")
+    supportingPorcelainCommands.forEach { (command, description) ->
+        println("- ${yellow}${command}${resetColor} : ${description}")
+    }
+
+    println("${weekGreen}Plumbing 명령어들${resetColor}")
+    supportingPlumbingCommands.forEach { (command, description) ->
         println("- ${yellow}${command}${resetColor} : ${description}")
     }
 }

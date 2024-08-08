@@ -9,12 +9,44 @@ import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
-fun isGeetDirectory(): Boolean {
-    val geetDir = File(".geet")
-    val geetObjectDir = File(geetDir, "objects")
-    val geetRefsDir = File(geetDir, "refs")
-    val geetHeadFile = File(geetDir, "HEAD")
-    return geetDir.exists() && geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists()
+fun getGeetRepoDir(): File? {
+    var currentDir = File(".").absoluteFile
+
+    while (true) {
+        val geetDir = File(currentDir, ".geet")
+        if (geetDir.exists()) {
+            return geetDir
+        }
+
+        currentDir = currentDir.parentFile ?: return null
+    }
+}
+
+fun isGeetRepo(): Boolean {
+    val geetRootDir = getGeetRepoDir() ?: return false
+
+    val geetObjectDir = File(geetRootDir, "objects")
+    val geetRefsDir = File(geetRootDir, "refs")
+    val geetHeadFile = File(geetRootDir, "HEAD")
+    val geetConfigFile = File(geetRootDir, "config")
+    val geetDescriptionFile = File(geetRootDir, "description")
+    val geetHooksDir = File(geetRootDir, "hooks")
+    val geetInfoDir = File(geetRootDir, "info")
+
+    return geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists() &&
+            geetConfigFile.exists() && geetDescriptionFile.exists() &&
+            geetHooksDir.exists() && geetInfoDir.exists()
+}
+
+fun getRelativePathFromRoot(file: File): String {
+    val rootPath = getGeetRepoDir()?.canonicalFile
+    val filePath = file.canonicalFile
+
+    return try {
+        filePath.relativeTo(rootPath!!).path
+    } catch (e: IllegalArgumentException) {
+        filePath.absolutePath
+    }
 }
 
 fun String.toZlib(): String {
@@ -43,13 +75,4 @@ fun String.fromZlibToString(): String {
     }
 
     return outputStream.toString()
-}
-
-fun getRelativePathFromRoot(file: File): String {
-    val rootPath = File(".").canonicalPath
-    val filePath = file.canonicalPath
-
-    val relativePath = filePath.removePrefix(rootPath).trimStart(File.separatorChar)
-
-    return if (relativePath.isEmpty()) "" else relativePath
 }

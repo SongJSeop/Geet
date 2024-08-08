@@ -1,4 +1,4 @@
-package geet.command
+package geet.command.porcelain
 
 import geet.exception.BadRequest
 import geet.util.const.red
@@ -13,17 +13,17 @@ fun geetInit(commandLines: Array<String>): Unit {
         )
     }
 
+    initGeetRepository()
+    println("현재 디렉토리를 Git 저장소로 초기화합니다.")
+
+}
+
+fun initGeetRepository(): Unit {
     val geetFile = File(".geet")
     if (geetFile.exists()) {
         throw BadRequest("이미 초기화된 Git 저장소 입니다.")
     }
 
-    initGeetRepository(geetFile)
-    println("현재 디렉토리를 Git 저장소로 초기화합니다.")
-
-}
-
-fun initGeetRepository(geetFile: File): Unit {
     geetFile.mkdir()
     File(geetFile, "objects").mkdir()
     File(geetFile, "objects/info").mkdir()
