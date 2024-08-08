@@ -2,8 +2,8 @@ package geet.command.plumbing
 
 import geet.enums.GeetObjectType
 import geet.exception.BadRequest
-import geet.util.const.red
 import geet.util.const.resetColor
+import geet.util.const.weekRed
 import java.io.File
 
 data class HashObjectOptions(
@@ -39,11 +39,11 @@ fun getHashObjectOptions(commandLines: Array<String>): HashObjectOptions {
             "-t" -> {
                 val type = commandLines.getOrNull(i + 1) ?: throw BadRequest("옵션 -t는 객체 타입을 인자로 받습니다.")
                 val objectType = GeetObjectType.entries.find { it.value == type }
-                    ?: throw BadRequest("지원하지 않는 객체 타입입니다.: $type")
+                    ?: throw BadRequest("지원하지 않는 객체 타입입니다.: ${weekRed}${type}${resetColor}")
                 options = options.copy(objectType = objectType)
                 i++
             }
-            else -> throw BadRequest("지원하지 않는 옵션입니다.: ${commandLines[i]}")
+            else -> throw BadRequest("지원하지 않는 옵션입니다.: ${weekRed}${commandLines[i]}${resetColor}")
         }
         i++
     }
@@ -64,7 +64,7 @@ fun getPathContent(path: String): String {
     val file = File(path)
 
     if (!file.exists() || !file.isFile) {
-        throw BadRequest("파일이 아닙니다.: ${red}${path}${resetColor}")
+        throw BadRequest("파일이 아닙니다.: ${weekRed}${path}${resetColor}")
     }
 
     return file.readText()

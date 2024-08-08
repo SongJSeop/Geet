@@ -1,9 +1,6 @@
 package geet.command.porcelain
 
-import geet.util.const.cyan
-import geet.util.const.green
-import geet.util.const.resetColor
-import geet.util.const.yellow
+import geet.util.const.*
 
 val supportingCommandsList = mapOf<String, String>(
     "help" to "Geet에 대한 설명 및 지원하는 명령어 목록을 출력합니다.",

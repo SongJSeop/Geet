@@ -3,8 +3,7 @@ package geet
 import geet.command.porcelain.*
 import geet.command.plumbing.*
 import geet.exception.BadRequest
-import geet.util.const.red
-import geet.util.const.resetColor
+import geet.util.const.*
 import geet.util.isGeetRepository
 
 fun processGeet(commandLines: Array<String>): Unit {
@@ -22,6 +21,6 @@ fun processGeet(commandLines: Array<String>): Unit {
 
         "hash-object" -> geetHashObject(commandLines)
 
-        else -> throw BadRequest("지원하지 않는 명령어입니다.: ${red}${commandLines[0]}${resetColor}")
+        else -> throw BadRequest("지원하지 않는 명령어입니다.: ${weekRed}${commandLines[0]}${resetColor}")
     }
 }
