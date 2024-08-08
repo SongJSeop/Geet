@@ -4,7 +4,7 @@ import geet.command.porcelain.*
 import geet.command.plumbing.*
 import geet.exception.BadRequest
 import geet.util.const.*
-import geet.util.isGeetRepository
+import geet.util.isGeetRepo
 
 fun processGeet(commandLines: Array<String>): Unit {
     if (commandLines.isEmpty() || commandLines[0] == "help") {
@@ -12,7 +12,7 @@ fun processGeet(commandLines: Array<String>): Unit {
         return
     }
 
-    if (commandLines[0] != "init" && !isGeetRepository()) {
+    if (commandLines[0] != "init" && !isGeetRepo()) {
         throw BadRequest("현재 디렉토리는 Geet 저장소가 아닙니다.")
     }
 

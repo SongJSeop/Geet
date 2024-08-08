@@ -5,6 +5,7 @@ import geet.exception.BadRequest
 import geet.geetobject.GeetBlob
 import geet.util.const.resetColor
 import geet.util.const.weekRed
+import geet.util.saveObject
 import java.io.File
 
 data class HashObjectOptions(
@@ -41,8 +42,7 @@ fun geetHashObject(commandLines: Array<String>): Unit {
         println(geetObject.hash)
 
         if (options.write) {
-            // TODO
-            println("hash-object로 객체 저장은 구현 중입니다.")
+            saveObject(geetObject.hash, content)
         }
     }
 }

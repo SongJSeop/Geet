@@ -9,7 +9,7 @@ import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
-fun getGeetRootDirectory(): File? {
+fun getGeetRepoDir(): File? {
     var currentDir = File(".").absoluteFile
 
     while (true) {
@@ -22,8 +22,8 @@ fun getGeetRootDirectory(): File? {
     }
 }
 
-fun isGeetRepository(): Boolean {
-    val geetRootDir = getGeetRootDirectory() ?: return false
+fun isGeetRepo(): Boolean {
+    val geetRootDir = getGeetRepoDir() ?: return false
 
     val geetObjectDir = File(geetRootDir, "objects")
     val geetRefsDir = File(geetRootDir, "refs")
@@ -39,7 +39,7 @@ fun isGeetRepository(): Boolean {
 }
 
 fun getRelativePathFromRoot(file: File): String {
-    val rootPath = getGeetRootDirectory()?.canonicalFile
+    val rootPath = getGeetRepoDir()?.canonicalFile
     val filePath = file.canonicalFile
 
     return try {
