@@ -32,11 +32,10 @@ fun isGeetRepository(): Boolean {
     val geetDescriptionFile = File(geetRootDir, "description")
     val geetHooksDir = File(geetRootDir, "hooks")
     val geetInfoDir = File(geetRootDir, "info")
-    val geetLogsDir = File(geetRootDir, "logs")
 
     return geetObjectDir.exists() && geetRefsDir.exists() && geetHeadFile.exists() &&
             geetConfigFile.exists() && geetDescriptionFile.exists() &&
-            geetHooksDir.exists() && geetInfoDir.exists() && geetLogsDir.exists()
+            geetHooksDir.exists() && geetInfoDir.exists()
 }
 
 fun getRelativePathFromRoot(file: File): String {
