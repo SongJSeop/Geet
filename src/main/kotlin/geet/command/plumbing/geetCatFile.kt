@@ -3,6 +3,8 @@ package geet.command.plumbing
 import geet.exception.BadRequest
 import geet.util.const.resetColor
 import geet.util.const.weekRed
+import geet.util.getObjectContent
+import geet.util.getObjectType
 import geet.util.isHash
 
 data class CatFileOptions(
@@ -13,7 +15,16 @@ data class CatFileOptions(
 
 fun geetCatFile(commandLines: Array<String>): Unit {
     val options = getCatFileOptions(commandLines)
-    println(options)
+
+    if (options.type) {
+        println(getObjectType(options.objectHash))
+        return
+    }
+
+    if (options.pretty) {
+        println(getObjectContent(options.objectHash))
+        return
+    }
 }
 
 fun getCatFileOptions(commandLines: Array<String>): CatFileOptions {

@@ -83,6 +83,5 @@ fun getPathFileContent(path: String): String? {
     if (!file.exists() || !file.isFile) {
         return null
     }
-
-    return file.readText()
+    return file.readText(charset = Charsets.UTF_8)
 }
