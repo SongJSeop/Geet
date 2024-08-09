@@ -22,7 +22,13 @@ fun geetCatFile(commandLines: Array<String>): Unit {
     }
 
     if (options.pretty) {
-        println(getObjectContent(options.objectHash))
+        val content = getObjectContent(options.objectHash) ?: throw BadRequest("해당하는 개체가 존재하지 않습니다.: ${weekRed}${options.objectHash}${resetColor}")
+        val editted = if (content.endsWith("\n")) {
+            content.dropLast(1)
+        } else {
+            "$content%"
+        }
+        println(editted)
         return
     }
 }
