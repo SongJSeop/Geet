@@ -27,3 +27,38 @@ fun saveObject(hash: String, content: String) {
 fun isHash(hash: String): Boolean {
     return hash.length in 4..40 && hash.matches(Regex("[0-9a-fA-F]+"))
 }
+
+fun getFullHashIfObjectExists(shortHash: String): String? {
+    if (shortHash.length == 40) {
+        return if (File(File(objectFile, shortHash.substring(0, 2)), shortHash.substring(2)).exists()) {
+            shortHash
+        } else {
+            null
+        }
+    }
+
+    val objectDir = File(objectFile, shortHash.substring(0, 2))
+    if (!objectDir.exists()) {
+        return null
+    }
+
+    objectDir.listFiles()?.forEach { objectFile ->
+        if (objectFile.name.startsWith(shortHash.substring(2))) {
+            return objectFile.name
+        }
+    }
+
+    return null
+}
+
+fun getObjectContent(hash: String): String? {
+    val fullHash = getFullHashIfObjectExists(hash) ?: return null
+    val objectFile = File(File(objectFile, fullHash.substring(0, 2)), fullHash.substring(2))
+    return objectFile.readText().fromZlibToString()
+}
+
+fun getObjectType(hash: String): GeetObjectType? {
+    val fullHash = if (hash.length == 40) hash else getFullHashIfObjectExists(hash) ?: return null
+    val objectContent = getObjectContent(hash) ?: return null
+    return GeetObjectType.entries.find { createHash(type = it, content = objectContent) == fullHash }
+}
