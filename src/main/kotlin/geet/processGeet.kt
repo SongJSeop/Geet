@@ -22,6 +22,8 @@ fun processGeet(commandLines: Array<String>): Unit {
         "hash-object" -> geetHashObject(commandLines)
         "cat-file" -> geetCatFile(commandLines)
 
+        "add" -> geetAdd(commandLines)
+
         else -> throw BadRequest("지원하지 않는 명령어입니다.: ${weekRed}${commandLines[0]}${resetColor}")
     }
 }

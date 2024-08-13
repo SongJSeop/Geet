@@ -5,6 +5,7 @@ import geet.util.const.*
 val supportingPorcelainCommands = mapOf<String, String>(
     "help" to "Geet에 대한 설명 및 지원하는 명령어 목록을 출력합니다.",
     "init" to "새로운 Git 저장소를 초기화합니다.",
+    "add" to "작업 디렉토리의 변경 내용을 스테이징 영역에 추가합니다.",
 )
 
 val supportingPlumbingCommands = mapOf<String, String>(
