@@ -76,3 +76,12 @@ fun String.fromZlibToString(): String {
 
     return outputStream.toString()
 }
+
+fun getPathFileContent(path: String): String? {
+    val file = File(path)
+
+    if (!file.exists() || !file.isFile) {
+        return null
+    }
+    return file.readText(charset = Charsets.UTF_8)
+}
