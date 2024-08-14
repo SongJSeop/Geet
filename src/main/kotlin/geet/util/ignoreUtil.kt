@@ -2,9 +2,9 @@ package geet.util
 
 import java.io.File
 
-val ignoreFile
+private val ignoreFile
     get() = File(getGeetRootDir(), ".geetignore")
-val ignoreSet = if (ignoreFile.exists()) {
+private val ignoreSet = if (ignoreFile.exists()) {
     val ignoreSet = mutableSetOf(".geet")
     ignoreFile.readLines().toSet()
         .map { it.trim() }

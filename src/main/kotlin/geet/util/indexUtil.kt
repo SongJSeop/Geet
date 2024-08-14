@@ -11,7 +11,7 @@ data class IndexData(
     val lastCommitHash: String? = null
 )
 
-val indexFile: File
+private val indexFile: File
     get() {
         val index = File(getGeetRepoDir(), "index")
         if (!index.exists()) {
@@ -23,16 +23,17 @@ val indexFile: File
     }
 
 fun getIndexData(): IndexData {
-    return Json.decodeFromString(IndexData.serializer(), indexFile.readText())
-}
-
-fun saveIndexData(indexData: IndexData) {
-    indexFile.writeText(Json.encodeToString(IndexData.serializer(), indexData))
+    return Json.decodeFromString(IndexData.serializer(), indexFile.readText().fromZlibToString())
 }
 
 fun addStagingObject(stagingObject: StagingObject) {
     val indexData = getIndexData()
-    saveIndexData(indexData.copy(
+    val updatedIndexData = indexData.copy(
         stagingArea = indexData.stagingArea + stagingObject
-    ))
+    )
+    indexFile.writeText(Json.encodeToString(IndexData.serializer(), updatedIndexData).toZlib())
+}
+
+fun getSameStagingObject(filePath: String): StagingObject? {
+    return getIndexData().stagingArea.find { it.filePath == filePath }
 }

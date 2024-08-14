@@ -4,7 +4,7 @@ import geet.enums.GeetObjectType
 import geet.util.const.messageDigest
 import java.io.File
 
-val geetObjectRepo
+private val geetObjectRepo
     get() = File(getGeetRepoDir(), "objects")
 
 fun getHash(type: GeetObjectType, content: String): String {
