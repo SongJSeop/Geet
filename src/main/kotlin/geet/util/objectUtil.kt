@@ -4,9 +4,10 @@ import geet.enums.GeetObjectType
 import geet.util.const.messageDigest
 import java.io.File
 
-val geetObjectRepo = File(getGeetRepoDir(), "objects")
+val geetObjectRepo
+    get() = File(getGeetRepoDir(), "objects")
 
-fun createHash(type: GeetObjectType, content: String): String {
+fun getHash(type: GeetObjectType, content: String): String {
     val header = "${type.value} ${content.length}\u0000"
     val store = header + content
 
@@ -60,5 +61,5 @@ fun getObjectContent(hash: String): String? {
 fun getObjectType(hash: String): GeetObjectType? {
     val fullHash = if (hash.length == 40) hash else getFullHashIfObjectExists(hash) ?: return null
     val objectContent = getObjectContent(hash) ?: return null
-    return GeetObjectType.entries.find { createHash(type = it, content = objectContent) == fullHash }
+    return GeetObjectType.entries.find { getHash(type = it, content = objectContent) == fullHash }
 }
