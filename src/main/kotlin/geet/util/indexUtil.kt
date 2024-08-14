@@ -16,7 +16,7 @@ private val indexFile: File
         val index = File(getGeetRepoDir(), "index")
         if (!index.exists()) {
             val indexData = IndexData(emptyList())
-            index.writeText(Json.encodeToString(IndexData.serializer(), indexData))
+            index.writeText(Json.encodeToString(IndexData.serializer(), indexData).toZlib())
         }
 
         return index

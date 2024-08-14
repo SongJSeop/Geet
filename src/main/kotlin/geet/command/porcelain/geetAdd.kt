@@ -26,24 +26,8 @@ fun geetAdd(commandLines: Array<String>): Unit {
     }
 
     when {
-        options.file.isFile -> {
-            val filePath = getRelativePath(toFile = targetFile)
-            val geetBlob = GeetBlob(content = targetFile.readText())
-            val stagingObject = getSameStagingObject(filePath)?.let { stagingObject ->
-                stagingObject.copy(hash = geetBlob.hash)
-            } ?: StagingObject(
-                fileName = targetFile.name,
-                filePath = filePath,
-                hash = geetBlob.hash,
-                status = "new",  // TODO: 지난 커밋과 비교하여 상태를 결정해야 함
-                slot = 0
-            )
-
-            addStagingObject(stagingObject)
-        }
-        else -> {
-            // TODO: 디렉토리인 경우 구현
-        }
+        options.file.isFile -> addFileToStagingObject(targetFile)
+        else -> addDirToStagingObject(targetFile)
     }
 }
 
@@ -58,4 +42,32 @@ fun getAddOptions(commandLines: Array<String>): AddOptions {
     }
 
     return AddOptions(file)
+}
+
+fun addFileToStagingObject(file: File) {
+    val filePath = getRelativePath(toFile = file)
+    val geetBlob = GeetBlob(content = file.readText())
+    val stagingObject = getSameStagingObject(filePath)?.let { stagingObject ->
+        stagingObject.copy(hash = geetBlob.hash)
+    } ?: StagingObject(
+        fileName = file.name,
+        filePath = filePath,
+        hash = geetBlob.hash,
+        status = "new",  // TODO: 지난 커밋과 비교하여 상태를 결정해야 함
+        slot = 0
+    )
+
+    addStagingObject(stagingObject)
+}
+
+fun addDirToStagingObject(directory: File) {
+    directory.listFiles()?.forEach { file ->
+        if (isIgnored(file) != null) return@forEach
+
+        if (file.isDirectory) {
+            addDirToStagingObject(file)
+        } else {
+            addFileToStagingObject(file)
+        }
+    }
 }
