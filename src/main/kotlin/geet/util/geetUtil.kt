@@ -43,18 +43,18 @@ fun isGeetRepo(): Boolean {
             geetHooksDir.exists() && geetInfoDir.exists()
 }
 
-fun getRelativePathFromGeetRootDir(file: File): String {
-    val rootPath = getGeetRootDir().canonicalFile
-    val filePath = file.canonicalFile
+fun getRelativePath(fromFile: File = getGeetRootDir(), toFile: File): String {
+    val fromPath = fromFile.canonicalFile
+    val toPath = toFile.canonicalFile
 
     return try {
-        if (filePath == rootPath) {
+        if (toPath == fromPath) {
             return "."
         }
 
-        filePath.relativeTo(rootPath).path
+        toPath.relativeTo(fromPath).path
     } catch (e: IllegalArgumentException) {
-        filePath.absolutePath
+        toPath.absolutePath
     }
 }
 
