@@ -19,7 +19,7 @@ fun getGeetRootDir(): File {
             return currentDir
         }
 
-        currentDir = currentDir.parentFile ?: throw BadRequest("Geet 저장소가 아닙니다.")
+        currentDir = currentDir.parentFile ?: throw BadRequest("현재 디렉토리는 Geet 저장소가 아닙니다.")
     }
 }
 
