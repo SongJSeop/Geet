@@ -48,6 +48,10 @@ fun getRelativePathFromGeetRootDir(file: File): String {
     val filePath = file.canonicalFile
 
     return try {
+        if (filePath == rootPath) {
+            return "."
+        }
+
         filePath.relativeTo(rootPath).path
     } catch (e: IllegalArgumentException) {
         filePath.absolutePath
