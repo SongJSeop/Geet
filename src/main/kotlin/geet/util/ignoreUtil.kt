@@ -16,7 +16,7 @@ val ignoreSet = if (ignoreFile.exists()) {
 }
 
 fun isIgnored(file: File): Boolean {
-    val relativePath = getRelativePathFromRoot(file)
+    val relativePath = getRelativePathFromGeetRootDir(file)
     val fileName = file.name
     return ignoreSet.any {
         it == fileName || it == relativePath
