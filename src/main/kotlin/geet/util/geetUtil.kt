@@ -1,5 +1,6 @@
 package geet.util
 
+import geet.exception.BadRequest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -9,17 +10,21 @@ import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
 import java.util.zip.InflaterInputStream
 
-fun getGeetRepoDir(): File? {
+fun getGeetRootDir(): File {
     var currentDir = File(".").absoluteFile
 
     while (true) {
         val geetDir = File(currentDir, ".geet")
         if (geetDir.exists()) {
-            return geetDir
+            return currentDir
         }
 
-        currentDir = currentDir.parentFile ?: return null
+        currentDir = currentDir.parentFile ?: throw BadRequest("현재 디렉토리는 Geet 저장소가 아닙니다.")
     }
+}
+
+fun getGeetRepoDir(): File {
+    return File(getGeetRootDir(), ".geet")
 }
 
 fun isGeetRepo(): Boolean {
@@ -38,14 +43,18 @@ fun isGeetRepo(): Boolean {
             geetHooksDir.exists() && geetInfoDir.exists()
 }
 
-fun getRelativePathFromRoot(file: File): String {
-    val rootPath = getGeetRepoDir()?.canonicalFile
-    val filePath = file.canonicalFile
+fun getRelativePath(fromFile: File = getGeetRootDir(), toFile: File): String {
+    val fromPath = fromFile.canonicalFile
+    val toPath = toFile.canonicalFile
 
     return try {
-        filePath.relativeTo(rootPath!!).path
+        if (toPath == fromPath) {
+            return "."
+        }
+
+        toPath.relativeTo(fromPath).path
     } catch (e: IllegalArgumentException) {
-        filePath.absolutePath
+        toPath.absolutePath
     }
 }
 
